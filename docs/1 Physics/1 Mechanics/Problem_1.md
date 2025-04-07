@@ -106,3 +106,4 @@ for v0 in v0_values:
 plot_range_vs_angle(20, g = 3.71) #Mars gravity
 
 ![alt text](Figure_1-1.png)
+![Range vs Angle Graph](range_vs_angle.png)
