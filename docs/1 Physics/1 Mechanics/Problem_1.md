@@ -1,105 +1,83 @@
-# Problem 1# Investigating the Range as a Function of the Angle of Projection
+# Problem 1: Investigating the Range as a Function of the Angle of Projection
 
-## 1. Theoretical Foundation
+## 1. Motivation
 
-Projectile motion involves both horizontal and vertical motion. The key equations governing projectile motion (without air resistance) are derived from basic kinematics.
+Projectile motion is an essential concept in physics, describing the motion of an object launched into the air under the influence of gravity. This project investigates how the range of a projectile depends on its launch angle. Understanding this relationship is crucial for applications like sports and engineering.
 
-### Horizontal Motion:
+## 2. Theory
+
+The range \( R \) of a projectile launched with initial velocity \( v_0 \) at an angle \( \theta \) is given by the equation:
+
 \[
-x(t) = v_0 \cdot \cos(\theta) \cdot t
-\]
-
-### Vertical Motion:
-\[
-y(t) = v_0 \cdot \sin(\theta) \cdot t - \frac{1}{2} g t^2
+R = \frac{v_0^2 \sin(2\theta)}{g}
 \]
 
 Where:
-- \( v_0 \) is the initial velocity,
-- \( \theta \) is the launch angle,
-- \( g \) is the gravitational acceleration (9.8 m/s²).
+- \( v_0 \) = Initial velocity (m/s)
+- \( \theta \) = Launch angle (degrees)
+- \( g \) = Gravitational acceleration (9.81 m/s²)
 
-### Range of the Projectile:
-The **range** \( R \) is the horizontal distance traveled by the projectile when it reaches the ground. The time of flight \( t_f \) is given by:
-\[
-t_f = \frac{2 v_0 \sin(\theta)}{g}
-\]
+This formula shows that the range of a projectile depends on the launch angle, and is maximized at 45°.
 
-Substituting this into the horizontal motion equation:
-\[
-R(\theta) = \frac{v_0^2 \sin(2\theta)}{g}
-\]
+## 3. Python Code
 
-The range depends on the angle \( \theta \) and reaches its maximum at \( \theta = 45^\circ \).
-
----
-
-## 2. Analysis of the Range
-
-The range varies with the angle of projection. For any initial velocity \( v_0 \), the optimal launch angle for the maximum range is 45°. We can observe the relationship between the range and angle through a graph.
-
-Changes in initial velocity \( v_0 \) and gravitational acceleration \( g \) also affect the range. Higher initial velocity or lower gravitational acceleration results in a longer range.
-
----
-
-## 3. Practical Applications
-
-This model is applicable in real-world scenarios such as:
-- Sports (e.g., soccer, basketball),
-- Engineering (e.g., launching projectiles),
-- Space exploration (e.g., rocket trajectories).
-
-However, it assumes no air resistance and level ground, which limits its realism in some cases.
-
----
-
-## 4. Code Implementation
-
-Below is the Python code used to simulate projectile motion and plot the range vs angle graph.
+The following Python code simulates projectile motion and calculates the range for different launch angles. The code also plots the range as a function of the angle.
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 
 # Constants
-v_0 = 30  # Initial velocity in m/s
-g = 9.8  # Gravitational acceleration in m/s²
+v0 = 20  # Initial velocity in m/s
+g = 9.81  # Gravitational acceleration in m/s²
 
-# Range of angles
-angles = np.linspace(0, 90, 100)
+# Angle values (0 to 90 degrees)
+angles_deg = np.linspace(0, 90, 500)  # Generating angles between 0° and 90°
+angles_rad = np.radians(angles_deg)  # Converting angles from degrees to radians
 
-# Calculate the range as a function of angle
-ranges = (v_0**2 * np.sin(np.radians(2*angles))) / g
+# Calculating the range for each angle
+ranges = (v0**2) * np.sin(2 * angles_rad) / g
 
-# Plot the range vs angle
+# Plotting the graph
 plt.figure(figsize=(10, 6))
-plt.plot(angles, ranges)
-plt.title("Range vs. Angle of Projection")
-plt.xlabel("Angle of Projection (degrees)")
+plt.plot(angles_deg, ranges, label=f'v₀ = {v0} m/s')  # Range vs angle plot
+plt.axvline(45, color='red', linestyle='--', label='Max Range at 45°')  # Highlight 45°
+plt.title("Projectile Range vs. Angle of Projection")
+plt.xlabel("Angle (degrees)")
 plt.ylabel("Range (meters)")
 plt.grid(True)
+plt.legend()
 
 # Save the plot as an image
-plt.savefig("range_vs_angle.png")
+plt.savefig('Problem_1/projectile_range.png')
 
-# Show the plot (optional)
+# Show the plot
 plt.show()
 
 
-### **3. View the Plot in Markdown**
+---
 
-When you open the Markdown file (in a Markdown viewer or GitHub), you should see the graph embedded in the document.
+### **Step 3: Run the Python Code**
+
+Next, let's write and run the Python code that simulates the projectile motion and generates the plot.
+
+1. **Run the Python code**: This will create a graph and save it as `projectile_range.png`.
+
+2. The code will produce a plot and save it in the `Problem_1` folder.
 
 ---
 
-### **4. Push to GitHub (If Needed)**
+### **Step 4: Upload the Image to GitHub**
 
-If you want to push the updated **Markdown file** and **image** to **GitHub**, follow these steps:
+Once you have the image (`projectile_range.png`), **upload it to your GitHub repository**:
 
-1. **Add the image and markdown file to Git**:
-   - If the image (`range_vs_angle.png`) and your Markdown file are in the same folder, just add them to the repository.
+1. Go to your GitHub repository and navigate to the `Problem_1` folder.
+2. Upload the image file (`projectile_range.png`) into the `Problem_1` folder.
+3. Alternatively, if you’re working locally, you can copy the image into the appropriate folder and then **commit** it to your repository:
 
-2. **Commit the changes**:
-   ```bash
-   git add .
-   git commit -m "Add graph to markdown notes"
+```bash
+git add Problem_1/projectile_range.png
+git commit -m "Added projectile range plot"
+git push origin main
+
+![Projectile Range Plot](projectile_range.png)
