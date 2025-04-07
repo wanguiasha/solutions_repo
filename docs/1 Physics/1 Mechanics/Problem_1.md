@@ -105,5 +105,4 @@ for v0 in v0_values:
 #Example with different gravity
 plot_range_vs_angle(20, g = 3.71) #Mars gravity
 
-
-
+![alt text](Figure_1.png)
