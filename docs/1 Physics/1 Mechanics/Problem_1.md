@@ -81,3 +81,4 @@ git commit -m "Added projectile range plot"
 git push origin main
 
 ![Projectile Range Plot](projectile_range.png)
+
