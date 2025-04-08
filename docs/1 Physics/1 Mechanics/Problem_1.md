@@ -423,88 +423,55 @@ plt.show()
 import numpy as np
 import matplotlib.pyplot as plt
 
-def projectile_range(v0, theta_deg, g=9.81):
-    """Calculates the range of a projectile."""
-    theta_rad = np.radians(theta_deg)
-    return (v0**2 * np.sin(2 * theta_rad)) / g
+# Constants
+v0 = 20  # Initial velocity in m/s (you can change this value)
+g = 9.81  # Gravitational acceleration in m/s² (Earth's gravity)
 
-def projectile_trajectory(v0, theta_deg, g=9.81, time_steps=100):
-    """Calculates the trajectory of a projectile."""
-    theta_rad = np.radians(theta_deg)
-    t_flight = (2 * v0 * np.sin(theta_rad)) / g
-    t = np.linspace(0, t_flight, time_steps)
-    x = v0 * np.cos(theta_rad) * t
-    y = v0 * np.sin(theta_rad) * t - 0.5 * g * t**2
-    return x, y
+# Angle values in degrees (0 to 90 degrees)
+angles_deg = np.linspace(0, 90, 500)  # 500 points between 0 and 90
+angles_rad = np.radians(angles_deg)  # Convert degrees to radians
 
-def plot_range_vs_angle(v0, g=9.81):
-    """Plots the range vs. launch angle."""
-    angles = np.linspace(0, 90, 100)
-    ranges = [projectile_range(v0, angle, g) for angle in angles]
-    plt.plot(angles, ranges)
-    plt.xlabel('Launch Angle (degrees)')
-    plt.ylabel('Range (meters)')
-    plt.title(f'Range vs. Launch Angle (v0={v0} m/s, g={g} m/s^2)')
-    plt.grid(True)
-    plt.show()
+# Calculate the range for each angle
+ranges = (v0**2) * np.sin(2 * angles_rad) / g
 
-def plot_trajectories(v0_list, theta_deg, g=9.81):
-    """Plots trajectories for different initial velocities."""
-    plt.figure()
-    for v0 in v0_list:
-        x, y = projectile_trajectory(v0, theta_deg, g)
-        plt.plot(x, y, label=f'v0={v0} m/s')
-    plt.xlabel('Horizontal Distance (meters)')
-    plt.ylabel('Vertical Distance (meters)')
-    plt.title(f'Trajectories at {theta_deg} degrees')
-    plt.grid(True)
-    plt.legend()
-    plt.show()
+# Plotting the range vs. angle
+plt.figure(figsize=(10, 6))
+plt.plot(angles_deg, ranges, label=f'v₀ = {v0} m/s')
+plt.axvline(45, color='red', linestyle='--', label='Max Range at 45°')
+plt.title("Projectile Range vs. Angle of Projection")
+plt.xlabel("Angle (degrees)")
+plt.ylabel("Range (meters)")
+plt.grid(True)
+plt.legend()
+plt.show()
+```
 
-# Example usage
-plot_range_vs_angle(20)
-plot_trajectories([10, 20, 30], 45)
-def projectile_range(v0, theta_deg, g=9.81):
-    """Calculates the range of a projectile."""
-    theta_rad = np.radians(theta_deg)
-    return (v0**2 * np.sin(2 * theta_rad)) / g
+![alt text](image-5.png)
 
-def projectile_trajectory(v0, theta_deg, g=9.81, time_steps=100):
-    """Calculates the trajectory of a projectile."""
-    theta_rad = np.radians(theta_deg)
-    t_flight = (2 * v0 * np.sin(theta_rad)) / g
-    t = np.linspace(0, t_flight, time_steps)
-    x = v0 * np.cos(theta_rad) * t
-    y = v0 * np.sin(theta_rad) * t - 0.5 * g * t**2
-    return x, y
+```python
+import numpy as np
+import matplotlib.pyplot as plt
 
-def plot_range_vs_angle(v0, g=9.81):
-    """Plots the range vs. launch angle."""
-    angles = np.linspace(0, 90, 100)
-    ranges = [projectile_range(v0, angle, g) for angle in angles]
-    plt.plot(angles, ranges)
-    plt.xlabel('Launch Angle (degrees)')
-    plt.ylabel('Range (meters)')
-    plt.title(f'Range vs. Launch Angle (v0={v0} m/s, g={g} m/s^2)')
-    plt.grid(True)
-    plt.show()
+# Constants
+v0 = 20  # initial velocity (m/s)
+g = 9.81  # gravitational acceleration (m/s^2)
+angles_deg = np.arange(0, 91, 5)  # angles from 0° to 90° in 5° increments
+angles_rad = np.deg2rad(angles_deg)
 
-def plot_trajectories(v0_list, theta_deg, g=9.81):
-    """Plots trajectories for different initial velocities."""
-    plt.figure()
-    for v0 in v0_list:
-        x, y = projectile_trajectory(v0, theta_deg, g)
-        plt.plot(x, y, label=f'v0={v0} m/s')
-    plt.xlabel('Horizontal Distance (meters)')
-    plt.ylabel('Vertical Distance (meters)')
-    plt.title(f'Trajectories at {theta_deg} degrees')
-    plt.grid(True)
-    plt.legend()
-    plt.show()
-    
-# Example usage
-plot_range_vs_angle(20)
-plot_trajectories([10, 20, 30], 45
+# Calculate maximum height
+H = (v0**2 * np.sin(angles_rad)**2) / (2 * g)  # H = (v0*sinθ)^2 / (2g)
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.plot(angles_deg, H, 'b-', label=f'$v_0 = {v0} \, \text{{m/s}}, g = {g} \, \text{{m/s}}^2$')
+plt.xlabel('Angle of Projection ($^\circ$)')
+plt.ylabel('Maximum Height (m)')
+plt.title('Maximum Height vs. Angle of Projection')
+plt.legend()
+plt.grid(True)
+plt.savefig('height_vs_angle.png')  # Save for Markdown embedding
+plt.show()
+```
 
 
 ## Colab 
