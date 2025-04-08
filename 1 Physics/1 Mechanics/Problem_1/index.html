@@ -72,8 +72,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#discussion">Discussion</a>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#references">References</a>
-</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../Problem_2/">Problem 2</a>
@@ -313,11 +311,6 @@ y(t) = h + v_0 \sin\theta \cdot t - \frac{1}{2} g t^2
 <hr/>
 <h2 id="discussion">Discussion</h2>
 <p>These equations form a family of solutions parameterized by <span class="arithmatex">\(v_0\)</span>, <span class="arithmatex">\(\theta\)</span>, <span class="arithmatex">\(g\)</span>, and <span class="arithmatex">\(h\)</span>. The horizontal range, defined as <span class="arithmatex">\(x(t)\)</span> when <span class="arithmatex">\(y(t) = 0\)</span>, depends critically on <span class="arithmatex">\(\theta\)</span>, setting the stage for further analysis. This idealized model assumes no air resistance, a simplification to be revisited when considering real-world applications.</p>
-<h2 id="references">References</h2>
-<ul>
-<li>Goldstein, H., Poole, C., &amp; Safko, J. (2002). <em>Classical Mechanics</em>. 3rd ed. Addison-Wesley.</li>
-<li>Taylor, J. R. (2005). <em>Classical Mechanics</em>. University Science Books.</li>
-</ul>
 <h1 id="analysis-of-the-range-in-projectile-motion">Analysis of the Range in Projectile Motion</h1>
 <h2 id="introduction_1">Introduction</h2>
 <p>The horizontal range of a projectile—the distance traveled along the ground before landing—is a key metric in understanding how launch parameters influence its trajectory. This section derives the range formula for a projectile launched from ground level, explores its dependence on the angle of projection, and examines the effects of varying initial velocity and gravitational acceleration. We aim to predict range behavior across a spectrum of angles and hypothesize the optimal angle for maximum range.</p>
@@ -396,11 +389,87 @@ R = \frac{v_0^2 \sin 2\theta}{g}
 <hr/>
 <h2 id="discussion_1">Discussion</h2>
 <p>The range formula <span class="arithmatex">\(R = \frac{v_0^2 \sin 2\theta}{g}\)</span> encapsulates the projectile’s dependence on <span class="arithmatex">\(\theta\)</span>, with a clear maximum at <span class="arithmatex">\(45^\circ\)</span> for ground-level launch and landing. Variations in <span class="arithmatex">\(v_0\)</span> and <span class="arithmatex">\(g\)</span> scale the range but preserve this optimum, highlighting the robustness of the result. Future analysis could explore non-zero launch heights, where symmetry breaks and the optimal angle shifts.</p>
-<h2 id="references_1">References</h2>
+<h1 id="practical-applications-of-projectile-motion">Practical Applications of Projectile Motion</h1>
+<h2 id="introduction_2">Introduction</h2>
+<p>Projectile motion extends beyond theoretical models to describe a variety of real-world phenomena, from sports to military applications and space exploration. This section identifies practical examples, considers modifications to the idealized model for complex scenarios like uneven terrain and air resistance, and proposes analytical adaptations. The goal is to bridge the gap between the simplified equations and their application in diverse physical contexts.</p>
+<hr/>
+<h2 id="real-world-examples">Real-World Examples</h2>
+<p>Projectile motion governs numerous scenarios:
+- <strong>Basketball Shot</strong>: A player launches the ball with initial velocity <span class="arithmatex">\(v_0\)</span> at angle <span class="arithmatex">\(\theta\)</span> toward a hoop. The arc must clear defenders and reach the target height, typically 3.05 m above the ground.
+- <strong>Cannonball</strong>: Historical artillery relies on maximizing range <span class="arithmatex">\(R = \frac{v_0^2 \sin 2\theta}{g}\)</span> by adjusting <span class="arithmatex">\(\theta\)</span>, often near 45°, to strike distant targets.
+- <strong>Spacecraft Launch</strong>: Initial ascent approximates projectile motion under gravity, though thrust and atmospheric effects dominate later phases.
+- Additional examples include golf balls, javelin throws, and water jets from a hose, each with unique initial conditions and environmental factors.</p>
+<p>These cases highlight the versatility of the model <span class="arithmatex">\(x(t) = v_0 \cos\theta \cdot t\)</span>, <span class="arithmatex">\(y(t) = v_0 \sin\theta \cdot t - \frac{1}{2} g t^2\)</span>, but real conditions necessitate adjustments.</p>
+<hr/>
+<h2 id="adjustments-for-uneven-terrain">Adjustments for Uneven Terrain</h2>
+<p>In the idealized model, launch and landing occur at <span class="arithmatex">\(y = 0\)</span>. Uneven terrain introduces a height difference <span class="arithmatex">\(h\)</span> between launch (<span class="arithmatex">\(y_0 = 0\)</span>) and landing (<span class="arithmatex">\(y = h\)</span>). The vertical position becomes:</p>
+<div class="arithmatex">\[
+y(t) = v_0 \sin\theta \cdot t - \frac{1}{2} g t^2
+\]</div>
+<p>Landing occurs when <span class="arithmatex">\(y(t) = h\)</span>:</p>
+<div class="arithmatex">\[
+h = v_0 \sin\theta \cdot t - \frac{1}{2} g t^2
+\]</div>
+<p>Rearrange into a quadratic equation in <span class="arithmatex">\(t\)</span>:</p>
+<div class="arithmatex">\[
+\frac{1}{2} g t^2 - v_0 \sin\theta \cdot t + h = 0
+\]</div>
+<p>Solve using the quadratic formula <span class="arithmatex">\(t = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\)</span>, where <span class="arithmatex">\(a = \frac{1}{2} g\)</span>, <span class="arithmatex">\(b = -v_0 \sin\theta\)</span>, <span class="arithmatex">\(c = h\)</span>:</p>
+<div class="arithmatex">\[
+t = \frac{v_0 \sin\theta \pm \sqrt{(v_0 \sin\theta)^2 - 2gh}}{g}
+\]</div>
+<p>The positive root (assuming upward motion) gives the time of flight <span class="arithmatex">\(T\)</span>. The range is then:</p>
+<div class="arithmatex">\[
+R = v_0 \cos\theta \cdot T = v_0 \cos\theta \cdot \frac{v_0 \sin\theta + \sqrt{(v_0 \sin\theta)^2 - 2gh}}{g}
+\]</div>
+<h3 id="implications">Implications</h3>
 <ul>
-<li>Goldstein, H., Poole, C., &amp; Safko, J. (2002). <em>Classical Mechanics</em>. 3rd ed. Addison-Wesley.</li>
-<li>Taylor, J. R. (2005). <em>Classical Mechanics</em>. University Science Books.</li>
+<li>For <span class="arithmatex">\(h &gt; 0\)</span> (landing above launch), <span class="arithmatex">\(T\)</span> increases, potentially extending <span class="arithmatex">\(R\)</span> beyond the flat-ground case.</li>
+<li>For <span class="arithmatex">\(h &lt; 0\)</span> (landing below), <span class="arithmatex">\(R\)</span> increases further due to prolonged flight time.</li>
+<li>The optimal angle shifts from 45°, requiring numerical or analytical optimization.</li>
 </ul>
+<hr/>
+<h2 id="introducing-air-resistance">Introducing Air Resistance</h2>
+<p>Air resistance introduces a drag force, typically modeled as <span class="arithmatex">\(F_d = -k v\)</span> (linear) or <span class="arithmatex">\(F_d = -k v^2\)</span> (quadratic), where <span class="arithmatex">\(k\)</span> is a drag coefficient and <span class="arithmatex">\(v\)</span> is velocity. For simplicity, consider the quadratic form, proportional to speed squared:</p>
+<div class="arithmatex">\[
+\vec{F_d} = -k |\vec{v}| \vec{v}
+\]</div>
+<p>With components <span class="arithmatex">\(v_x = \frac{dx}{dt}\)</span>, <span class="arithmatex">\(v_y = \frac{dy}{dt}\)</span>, and <span class="arithmatex">\(|\vec{v}| = \sqrt{v_x^2 + v_y^2}\)</span>, the equations of motion become:</p>
+<div class="arithmatex">\[
+m \frac{d^2 x}{dt^2} = -k v_x \sqrt{v_x^2 + v_y^2}, \quad m \frac{d^2 y}{dt^2} = -mg - k v_y \sqrt{v_x^2 + v_y^2}
+\]</div>
+<p>Dividing by <span class="arithmatex">\(m\)</span>:</p>
+<div class="arithmatex">\[
+\frac{d^2 x}{dt^2} = -\frac{k}{m} v_x \sqrt{v_x^2 + v_y^2}, \quad \frac{d^2 y}{dt^2} = -g - \frac{k}{m} v_y \sqrt{v_x^2 + v_y^2}
+\]</div>
+<h3 id="qualitative-effects">Qualitative Effects</h3>
+<ul>
+<li><strong>Range Reduction</strong>: Drag opposes motion, reducing <span class="arithmatex">\(v_x\)</span> and <span class="arithmatex">\(v_y\)</span>, shortening <span class="arithmatex">\(T\)</span> and <span class="arithmatex">\(R\)</span> compared to <span class="arithmatex">\(R = \frac{v_0^2 \sin 2\theta}{g}\)</span>.</li>
+<li><strong>Trajectory Asymmetry</strong>: The peak height decreases, and the descent steepens, unlike the symmetric parabola of the ideal case.</li>
+<li><strong>Angle Adjustment</strong>: The optimal <span class="arithmatex">\(\theta\)</span> for maximum range decreases below 45°, as vertical motion is more penalized by drag.</li>
+</ul>
+<p>These differential equations lack a simple analytical solution, suggesting numerical methods (e.g., Euler or Runge-Kutta) for simulation.</p>
+<hr/>
+<h2 id="adaptation-strategies">Adaptation Strategies</h2>
+<p>To apply the model to real-world scenarios:
+- <strong>Basketball Shot</strong>:
+  - Adjust for hoop height: Set <span class="arithmatex">\(y(t) = h_{\text{hoop}}\)</span> and solve for <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(x\)</span>.
+  - Include light drag (<span class="arithmatex">\(k\)</span> small) and optimize <span class="arithmatex">\(\theta\)</span> for accuracy, not just range.
+- <strong>Cannonball</strong>:
+  - Account for uneven terrain using the modified <span class="arithmatex">\(R\)</span> equation.
+  - Incorporate drag via numerical integration, adjusting <span class="arithmatex">\(v_0\)</span> and <span class="arithmatex">\(\theta\)</span> for target distance.
+- <strong>Spacecraft Launch</strong>:
+  - Model initial phase with <span class="arithmatex">\(g\)</span> decreasing with altitude (<span class="arithmatex">\(g = \frac{GM}{(R+h)^2}\)</span>).
+  - Add thrust as an external force, modifying <span class="arithmatex">\(\frac{d^2 y}{dt^2} = -g + \frac{F_{\text{thrust}}}{m}\)</span>.</p>
+<h3 id="general-ideas">General Ideas</h3>
+<ul>
+<li><strong>Initial Conditions</strong>: Vary <span class="arithmatex">\(v_0\)</span>, <span class="arithmatex">\(\theta\)</span>, or <span class="arithmatex">\(h\)</span> to match specific contexts (e.g., higher <span class="arithmatex">\(v_0\)</span> for cannonballs).</li>
+<li><strong>External Forces</strong>: Add terms to the equations (e.g., <span class="arithmatex">\(-k v^2\)</span> for drag, wind forces <span class="arithmatex">\(F_w\)</span>).</li>
+<li><strong>Numerical Tools</strong>: Use Python to simulate complex cases, plotting adjusted trajectories and ranges.</li>
+</ul>
+<hr/>
+<h2 id="discussion_2">Discussion</h2>
+<p>Real-world projectile motion deviates from the ideal <span class="arithmatex">\(R = \frac{v_0^2 \sin 2\theta}{g}\)</span> due to terrain, air resistance, and additional forces. Adapting the model requires modifying equations or adopting numerical methods, preserving the core physics while addressing practical constraints. These adjustments enhance applicability across engineering, sports, and astrophysics.</p>
 <h2 id="codes-and-plots">Codes and Plots</h2>
 <p><img alt="alt text" src="../image-1.png"/></p>
 <pre><code class="language-python">import numpy as np
@@ -427,6 +496,84 @@ plt.grid(True)
 plt.savefig('range_vs_angle_v0.png')  # Save for Markdown embedding
 plt.show()
 </code></pre>
+<p><img alt="alt text" src="../image-3.png"/></p>
+<p>```python
+import numpy as np
+import matplotlib.pyplot as plt</p>
+<p>def projectile_range(v0, theta_deg, g=9.81):
+    """Calculates the range of a projectile."""
+    theta_rad = np.radians(theta_deg)
+    return (v0**2 * np.sin(2 * theta_rad)) / g</p>
+<p>def projectile_trajectory(v0, theta_deg, g=9.81, time_steps=100):
+    """Calculates the trajectory of a projectile."""
+    theta_rad = np.radians(theta_deg)
+    t_flight = (2 * v0 * np.sin(theta_rad)) / g
+    t = np.linspace(0, t_flight, time_steps)
+    x = v0 * np.cos(theta_rad) * t
+    y = v0 * np.sin(theta_rad) * t - 0.5 * g * t**2
+    return x, y</p>
+<p>def plot_range_vs_angle(v0, g=9.81):
+    """Plots the range vs. launch angle."""
+    angles = np.linspace(0, 90, 100)
+    ranges = [projectile_range(v0, angle, g) for angle in angles]
+    plt.plot(angles, ranges)
+    plt.xlabel('Launch Angle (degrees)')
+    plt.ylabel('Range (meters)')
+    plt.title(f'Range vs. Launch Angle (v0={v0} m/s, g={g} m/s^2)')
+    plt.grid(True)
+    plt.show()</p>
+<p>def plot_trajectories(v0_list, theta_deg, g=9.81):
+    """Plots trajectories for different initial velocities."""
+    plt.figure()
+    for v0 in v0_list:
+        x, y = projectile_trajectory(v0, theta_deg, g)
+        plt.plot(x, y, label=f'v0={v0} m/s')
+    plt.xlabel('Horizontal Distance (meters)')
+    plt.ylabel('Vertical Distance (meters)')
+    plt.title(f'Trajectories at {theta_deg} degrees')
+    plt.grid(True)
+    plt.legend()
+    plt.show()</p>
+<h1 id="example-usage">Example usage</h1>
+<p>plot_range_vs_angle(20)
+plot_trajectories([10, 20, 30], 45)
+def projectile_range(v0, theta_deg, g=9.81):
+    """Calculates the range of a projectile."""
+    theta_rad = np.radians(theta_deg)
+    return (v0**2 * np.sin(2 * theta_rad)) / g</p>
+<p>def projectile_trajectory(v0, theta_deg, g=9.81, time_steps=100):
+    """Calculates the trajectory of a projectile."""
+    theta_rad = np.radians(theta_deg)
+    t_flight = (2 * v0 * np.sin(theta_rad)) / g
+    t = np.linspace(0, t_flight, time_steps)
+    x = v0 * np.cos(theta_rad) * t
+    y = v0 * np.sin(theta_rad) * t - 0.5 * g * t**2
+    return x, y</p>
+<p>def plot_range_vs_angle(v0, g=9.81):
+    """Plots the range vs. launch angle."""
+    angles = np.linspace(0, 90, 100)
+    ranges = [projectile_range(v0, angle, g) for angle in angles]
+    plt.plot(angles, ranges)
+    plt.xlabel('Launch Angle (degrees)')
+    plt.ylabel('Range (meters)')
+    plt.title(f'Range vs. Launch Angle (v0={v0} m/s, g={g} m/s^2)')
+    plt.grid(True)
+    plt.show()</p>
+<p>def plot_trajectories(v0_list, theta_deg, g=9.81):
+    """Plots trajectories for different initial velocities."""
+    plt.figure()
+    for v0 in v0_list:
+        x, y = projectile_trajectory(v0, theta_deg, g)
+        plt.plot(x, y, label=f'v0={v0} m/s')
+    plt.xlabel('Horizontal Distance (meters)')
+    plt.ylabel('Vertical Distance (meters)')
+    plt.title(f'Trajectories at {theta_deg} degrees')
+    plt.grid(True)
+    plt.legend()
+    plt.show()</p>
+<h1 id="example-usage_1">Example usage</h1>
+<p>plot_range_vs_angle(20)
+plot_trajectories([10, 20, 30], 45</p>
 <h2 id="colab">Colab</h2>
 <p><a href="https://colab.research.google.com/drive/1DPhWK40LB2ZhQ4Tf30tDa6CkUmWPynDH">Colab 1</a></p>
 </div>
