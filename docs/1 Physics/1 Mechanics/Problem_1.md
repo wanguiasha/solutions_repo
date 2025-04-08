@@ -465,6 +465,89 @@ plt.savefig('height_vs_angle.png')  # Save for Markdown embedding
 plt.show()
 ```
 
+![alt text](image-6.png)
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Constants
+g = 9.81  # gravitational acceleration (m/s^2)
+theta_deg = 45  # angle in degrees
+theta_rad = np.deg2rad(theta_deg)  # convert to radians
+v0_values = [30, 40, 50]  # initial velocities (m/s)
+colors = ['red', 'purple', 'green']  # colors for each trajectory
+
+# Plot trajectories
+plt.figure(figsize=(10, 6))
+for v0, color in zip(v0_values, colors):
+    # Time of flight
+    T = (2 * v0 * np.sin(theta_rad)) / g
+    t = np.linspace(0, T, 100)
+    # Position equations
+    x = v0 * np.cos(theta_rad) * t
+    y = v0 * np.sin(theta_rad) * t - 0.5 * g * t**2
+    plt.plot(x, y, color=color, label=f'$v_0 = {v0} \, \text{{m/s}}$')
+    
+    # Calculate and annotate range
+    R = (v0**2 * np.sin(2 * theta_rad)) / g
+    plt.annotate(f'$R = {R:.1f} \, \text{{m}}$', xy=(R, 0), xytext=(R-20, -10),
+                 textcoords='data', fontsize=10, color=color)
+
+# Plot settings
+plt.xlabel('$x$ (m)')
+plt.ylabel('$y$ (m)')
+plt.title(f'Projectile Trajectories at $\\theta = {theta_deg}^\\circ$ for Different Initial Velocities')
+plt.legend()
+plt.grid(True)
+plt.axis('equal')  # Equal aspect ratio for realistic arcs
+plt.xlim(0, 300)
+plt.ylim(-10, 80)  # Adjust y-axis to fit annotations
+plt.savefig('trajectories_fixed_angle.png')
+plt.show()
+```
+
+![](image-7.png)
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Constants
+g = 9.81  # gravitational acceleration (m/s^2)
+v0 = 50  # initial velocity (m/s)
+angles_deg = [15, 45, 75]  # angles in degrees
+angles_rad = np.deg2rad(angles_deg)  # convert to radians
+colors = ['red', 'purple', 'green']  # colors for each trajectory
+
+# Plot trajectories
+plt.figure(figsize=(10, 6))
+for theta, color, angle_deg in zip(angles_rad, colors, angles_deg):
+    # Time of flight
+    T = (2 * v0 * np.sin(theta)) / g
+    t = np.linspace(0, T, 100)
+    # Position equations
+    x = v0 * np.cos(theta) * t
+    y = v0 * np.sin(theta) * t - 0.5 * g * t**2
+    plt.plot(x, y, color=color, label=f'$\\theta = {angle_deg}^\\circ$')
+    
+    # Calculate and annotate range
+    R = (v0**2 * np.sin(2 * theta)) / g
+    plt.annotate(f'$R = {R:.0f} \, \text{{m}}$', xy=(R, 0), xytext=(R-20, -10),
+                 textcoords='data', fontsize=10, color=color)
+
+# Plot settings
+plt.xlabel('$x$ (m)')
+plt.ylabel('$y$ (m)')
+plt.title(f'Projectile Trajectories at $v_0 = {v0} \, \text{{m/s}}$ for Different Angles')
+plt.legend()
+plt.grid(True)
+plt.axis('equal')  # Equal aspect ratio for realistic arcs
+plt.xlim(0, 300)
+plt.ylim(-10, 150)  # Adjust y-axis to fit annotations and taller trajectory
+plt.savefig('trajectories_fixed_v0.png')
+plt.show()
+```
+
 # Conclusion
 
 This exploration of projectile motion illuminates the profound connection between fundamental physics and its manifestation in both idealized and real-world systems. The derivation of the trajectory equations, $x(t) = v_0 \cos\theta \cdot t$ and $y(t) = v_0 \sin\theta \cdot t - \frac{1}{2} g t^2$, from Newton’s laws provided a robust theoretical scaffold, culminating in the range expression $R = \frac{v_0^2 \sin 2\theta}{g}$. Analysis confirmed that $\theta = 45^\circ$ maximizes $R$ on level ground, a result borne out by the trigonometric peak of $\sin 2\theta$ and validated through computational plots, which also revealed the quadratic scaling with $v_0$ and inverse dependence on $g$. These findings encapsulate the elegance of projectile motion as a balance of horizontal persistence and vertical dynamics.
