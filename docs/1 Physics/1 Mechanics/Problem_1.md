@@ -316,3 +316,8 @@ plt.grid(True)
 plt.savefig('range_vs_angle_v0.png')  # Save for Markdown embedding
 plt.show()
 ```
+
+## Colab 
+
+[Colab 1](https://colab.research.google.com/drive/1DPhWK40LB2ZhQ4Tf30tDa6CkUmWPynDH)
+   
