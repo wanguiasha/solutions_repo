@@ -70,8 +70,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#discussion">Discussion</a>
-</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../Problem_2/">Problem 2</a>
@@ -309,8 +307,6 @@ y(t) = h + v_0 \sin\theta \cdot t - \frac{1}{2} g t^2
 <li>Non-zero <span class="arithmatex">\(h\)</span> extends flight time and alters the range, requiring a modified time-of-flight calculation.</li>
 </ul>
 <hr/>
-<h2 id="discussion">Discussion</h2>
-<p>These equations form a family of solutions parameterized by <span class="arithmatex">\(v_0\)</span>, <span class="arithmatex">\(\theta\)</span>, <span class="arithmatex">\(g\)</span>, and <span class="arithmatex">\(h\)</span>. The horizontal range, defined as <span class="arithmatex">\(x(t)\)</span> when <span class="arithmatex">\(y(t) = 0\)</span>, depends critically on <span class="arithmatex">\(\theta\)</span>, setting the stage for further analysis. This idealized model assumes no air resistance, a simplification to be revisited when considering real-world applications.</p>
 <h1 id="analysis-of-the-range-in-projectile-motion">Analysis of the Range in Projectile Motion</h1>
 <h2 id="introduction_1">Introduction</h2>
 <p>The horizontal range of a projectile—the distance traveled along the ground before landing—is a key metric in understanding how launch parameters influence its trajectory. This section derives the range formula for a projectile launched from ground level, explores its dependence on the angle of projection, and examines the effects of varying initial velocity and gravitational acceleration. We aim to predict range behavior across a spectrum of angles and hypothesize the optimal angle for maximum range.</p>
@@ -387,8 +383,6 @@ R = \frac{v_0^2 \sin 2\theta}{g}
 \]</div>
 <p>The second derivative, <span class="arithmatex">\(\frac{d^2 R}{d\theta^2} = \frac{v_0^2}{g} \cdot (-4 \sin 2\theta)\)</span>, is negative at <span class="arithmatex">\(\theta = 45^\circ\)</span> (<span class="arithmatex">\(\sin 90^\circ = 1\)</span>), confirming a maximum. This supports the hypothesis that <span class="arithmatex">\(45^\circ\)</span> optimizes range due to the interplay of horizontal and vertical motion components.</p>
 <hr/>
-<h2 id="discussion_1">Discussion</h2>
-<p>The range formula <span class="arithmatex">\(R = \frac{v_0^2 \sin 2\theta}{g}\)</span> encapsulates the projectile’s dependence on <span class="arithmatex">\(\theta\)</span>, with a clear maximum at <span class="arithmatex">\(45^\circ\)</span> for ground-level launch and landing. Variations in <span class="arithmatex">\(v_0\)</span> and <span class="arithmatex">\(g\)</span> scale the range but preserve this optimum, highlighting the robustness of the result. Future analysis could explore non-zero launch heights, where symmetry breaks and the optimal angle shifts.</p>
 <h1 id="practical-applications-of-projectile-motion">Practical Applications of Projectile Motion</h1>
 <h2 id="introduction_2">Introduction</h2>
 <p>Projectile motion extends beyond theoretical models to describe a variety of real-world phenomena, from sports to military applications and space exploration. This section identifies practical examples, considers modifications to the idealized model for complex scenarios like uneven terrain and air resistance, and proposes analytical adaptations. The goal is to bridge the gap between the simplified equations and their application in diverse physical contexts.</p>
@@ -468,7 +462,7 @@ m \frac{d^2 x}{dt^2} = -k v_x \sqrt{v_x^2 + v_y^2}, \quad m \frac{d^2 y}{dt^2} =
 <li><strong>Numerical Tools</strong>: Use Python to simulate complex cases, plotting adjusted trajectories and ranges.</li>
 </ul>
 <hr/>
-<h2 id="discussion_2">Discussion</h2>
+<h2 id="discussion">Discussion</h2>
 <p>Real-world projectile motion deviates from the ideal <span class="arithmatex">\(R = \frac{v_0^2 \sin 2\theta}{g}\)</span> due to terrain, air resistance, and additional forces. Adapting the model requires modifying equations or adopting numerical methods, preserving the core physics while addressing practical constraints. These adjustments enhance applicability across engineering, sports, and astrophysics.</p>
 <h2 id="codes-and-plots">Codes and Plots</h2>
 <p><img alt="alt text" src="../image-1.png"/></p>
@@ -546,6 +540,10 @@ plt.grid(True)
 plt.savefig('height_vs_angle.png')  # Save for Markdown embedding
 plt.show()
 </code></pre>
+<h1 id="conclusion">Conclusion</h1>
+<p>This exploration of projectile motion illuminates the profound connection between fundamental physics and its manifestation in both idealized and real-world systems. The derivation of the trajectory equations, <span class="arithmatex">\(x(t) = v_0 \cos\theta \cdot t\)</span> and <span class="arithmatex">\(y(t) = v_0 \sin\theta \cdot t - \frac{1}{2} g t^2\)</span>, from Newton’s laws provided a robust theoretical scaffold, culminating in the range expression <span class="arithmatex">\(R = \frac{v_0^2 \sin 2\theta}{g}\)</span>. Analysis confirmed that <span class="arithmatex">\(\theta = 45^\circ\)</span> maximizes <span class="arithmatex">\(R\)</span> on level ground, a result borne out by the trigonometric peak of <span class="arithmatex">\(\sin 2\theta\)</span> and validated through computational plots, which also revealed the quadratic scaling with <span class="arithmatex">\(v_0\)</span> and inverse dependence on <span class="arithmatex">\(g\)</span>. These findings encapsulate the elegance of projectile motion as a balance of horizontal persistence and vertical dynamics.</p>
+<p>Translating this model to practical contexts—such as a cannonball’s flight or a spacecraft’s ascent—exposed its adaptability and limitations. Adjusting for uneven terrain, where <span class="arithmatex">\(y(t) = h\)</span> at landing yields a modified time of flight <span class="arithmatex">\(t = \frac{v_0 \sin\theta + \sqrt{(v_0 \sin\theta)^2 - 2gh}}{g}\)</span>, alters the range and optimal angle, challenging the simplicity of the 45° rule. Air resistance, modeled as <span class="arithmatex">\(F_d = -k v^2\)</span>, further complicates the picture, dampening <span class="arithmatex">\(R\)</span> and skewing trajectories, necessitating numerical approaches over analytical solutions. Simulations enriched this narrative, offering visual clarity on how parameters like <span class="arithmatex">\(v_0\)</span> and <span class="arithmatex">\(g\)</span> reshape the motion, from extended ranges to truncated heights.</p>
+<p>Ultimately, this investigation underscores projectile motion as a versatile framework, bridging abstract mathematics with tangible phenomena. It reveals a tension between the purity of theory and the messiness of reality, prompting a deeper appreciation for the iterative refinement of models. Future inquiries might leverage experimental validation or sophisticated drag models to enhance precision, ensuring that this classical system remains a vital lens for understanding motion across scientific and engineering domains.</p>
 <h2 id="colab">Colab</h2>
 <p><a href="https://colab.research.google.com/drive/1DPhWK40LB2ZhQ4Tf30tDa6CkUmWPynDH">Colab 1</a></p>
 </div>
