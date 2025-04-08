@@ -377,8 +377,6 @@ To apply the model to real-world scenarios:
 
 ---
 
-## Discussion
-Real-world projectile motion deviates from the ideal $R = \frac{v_0^2 \sin 2\theta}{g}$ due to terrain, air resistance, and additional forces. Adapting the model requires modifying equations or adopting numerical methods, preserving the core physics while addressing practical constraints. These adjustments enhance applicability across engineering, sports, and astrophysics.
 
 
 
