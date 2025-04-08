@@ -79,4 +79,5 @@ def plot_range_vs_angle(v0, g=9.81):
 
 # Example usage
 plot_range_vs_angle(20)
-![projectile_range_plot](https://github.com/user-attachments/assets/31a1c74d-f54d-4013-8252-ff11da3ebd5e)
+![alt text](projectile_range_plot.png)
+
