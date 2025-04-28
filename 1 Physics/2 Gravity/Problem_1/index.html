@@ -265,12 +265,12 @@ M = \frac{4 \pi^2 a^3}{G T^2}
 M_\odot = \frac{4 \pi^2 (1.496 \times 10^{11})^3}{G (3.156 \times 10^7)^2}
 \]</div>
 <p>With <span class="arithmatex">\(G \approx 6.67430 \times 10^{-11} \, \text{m}^3 \text{kg}^{-1} \text{s}^{-2}\)</span>, this yields <span class="arithmatex">\(M_\odot \approx 1.989 \times 10^{30} \, \text{kg}\)</span>, consistent with observed values. This method is widely applied to determine the masses of planets (using their moons’ orbits) or stars (using orbiting exoplanets or companions).</p>
-<h3 id="example-mass-of-jupiter">Example: Mass of Jupiter</h3>
-<p>For Jupiter, the moon Io has an orbital period of <span class="arithmatex">\(T \approx 1.769 \, \text{days} \approx 1.528 \times 10^5 \, \text{s}\)</span> and an orbital radius of <span class="arithmatex">\(r \approx 4.217 \times 10^8 \, \text{m}\)</span>. Applying Kepler’s Third Law:</p>
+<h3 id="example-mass-of-earth">Example: Mass of Earth</h3>
+<p>For Earth, the Moon has an orbital period of <span class="arithmatex">\(T \approx 27.322 \, \text{days} \approx 2.359 \times 10^6 \, \text{s}\)</span> and an orbital radius of <span class="arithmatex">\(r \approx 3.844 \times 10^8 \, \text{m}\)</span>. Applying Kepler’s Third Law:</p>
 <div class="arithmatex">\[
-M_{\text{Jupiter}} = \frac{4 \pi^2 (4.217 \times 10^8)^3}{G (1.528 \times 10^5)^2}
+M_{\text{Earth}} = \frac{4 \pi^2 (3.844 \times 10^8)^3}{G (2.359 \times 10^6)^2}
 \]</div>
-<p>This yields <span class="arithmatex">\(M_{\text{Jupiter}} \approx 1.898 \times 10^{27} \, \text{kg}\)</span>, demonstrating the precision of the method when accurate orbital parameters are available.</p>
+<p>This yields <span class="arithmatex">\(M_{\text{Earth}} \approx 5.972 \times 10^{24} \, \text{kg}\)</span>, consistent with Earth’s known mass. This method demonstrates the precision of Kepler’s Third Law in determining planetary masses when accurate orbital parameters are available.</p>
 <h2 id="determining-distances-between-celestial-bodies">Determining Distances Between Celestial Bodies</h2>
 <p>Kepler’s Third Law also enables the determination of orbital distances, such as the semi-major axis <span class="arithmatex">\(a\)</span>, when the orbital period <span class="arithmatex">\(T\)</span> and the mass <span class="arithmatex">\(M\)</span> of the central body are known. Rearranging the law for <span class="arithmatex">\(a\)</span>:</p>
 <div class="arithmatex">\[
@@ -601,70 +601,177 @@ plt.show()
 print(f"\nFitted constant k = T^2 / r^3: {k_fit:.2e} s^2 m^-3")
 print(f"Log-log slope (expected ~1): {k_fit_log:.3f}")
 </code></pre>
-<p><img alt="alt text" src="../planetary_orbit_kepler.gif"/></p>
+<p><img alt="alt text" src="../image-5.png"/>
+<img alt="alt text" src="../planetary_orbit_kepler.gif"/></p>
 <pre><code class="language-python">import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 
-# Constants for the simulation
-a = 1.0  # Semi-major axis (AU, Astronomical Units)
-e = 0.3  # Orbital eccentricity
-T = 365.25  # Orbital period in days (1 Earth year)
+# Constants
+G = 6.67430e-11  # Gravitational constant (m^3 kg^-1 s^-2)
+M_sun = 1.989e30  # Mass of the Sun (kg)
+AU_to_m = 1.49598e11  # Meters per AU
+day_to_s = 86400  # Seconds per day
 
-# Set up the figure and axis
-fig, ax = plt.subplots()
-ax.set_xlim(-2, 2)
-ax.set_ylim(-2, 2)
-ax.set_aspect('equal')  # Make it a circle
+# Earth’s orbital parameters
+r_earth = 1.0 * AU_to_m  # Semi-major axis (m)
+T_earth = 365.256 * day_to_s  # Orbital period (s)
 
-# Plot the Sun at the center
-ax.plot(0, 0, 'yo', markersize=12)  # Yellow Sun
+# Compute orbital velocity v = 2πr / T
+v_earth = 2 * np.pi * r_earth / T_earth
 
-# Planet marker
-planet, = ax.plot([], [], 'bo', markersize=8)  # Blue planet
+# Simulate circular orbit
+t = np.linspace(0, T_earth, 1000)  # Time array over one period
+theta = 2 * np.pi * t / T_earth  # Angular position
+x = r_earth * np.cos(theta)  # x-coordinate
+y = r_earth * np.sin(theta)  # y-coordinate
 
-# Kepler's 2nd Law: True anomaly calculation
-def true_anomaly(M):
-    # Mean anomaly M = (2*pi / T) * t where t is the time
-    # Eccentric anomaly E is calculated using Kepler's equation
-    E = M  # Initial guess (E is the mean anomaly in a circular orbit)
-    for _ in range(10):  # Newton-Raphson method for Eccentric Anomaly
-        E -= (E - e * np.sin(E) - M) / (1 - e * np.cos(E))
-    return 2 * np.arctan2(np.sqrt(1 + e) * np.sin(E / 2), np.sqrt(1 - e) * np.cos(E / 2))
+# Plot the orbit
+plt.figure(figsize=(6, 6))
+plt.plot(x, y, 'b-', label='Earth’s Orbit')
+plt.plot(0, 0, 'ro', label='Sun')
+plt.xlabel('x (m)')
+plt.ylabel('y (m)')
+plt.title('Simulated Circular Orbit of Earth')
+plt.axis('equal')
+plt.legend()
+plt.grid(True)
+plt.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+plt.show()
 
-# Update function to simulate the orbit
-def update(frame):
-    # Time as fraction of orbit period
-    t = frame / 100.0 * T  # Time in days
+# Verify Kepler’s Third Law for Earth
+T2 = T_earth**2
+r3 = r_earth**3
+k = T2 / r3
+M_computed = (4 * np.pi**2 * r3) / (G * T2)
 
-    # Mean anomaly (M) as fraction of the orbit's period
-    M = 2 * np.pi * (t / T)
+print(f"Earth’s T^2: {T2:.2e} s^2")
+print(f"Earth’s r^3: {r3:.2e} m^3")
+print(f"Constant k = T^2 / r^3: {k:.2e} s^2 m^-3")
+print(f"Computed Sun’s mass: {M_computed:.2e} kg")
+</code></pre>
+<p><img alt="alt text" src="../image-4.png"/></p>
+<pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
 
-    # Get true anomaly (angle in the orbit) from mean anomaly using Kepler's laws
-    theta = true_anomaly(M)
+# Constants
+G = 6.67430e-11  # Gravitational constant (m^3 kg^-1 s^-2)
+M_sun_ref = 1.989e30  # Reference Sun mass (kg)
+M_earth_ref = 5.972e24  # Reference Earth mass (kg)
+AU_to_m = 1.49598e11  # Meters per AU
+day_to_s = 86400  # Seconds per day
+km_to_m = 1000  # Meters per km
 
-    # Calculate the distance to the Sun using the equation of an ellipse
-    r = a * (1 - e**2) / (1 + e * np.cos(theta))  # Elliptical orbit equation
+# Orbital data (real-world periods and radii)
+orbits = [
+    {'name': 'Mercury (Sun)', 'r_AU': 0.3871, 'T_days': 87.969, 'M_ref': M_sun_ref, 'color': 'gray'},
+    {'name': 'Venus (Sun)', 'r_AU': 0.7233, 'T_days': 224.701, 'M_ref': M_sun_ref, 'color': 'orange'},
+    {'name': 'Earth (Sun)', 'r_AU': 1.000, 'T_days': 365.256, 'M_ref': M_sun_ref, 'color': 'blue'},
+    {'name': 'Mars (Sun)', 'r_AU': 1.5273, 'T_days': 686.980, 'M_ref': M_sun_ref, 'color': 'red'},
+    {'name': 'Moon (Earth)', 'r_km': 384400, 'T_days': 27.322, 'M_ref': M_earth_ref, 'color': 'black'}
+]
 
-    # Calculate the x, y position of the planet
-    x = r * np.cos(theta)
-    y = r * np.sin(theta)
+# Compute masses and verify Kepler’s Third Law
+print("Kepler’s Third Law and Mass Calculations")
+print("Body            | r (m) | T (days) | T^2 (s^2) | r^3 (m^3) | k (s^2 m^-3) | Mass (kg)")
+print("-" * 80)
 
-    # Update planet position, ensuring x and y are in lists
-    planet.set_data([x], [y])  # Changed this line to enclose x and y in lists
-    return planet,
+masses = []
+labels = []
+colors = []
 
-# Create the animation
-frames = np.linspace(0, 100, 1000)  # Time steps
-ani = animation.FuncAnimation(fig, update, frames=frames, blit=True)
+for orbit in orbits:
+    if 'r_AU' in orbit:
+        r = orbit['r_AU'] * AU_to_m
+    else:
+        r = orbit['r_km'] * km_to_m
+    T = orbit['T_days'] * day_to_s
+    T2 = T**2
+    r3 = r**3
+    k = T2 / r3
+    M_computed = (4 * np.pi**2 * r3) / (G * T2)
+    masses.append(M_computed)
+    labels.append(orbit['name'])
+    colors.append(orbit['color'])
+    mass_label = 'Sun' if 'Sun' in orbit['name'] else 'Earth'
+    print(f"{orbit['name']:15} | {r:.2e} | {orbit['T_days']:.3f} | {T2:.2e} | {r3:.2e} | {k:.2e} | {M_computed:.2e} ({mass_label})")
 
-# Save the animation as a GIF
-ani.save('planetary_orbit_kepler.gif', writer='imagemagick', fps=30)
+# Plot computed masses
+plt.figure(figsize=(8, 6))
+for i, (mass, label, color) in enumerate(zip(masses, labels, colors)):
+    plt.scatter([i], [mass], color=color, label=label, s=100)
+plt.yscale('log')
+plt.ylabel('Computed Mass (kg)')
+plt.title('Computed Masses from Orbital Data')
+plt.xticks(range(len(labels)), labels, rotation=45)
+plt.grid(True, which="both", ls="--")
+plt.legend()
+plt.tight_layout()
+plt.savefig('mass_consistency_plot.png')
+plt.show()
+</code></pre>
+<p><img alt="" src="../T_vs_r_plot.png"/></p>
+<pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
 
-# Optionally, save as MP4:
-# ani.save('planetary_orbit_kepler.mp4', writer='ffmpeg', fps=30)
+# Constants
+# Gravitational constant: G = 6.67430e-11 m^3 kg^-1 s^-2
+# 1 AU = 1.49598e11 m, 1 day = 86400 s, 1 km = 1000 m
+G = 6.67430e-11
+M_sun_ref = 1.989e30  # Reference Sun mass (kg)
+M_earth_ref = 5.972e24  # Reference Earth mass (kg)
+AU_to_m = 1.49598e11
+day_to_s = 86400
+km_to_m = 1000
 
-# Show the plot (optional)
+# Orbital data
+orbits = [
+    {'name': 'Earth (Sun)', 'r_AU': 1.000, 'T_days': 365.256, 'M': M_sun_ref, 'color': 'blue'},
+    {'name': 'Jupiter (Sun)', 'r_AU': 5.2044, 'T_days': 4332.589, 'M': M_sun_ref, 'color': 'brown'},
+    {'name': 'Moon (Earth)', 'r_km': 384400, 'T_days': 27.322, 'M': M_earth_ref, 'color': 'gray'}
+]
+
+# Compute periods, velocities, masses, and verify Kepler’s Third Law
+# T = 2 * pi * sqrt(r^3 / (G * M))
+# v = sqrt(G * M / r)
+# M = (4 * pi^2 * r^3) / (G * T^2)
+print("Kepler’s Third Law, Velocities, and Mass Calculations")
+print("Body            | r (m) | T (days) | v (m/s) | T^2 (s^2) | r^3 (m^3) | k (s^2 m^-3) | Mass (kg)")
+print("-" * 90)
+
+r_values = []
+v_values = []
+colors = []
+labels = []
+
+for orbit in orbits:
+    if 'r_AU' in orbit:
+        r = orbit['r_AU'] * AU_to_m
+    else:
+        r = orbit['r_km'] * km_to_m
+    T = orbit['T_days'] * day_to_s
+    v = np.sqrt(G * orbit['M'] / r)  # Orbital velocity
+    T2 = T**2
+    r3 = r**3
+    k = T2 / r3
+    M_computed = (4 * np.pi**2 * r3) / (G * T2)
+    r_values.append(r)
+    v_values.append(v)
+    colors.append(orbit['color'])
+    labels.append(orbit['name'])
+    mass_label = 'Sun' if 'Sun' in orbit['name'] else 'Earth'
+    print(f"{orbit['name']:15} | {r:.2e} | {orbit['T_days']:.3f} | {v:.2e} | {T2:.2e} | {r3:.2e} | {k:.2e} | {M_computed:.2e} ({mass_label})")
+
+# Plot v vs. r
+plt.figure(figsize=(8, 6))
+for r, v, color, label in zip(r_values, v_values, colors, labels):
+    plt.loglog([r / AU_to_m], [v], 'o', color=color, label=label)
+plt.xlabel('Orbital Radius (AU)')
+plt.ylabel('Orbital Velocity (m/s)')
+plt.title('Orbital Velocity vs. Radius: $v \\propto r^{-1/2}$')
+plt.grid(True, which="both", ls="--")
+plt.legend()
+plt.tight_layout()
+plt.savefig('v_vs_r_plot.png')
 plt.show()
 </code></pre>
 <h2 id="conclusion">Conclusion</h2>
