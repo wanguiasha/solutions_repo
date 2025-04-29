@@ -760,3 +760,5 @@ These velocities also highlight the engineering challenges of space travel. Achi
 
 In conclusion, the study of cosmic velocities integrates theoretical physics, computational analysis, and practical engineering to chart the course of space exploration. From low Earth orbits to the interstellar medium, $v_1$, $v_2$, and $v_3$ serve as the energetic milestones guiding spacecraft through the gravitational landscape of the solar system and beyond. By understanding and harnessing these velocities, humanity continues to push the boundaries of discovery, transforming the dreams of lunar landings, Martian colonies, and interstellar voyages into tangible realities. This interdisciplinary approach—bridging mathematics, data science, and mission design—underscores the enduring relevance of cosmic velocities in shaping the future of space exploration.
 
+## Colab
+[colab4] (https://colab.research.google.com/drive/16rBdOE_iVV2P_EYRVJAq3Uli9KqrHt1d#scrollTo=wRHwLN9uZJ1f)
