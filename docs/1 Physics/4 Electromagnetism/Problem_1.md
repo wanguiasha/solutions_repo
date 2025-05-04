@@ -545,6 +545,106 @@ ax.text2D(0.05, 0.95, f"Larmor radius: {r_L:.3f} m\nDrift velocity: {v_d:.1f} m/
 plt.tight_layout()
 plt.show()
 ```
+![alt text](helical_trajectory.gif)
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.animation import FuncAnimation
+import imageio.v2 as imageio
+
+# Particle properties
+q = 1.0  # Charge (C)
+m = 0.001  # Mass (kg)
+
+# Field configuration
+B = np.array([0, 0, 1.0])  # Uniform magnetic field (T)
+E = np.array([0, 0, 0])  # Zero electric field (V/m)
+
+# Initial conditions
+r0 = np.array([0, 0, 0])  # Initial position (m)
+v0 = np.array([1.0, 0, 0.5])  # Initial velocity with z-component (m/s)
+v_perp = np.sqrt(v0[0]**2 + v0[1]**2)  # Perpendicular velocity
+
+# Simulation parameters
+T = 0.05  # Total time (s)
+dt = 1e-5  # Time step (s)
+steps = int(T / dt)
+t = np.linspace(0, T, steps)
+
+# Arrays to store trajectory
+r = np.zeros((steps, 3))
+v = np.zeros((steps, 3))
+r[0] = r0
+v[0] = v0
+
+# RK4 integration
+def lorentz_force(r, v, E, B):
+    return (q / m) * (E + np.cross(v, B))
+
+for i in range(steps - 1):
+    k1_v = lorentz_force(r[i], v[i], E, B)
+    k1_r = v[i]
+    
+    k2_v = lorentz_force(r[i] + 0.5 * dt * k1_r, v[i] + 0.5 * dt * k1_v, E, B)
+    k2_r = v[i] + 0.5 * dt * k1_v
+    
+    k3_v = lorentz_force(r[i] + 0.5 * dt * k2_r, v[i] + 0.5 * dt * k2_v, E, B)
+    k3_r = v[i] + 0.5 * dt * k2_v
+    
+    k4_v = lorentz_force(r[i] + dt * k3_r, v[i] + dt * k3_v, E, B)
+    k4_r = v[i] + dt * k3_v
+    
+    v[i + 1] = v[i] + (dt / 6) * (k1_v + 2 * k2_v + 2 * k3_v + k4_v)
+    r[i + 1] = r[i] + (dt / 6) * (k1_r + 2 * k2_r + 2 * k3_r + k4_r)
+
+# Calculate Larmor radius and pitch
+r_L = m * v_perp / (abs(q) * np.linalg.norm(B))  # Larmor radius
+T_c = 2 * np.pi * m / (abs(q) * np.linalg.norm(B))  # Cyclotron period
+pitch = v0[2] * T_c  # Helical pitch
+
+# Set up the figure and 3D axis
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection="3d")
+ax.set_xlabel("x (m)")
+ax.set_ylabel("y (m)")
+ax.set_zlabel("z (m)")
+ax.set_title("Helical Trajectory in Uniform Magnetic Field")
+
+# Initialize plot elements
+line, = ax.plot([], [], [], label="Helical Trajectory", color="blue")
+point, = ax.plot([], [], [], "o", color="red", label="Particle")
+ax.legend()
+
+# Set axis limits based on trajectory
+ax.set_xlim(np.min(r[:, 0]) - 0.001, np.max(r[:, 0]) + 0.001)
+ax.set_ylim(np.min(r[:, 1]) - 0.001, np.max(r[:, 1]) + 0.001)
+ax.set_zlim(np.min(r[:, 2]) - 0.001, np.max(r[:, 2]) + 0.001)
+
+# Annotate Larmor radius and pitch
+ax.text2D(0.05, 0.95, f"Larmor radius: {r_L:.3f} m\nPitch: {pitch:.3f} m", transform=ax.transAxes, fontsize=12)
+
+# Animation function
+def update(frame):
+    # Update the trajectory line up to the current frame
+    line.set_data(r[:frame, 0], r[:frame, 1])
+    line.set_3d_properties(r[:frame, 2])
+    
+    # Update the particle position
+    point.set_data([r[frame, 0]], [r[frame, 1]])
+    point.set_3d_properties([r[frame, 2]])
+    
+    return line, point
+
+# Create animation
+ani = FuncAnimation(fig, update, frames=range(0, steps, 100), interval=50, blit=True)
+
+# Save animation as GIF using imageio
+ani.save("helical_trajectory.gif", writer="imageio", fps=20)
+
+# Close the plot to free memory
+plt.close()
+```
 # Conclusion
 
 The simulation of charged particle motion under the Lorentz force, defined as $ \mathbf{F} = q \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right) $, provides a powerful framework for understanding the dynamics of charged particles in electromagnetic fields. Through a systematic approach encompassing theoretical analysis, numerical implementation, and visualization, this study has illuminated the diverse behaviors of particles in various field configurations and their relevance to real-world applications.
