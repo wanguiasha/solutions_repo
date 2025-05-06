@@ -2,41 +2,33 @@
 # Research Applications of the Lorentz Force
 The Lorentz force, expressed as:
 
-$$
-\mathbf{F} = q \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right),
-$$
+$$\mathbf{F} = q \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right),$$
 
-is fundamental in electromagnetism, describing the force on a charged particle in electric ($ \mathbf{E} $) and magnetic ($ \mathbf{B} $) fields. Below are key applications:
+is fundamental in electromagnetism, describing the force on a charged particle in electric ($\mathbf{E}$) and magnetic ($\mathbf{B}$) fields. Below are key applications:
 
 ## 1. Cyclotrons: Particle Acceleration
-Cyclotrons use $ \mathbf{B} $ to steer particles into circular orbits and $ \mathbf{E} $ to accelerate them. The magnetic force provides centripetal motion:
+Cyclotrons use $\mathbf{B}$ to steer particles into circular orbits and $\mathbf{E}$ to accelerate them. The magnetic force provides centripetal motion:
 
-$$
-r = \frac{m v_\perp}{|q| B}, \quad \omega = \frac{|q| B}{m}.
-$$
+$$r = \frac{m v_\perp}{|q| B}, \quad \omega = \frac{|q| B}{m}.$$
 
-$ \mathbf{E} $ increases kinetic energy as particles spiral outward. Applications include proton therapy and radioisotope production.
+$\mathbf{E}$ increases kinetic energy as particles spiral outward. Applications include proton therapy and radioisotope production.
 
 ## 2. Mass Spectrometers: Charge-to-Mass Ratio
-Mass spectrometers analyze $ m/q $ by combining $ \mathbf{E} $ for ion acceleration and $ \mathbf{B} $ for deflection:
+Mass spectrometers analyze $m/q$ by combining $\mathbf{E}$ for ion acceleration and $\mathbf{B}$ for deflection:
 
-$$
-r = \frac{1}{B} \sqrt{\frac{2 m V}{|q|}}.
-$$
+$$r = \frac{1}{B} \sqrt{\frac{2 m V}{|q|}}.$$
 
 Distinct ion trajectories enable precise molecular identification in fields like proteomics.
 
 ## 3. Tokamaks: Plasma Confinement
-Tokamaks confine plasma for fusion using helical $ \mathbf{B} $ fields. The Lorentz force confines particles to spiral paths:
+Tokamaks confine plasma for fusion using helical $\mathbf{B}$ fields. The Lorentz force confines particles to spiral paths:
 
-$$
-r_g = \frac{m v_\perp}{|q| B}.
-$$
+$$r_g = \frac{m v_\perp}{|q| B}.$$
 
-Drifts, such as $ \mathbf{v}_{E \times B} = \frac{\mathbf{E} \times \mathbf{B}}{B^2} $, are managed to maintain stability. ITER aims to achieve net energy gain.
+Drifts, such as $\mathbf{v}_{E \times B} = \frac{\mathbf{E} \times \mathbf{B}}{B^2}$, are managed to maintain stability. ITER aims to achieve net energy gain.
 
 ## 4. Other Applications
-- **MHD Generators**: Convert thermal energy to electricity via $ \mathbf{J} = \sigma (\mathbf{E} + \mathbf{v} \times \mathbf{B}) $.
+- **MHD Generators**: Convert thermal energy to electricity via $\mathbf{J} = \sigma (\mathbf{E} + \mathbf{v} \times \mathbf{B})$.
 - **Astrophysical Plasmas**: Govern phenomena like auroras and cosmic ray motion in stellar magnetic fields.
 
 The Lorentz force underpins technologies and natural processes, highlighting its universal significance.
@@ -47,287 +39,242 @@ The Lorentz force underpins technologies and natural processes, highlighting its
 
 To explore the Lorentz force effects, simulations are implemented for three field configurations: uniform magnetic field, combined electric and magnetic fields, and crossed electric and magnetic fields. Each setup demonstrates unique trajectory characteristics governed by:
 
-$$
-\mathbf{F} = q \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right)
-$$
+$$\mathbf{F} = q \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right)$$
 
-where $ q $ is the charge, $ \mathbf{E} $ the electric field, $ \mathbf{v} $ the velocity, and $ \mathbf{B} $ the magnetic field. The equations of motion, derived from $ \mathbf{F} = m \mathbf{a} $, are solved numerically using the RK4 method with NumPy and Matplotlib.
+where $q$ is the charge, $\mathbf{E}$ the electric field, $\mathbf{v}$ the velocity, and $\mathbf{B}$ the magnetic field. The equations of motion, derived from $\mathbf{F} = m \mathbf{a}$, are solved numerically using the RK4 method with NumPy and Matplotlib.
 
 ### 1. Uniform Magnetic Field
-- **Setup**: $ \mathbf{E} = \mathbf{0} $, $ \mathbf{B} = (0, 0, B_z) $.
+- **Setup**: $\mathbf{E} = \mathbf{0}$, $\mathbf{B} = (0, 0, B_z)$.
 - **Equations**:
-    $$ \frac{d v_x}{dt} = -\frac{q B_z}{m} v_y, \quad \frac{d v_y}{dt} = \frac{q B_z}{m} v_x, \quad \frac{d v_z}{dt} = 0 $$
-    $$ \frac{d x}{dt} = v_x, \quad \frac{d y}{dt} = v_y, \quad \frac{d z}{dt} = v_z $$
+    $$\frac{d v_x}{dt} = -\frac{q B_z}{m} v_y, \quad \frac{d v_y}{dt} = \frac{q B_z}{m} v_x, \quad \frac{d v_z}{dt} = 0$$
+    $$\frac{d x}{dt} = v_x, \quad \frac{d y}{dt} = v_y, \quad \frac{d z}{dt} = v_z$$
 - **Motion**:
-    - Circular in the xy-plane with radius $ r_L = \frac{m v_\perp}{|q| B_z} $.
-    - Helical if $ v_z \neq 0 $.
-- **Simulation**: Initialize $ q, m, \mathbf{v}_0 $, solve ODEs, and plot 3D trajectory.
+    - Circular in the xy-plane with radius $r_L = \frac{m v_\perp}{|q| B_z}$.
+    - Helical if $v_z \neq 0$.
+- **Simulation**: Initialize $q, m, \mathbf{v}_0$, solve ODEs, and plot 3D trajectory.
 
 ### 2. Combined Electric and Magnetic Fields
-- **Setup**: $ \mathbf{E} = (E_x, 0, 0) $, $ \mathbf{B} = (0, 0, B_z) $.
+- **Setup**: $\mathbf{E} = (E_x, 0, 0)$, $\mathbf{B} = (0, 0, B_z)$.
 - **Equations**:
-    $$ \frac{d v_x}{dt} = \frac{q}{m} (E_x - v_y B_z), \quad \frac{d v_y}{dt} = \frac{q}{m} v_x B_z, \quad \frac{d v_z}{dt} = 0 $$
-    $$ \frac{d x}{dt} = v_x, \quad \frac{d y}{dt} = v_y, \quad \frac{d z}{dt} = v_z $$
+    $$\frac{d v_x}{dt} = \frac{q}{m} (E_x - v_y B_z), \quad \frac{d v_y}{dt} = \frac{q}{m} v_x B_z, \quad \frac{d v_z}{dt} = 0$$
+    $$\frac{d x}{dt} = v_x, \quad \frac{d y}{dt} = v_y, \quad \frac{d z}{dt} = v_z$$
 - **Motion**:
     - Gyration in the xy-plane.
-    - Drift or trochoidal paths due to $ \mathbf{E} $.
-    - Helical if $ v_z \neq 0 $.
-- **Simulation**: Solve ODEs with $ \mathbf{E} $ and $ \mathbf{B} $, plot trajectory.
+    - Drift or trochoidal paths due to $\mathbf{E}$.
+    - Helical if $v_z \neq 0$.
+- **Simulation**: Solve ODEs with $\mathbf{E}$ and $\mathbf{B}$, plot trajectory.
 
 ### 3. Crossed Electric and Magnetic Fields
-- **Setup**: $ \mathbf{E} = (E_x, 0, 0) $, $ \mathbf{B} = (0, 0, B_z) $.
+- **Setup**: $\mathbf{E} = (E_x, 0, 0)$, $\mathbf{B} = (0, 0, B_z)$.
 - **Equations**: Same as combined fields.
 - **Motion**:
-    - $ \mathbf{E} \times \mathbf{B} $ drift: $ \mathbf{v}_{E \times B} = \frac{\mathbf{E} \times \mathbf{B}}{B^2} = (0, \frac{E_x}{B_z}, 0) $.
+    - $\mathbf{E} \times \mathbf{B}$ drift: $\mathbf{v}_{E \times B} = \frac{\mathbf{E} \times \mathbf{B}}{B^2} = (0, \frac{E_x}{B_z}, 0)$.
     - Helical trajectory with drift along y-axis.
-- **Simulation**: Solve ODEs, highlight drift velocity $ v_d = \frac{E_x}{B_z} $ in plots.
+- **Simulation**: Solve ODEs, highlight drift velocity $v_d = \frac{E_x}{B_z}$ in plots.
 
-Each simulation visualizes the interplay of $ \mathbf{E} $, $ \mathbf{B} $, and $ \mathbf{v} $, emphasizing the Lorentz force's role in shaping particle motion.
+Each simulation visualizes the interplay of $\mathbf{E}$, $\mathbf{B}$, and $\mathbf{v}$, emphasizing the Lorentz force's role in shaping particle motion.
+
 To explore the effects of the Lorentz force, simulations of charged particle motion under distinct field configurations are implemented. This section details the setup and simulation strategies for three cases: a uniform magnetic field, combined electric and magnetic fields, and crossed electric and magnetic fields. Each configuration highlights unique trajectory characteristics, such as circular, helical, or drift motion, governed by the Lorentz force equation:
 
-$$
-\mathbf{F} = q \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right)
-$$
+$$\mathbf{F} = q \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right)$$
 
-where $ q $ is the particle's charge (C), $ \mathbf{E} $ is the electric field (V/m), $ \mathbf{v} $ is the velocity (m/s), and $ \mathbf{B} $ is the magnetic field (T). The equations of motion, derived from $ \mathbf{F} = m \mathbf{a} $, are solved numerically using the framework established previously (e.g., RK4 method with NumPy and Matplotlib).
+where $q$ is the particle's charge (C), $\mathbf{E}$ is the electric field (V/m), $\mathbf{v}$ is the velocity (m/s), and $\mathbf{B}$ is the magnetic field (T). The equations of motion, derived from $\mathbf{F} = m \mathbf{a}$, are solved numerically using the framework established previously (e.g., RK4 method with NumPy and Matplotlib).
 
 ## 1. Uniform Magnetic Field
 
 ### Configuration
-In this scenario, the electric field is set to zero ($ \mathbf{E} = \mathbf{0} $), and a uniform magnetic field $ \mathbf{B} = (0, 0, B_z) $ is applied, where $ B_z $ is a constant (e.g., $ B_z = 1 $ T). The Lorentz force simplifies to:
+In this scenario, the electric field is set to zero ($\mathbf{E} = \mathbf{0}$), and a uniform magnetic field $\mathbf{B} = (0, 0, B_z)$ is applied, where $B_z$ is a constant (e.g., $B_z = 1$ T). The Lorentz force simplifies to:
 
-$$
-\mathbf{F} = q \mathbf{v} \times \mathbf{B}
-$$
+$$\mathbf{F} = q \mathbf{v} \times \mathbf{B}$$
 
-For a particle with velocity $ \mathbf{v} = (v_x, v_y, v_z) $, the cross product yields a force perpendicular to both $ \mathbf{v} $ and $ \mathbf{B} $, resulting in curved trajectories.
+For a particle with velocity $\mathbf{v} = (v_x, v_y, v_z)$, the cross product yields a force perpendicular to both $\mathbf{v}$ and $\mathbf{B}$, resulting in curved trajectories.
 
 ### Equations of Motion
 The acceleration is:
 
-$$
-\mathbf{a} = \frac{d \mathbf{v}}{dt} = \frac{q}{m} \mathbf{v} \times \mathbf{B}
-$$
+$$\mathbf{a} = \frac{d \mathbf{v}}{dt} = \frac{q}{m} \mathbf{v} \times \mathbf{B}$$
 
-For $ \mathbf{B} = (0, 0, B_z) $, the cross product is:
+For $\mathbf{B} = (0, 0, B_z)$, the cross product is:
 
-$$
-\mathbf{v} \times \mathbf{B} = \begin{vmatrix}
+$$\mathbf{v} \times \mathbf{B} = \begin{vmatrix}
 \hat{x} & \hat{y} & \hat{z} \\
 v_x & v_y & v_z \\
 0 & 0 & B_z
-\end{vmatrix} = (-v_y B_z, v_x B_z, 0)
-$$
+\end{vmatrix} = (-v_y B_z, v_x B_z, 0)$$
 
 Thus, the equations of motion are:
 
-$$
-\frac{d v_x}{dt} = -\frac{q B_z}{m} v_y, \quad \frac{d v_y}{dt} = \frac{q B_z}{m} v_x, \quad \frac{d v_z}{dt} = 0
-$$
+$$\frac{d v_x}{dt} = -\frac{q B_z}{m} v_y, \quad \frac{d v_y}{dt} = \frac{q B_z}{m} v_x, \quad \frac{d v_z}{dt} = 0$$
 
-$$
-\frac{d x}{dt} = v_x, \quad \frac{d y}{dt} = v_y, \quad \frac{d z}{dt} = v_z
-$$
+$$\frac{d x}{dt} = v_x, \quad \frac{d y}{dt} = v_y, \quad \frac{d z}{dt} = v_z$$
 
 ### Trajectory Characteristics
-- **Circular Motion**: If the initial velocity has components only perpendicular to $ \mathbf{B} $ (e.g., $ \mathbf{v}_0 = (v_x, v_y, 0) $), the particle follows a circular path in the xy-plane. The radius (Larmor radius) is:
+- **Circular Motion**: If the initial velocity has components only perpendicular to $\mathbf{B}$ (e.g., $\mathbf{v}_0 = (v_x, v_y, 0)$), the particle follows a circular path in the xy-plane. The radius (Larmor radius) is:
 
-$$
-r_L = \frac{m v_\perp}{|q| B_z}
-$$
+$$r_L = \frac{m v_\perp}{|q| B_z}$$
 
-where $ v_\perp = \sqrt{v_x^2 + v_y^2} $ is the speed in the plane perpendicular to $ \mathbf{B} $. The cyclotron frequency is:
+where $v_\perp = \sqrt{v_x^2 + v_y^2}$ is the speed in the plane perpendicular to $\mathbf{B}$. The cyclotron frequency is:
 
-$$
-\omega = \frac{|q| B_z}{m}
-$$
+$$\omega = \frac{|q| B_z}{m}$$
 
-- **Helical Motion**: If the initial velocity includes a component parallel to $ \mathbf{B} $ (e.g., $ v_z \neq 0 $), the particle follows a helical path, with circular motion in the xy-plane superimposed on linear motion along the z-axis at constant speed $ v_z $.
+- **Helical Motion**: If the initial velocity includes a component parallel to $\mathbf{B}$ (e.g., $v_z \neq 0$), the particle follows a helical path, with circular motion in the xy-plane superimposed on linear motion along the z-axis at constant speed $v_z$.
 
 ### Simulation Strategy
-- Initialize the particle with parameters (e.g., $ q = 1.6 \times 10^{-19} $ C, $ m = 1.67 \times 10^{-27} $ kg, $ \mathbf{v}_0 = (10^5, 10^5, 10^5) $ m/s).
-- Set $ \mathbf{E} = \mathbf{0} $, $ \mathbf{B} = (0, 0, 1) $ T.
-- Use the RK4 method to solve the ODEs over a time interval (e.g., $ T = 10^{-6} $ s, $ \Delta t = 10^{-9} $ s).
+- Initialize the particle with parameters (e.g., $q = 1.6 \times 10^{-19}$ C, $m = 1.67 \times 10^{-27}$ kg, $\mathbf{v}_0 = (10^5, 10^5, 10^5)$ m/s).
+- Set $\mathbf{E} = \mathbf{0}$, $\mathbf{B} = (0, 0, 1)$ T.
+- Use the RK4 method to solve the ODEs over a time interval (e.g., $T = 10^{-6}$ s, $\Delta t = 10^{-9}$ s).
 - Plot the trajectory in 3D using Matplotlib, highlighting the Larmor radius and cyclotron period for circular or helical motion.
 
 ## 2. Combined Electric and Magnetic Fields
 
 ### Configuration
-Here, both electric and magnetic fields are non-zero and constant, but not necessarily perpendicular (e.g., $ \mathbf{E} = (E_x, 0, 0) $, $ \mathbf{B} = (0, 0, B_z) $). The Lorentz force is:
+Here, both electric and magnetic fields are non-zero and constant, but not necessarily perpendicular (e.g., $\mathbf{E} = (E_x, 0, 0)$, $\mathbf{B} = (0, 0, B_z)$). The Lorentz force is:
 
-$$
-\mathbf{F} = q \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right)
-$$
+$$\mathbf{F} = q \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right)$$
 
 The electric field introduces a linear acceleration, while the magnetic field induces curved motion, leading to complex trajectories.
 
 ### Equations of Motion
 The acceleration is:
 
-$$
-\mathbf{a} = \frac{d \mathbf{v}}{dt} = \frac{q}{m} \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right)
-$$
+$$\mathbf{a} = \frac{d \mathbf{v}}{dt} = \frac{q}{m} \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right)$$
 
-For $ \mathbf{E} = (E_x, 0, 0) $, $ \mathbf{B} = (0, 0, B_z) $, the force components are:
+For $\mathbf{E} = (E_x, 0, 0)$, $\mathbf{B} = (0, 0, B_z)$, the force components are:
 
-$$
-\mathbf{v} \times \mathbf{B} = (-v_y B_z, v_x B_z, 0)
-$$
+$$\mathbf{v} \times \mathbf{B} = (-v_y B_z, v_x B_z, 0)$$
 
-$$
-\mathbf{E} + \mathbf{v} \times \mathbf{B} = (E_x - v_y B_z, v_x B_z, 0)
-$$
+$$\mathbf{E} + \mathbf{v} \times \mathbf{B} = (E_x - v_y B_z, v_x B_z, 0)$$
 
 Thus, the equations of motion are:
 
-$$
-\frac{d v_x}{dt} = \frac{q}{m} (E_x - v_y B_z), \quad \frac{d v_y}{dt} = \frac{q}{m} v_x B_z, \quad \frac{d v_z}{dt} = 0
-$$
+$$\frac{d v_x}{dt} = \frac{q}{m} (E_x - v_y B_z), \quad \frac{d v_y}{dt} = \frac{q}{m} v_x B_z, \quad \frac{d v_z}{dt} = 0$$
 
-$$
-\frac{d x}{dt} = v_x, \quad \frac{d y}{dt} = v_y, \quad \frac{d z}{dt} = v_z
-$$
+$$\frac{d x}{dt} = v_x, \quad \frac{d y}{dt} = v_y, \quad \frac{d z}{dt} = v_z$$
 
 ### Trajectory Characteristics
-The trajectory depends on the relative orientation of $ \mathbf{E} $ and $ \mathbf{B} $ and the initial velocity:
-- The magnetic field causes gyration in the xy-plane, similar to the uniform $ \mathbf{B} $ case.
-- The electric field adds a constant acceleration along $ \mathbf{E} $, modifying the center of gyration and potentially leading to a trochoidal or drifting path.
-- If $ v_z \neq 0 $, the motion includes a linear component along the z-axis, resulting in a helical trajectory with a drifting guiding center.
+The trajectory depends on the relative orientation of $\mathbf{E}$ and $\mathbf{B}$ and the initial velocity:
+- The magnetic field causes gyration in the xy-plane, similar to the uniform $\mathbf{B}$ case.
+- The electric field adds a constant acceleration along $\mathbf{E}$, modifying the center of gyration and potentially leading to a trochoidal or drifting path.
+- If $v_z \neq 0$, the motion includes a linear component along the z-axis, resulting in a helical trajectory with a drifting guiding center.
 
 ### Simulation Strategy
 - Initialize the particle with the same parameters as above.
-- Set $ \mathbf{E} = (10^5, 0, 0) $ V/m, $ \mathbf{B} = (0, 0, 1) $ T.
-- Solve the ODEs using RK4, ensuring the time step $ \Delta t $ captures both the cyclotron motion and electric field effects.
-- Plot the 3D trajectory, labeling the effects of $ \mathbf{E} $ (e.g., drift or acceleration) and $ \mathbf{B} $ (e.g., gyration radius).
+- Set $\mathbf{E} = (10^5, 0, 0)$ V/m, $\mathbf{B} = (0, 0, 1)$ T.
+- Solve the ODEs using RK4, ensuring the time step $\Delta t$ captures both the cyclotron motion and electric field effects.
+- Plot the 3D trajectory, labeling the effects of $\mathbf{E}$ (e.g., drift or acceleration) and $\mathbf{B}$ (e.g., gyration radius).
 
 ## 3. Crossed Electric and Magnetic Fields
 
 ### Configuration
-In this case, the electric and magnetic fields are perpendicular (e.g., $ \mathbf{E} = (E_x, 0, 0) $, $ \mathbf{B} = (0, 0, B_z) $), leading to a characteristic drift motion known as the $ \mathbf{E} \times \mathbf{B} $ drift. The Lorentz force is:
+In this case, the electric and magnetic fields are perpendicular (e.g., $\mathbf{E} = (E_x, 0, 0)$, $\mathbf{B} = (0, 0, B_z)$), leading to a characteristic drift motion known as the $\mathbf{E} \times \mathbf{B}$ drift. The Lorentz force is:
 
-$$
-\mathbf{F} = q \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right)
-$$
+$$\mathbf{F} = q \left( \mathbf{E} + \mathbf{v} \times \mathbf{B} \right)$$
 
 ### Equations of Motion
-The equations are identical to the combined fields case, as the fields are still $ \mathbf{E} = (E_x, 0, 0) $, $ \mathbf{B} = (0, 0, B_z) $:
+The equations are identical to the combined fields case, as the fields are still $\mathbf{E} = (E_x, 0, 0)$, $\mathbf{B} = (0, 0, B_z)$:
 
-$$
-\frac{d v_x}{dt} = \frac{q}{m} (E_x - v_y B_z), \quad \frac{d v_y}{dt} = \frac{q}{m} v_x B_z, \quad \frac{d v_z}{dt} = 0
-$$
+$$\frac{d v_x}{dt} = \frac{q}{m} (E_x - v_y B_z), \quad \frac{d v_y}{dt} = \frac{q}{m} v_x B_z, \quad \frac{d v_z}{dt} = 0$$
 
-$$
-\frac{d x}{dt} = v_x, \quad \frac{d y}{dt} = v_y, \quad \frac{d z}{dt} = v_z
-$$
+$$\frac{d x}{dt} = v_x, \quad \frac{d y}{dt} = v_y, \quad \frac{d z}{dt} = v_z$$
 
 ### Trajectory Characteristics
-The perpendicular orientation of $ \mathbf{E} $ and $ \mathbf{B} $ introduces a drift velocity perpendicular to both fields, known as the $ \mathbf{E} \times \mathbf{B} $ drift. For $ \mathbf{E} = (E_x, 0, 0) $, $ \mathbf{B} = (0, 0, B_z) $, the drift velocity is:
+The perpendicular orientation of $\mathbf{E}$ and $\mathbf{B}$ introduces a drift velocity perpendicular to both fields, known as the $\mathbf{E} \times \mathbf{B}$ drift. For $\mathbf{E} = (E_x, 0, 0)$, $\mathbf{B} = (0, 0, B_z)$, the drift velocity is:
 
-$$
-\mathbf{v}_{E \times B} = \frac{\mathbf{E} \times \mathbf{B}}{B^2}
-$$
+$$\mathbf{v}_{E \times B} = \frac{\mathbf{E} \times \mathbf{B}}{B^2}$$
 
 Computing the cross product:
 
-$$
-\mathbf{E} \times \mathbf{B} = \begin{vmatrix}
+$$\mathbf{E} \times \mathbf{B} = \begin{vmatrix}
 \hat{x} & \hat{y} & \hat{z} \\
 E_x & 0 & 0 \\
 0 & 0 & B_z
-\end{vmatrix} = (0, E_x B_z, 0)
-$$
+\end{vmatrix} = (0, E_x B_z, 0)$$
 
-$$
-\mathbf{v}_{E \times B} = \left( 0, \frac{E_x}{B_z}, 0 \right)
-$$
+$$\mathbf{v}_{E \times B} = \left( 0, \frac{E_x}{B_z}, 0 \right)$$
 
 The particle's motion consists of:
-- **Gyration**: Circular motion in the xy-plane due to $ \mathbf{B} $, with radius $ r_L = \frac{m v_\perp}{|q| B_z} $.
-- **Drift**: Linear motion in the y-direction at speed $ v_d = \frac{E_x}{B_z} $.
-- **Parallel Motion**: If $ v_z \neq 0 $, linear motion along the z-axis.
+- **Gyration**: Circular motion in the xy-plane due to $\mathbf{B}$, with radius $r_L = \frac{m v_\perp}{|q| B_z}$.
+- **Drift**: Linear motion in the y-direction at speed $v_d = \frac{E_x}{B_z}$.
+- **Parallel Motion**: If $v_z \neq 0$, linear motion along the z-axis.
 
 The resulting trajectory is a helix with a drifting guiding center along the y-axis.
 
 ### Simulation Strategy
 - Use the same particle parameters as above.
-- Set $ \mathbf{E} = (10^5, 0, 0) $ V/m, $ \mathbf{B} = (0, 0, 1) $ T, ensuring perpendicularity.
-- Solve the ODEs using RK4, with a time step $ \Delta t $ small enough to resolve the cyclotron motion (e.g., $ \Delta t < \frac{2\pi m}{|q| B_z} $).
-- Plot the 3D trajectory, highlighting the $ \mathbf{E} \times \mathbf{B} $ drift in the y-direction and the gyroradius. Include annotations for the drift velocity $ v_d = \frac{E_x}{B_z} $.
+- Set $\mathbf{E} = (10^5, 0, 0)$ V/m, $\mathbf{B} = (0, 0, 1)$ T, ensuring perpendicularity.
+- Solve the ODEs using RK4, with a time step $\Delta t$ small enough to resolve the cyclotron motion (e.g., $\Delta t < \frac{2\pi m}{|q| B_z}$).
+- Plot the 3D trajectory, highlighting the $\mathbf{E} \times \mathbf{B}$ drift in the y-direction and the gyroradius. Include annotations for the drift velocity $v_d = \frac{E_x}{B_z}$.
 
 # Incorporate Parameter Variations
 ## Investigating Parameter Variations in Lorentz Force Dynamics
 
-To analyze how variations in key parameters affect charged particle trajectories, modular functions are developed to adjust electric and magnetic field strengths ($ \mathbf{E} $, $ \mathbf{B} $), initial velocity ($ \mathbf{v} $), charge ($ q $), and mass ($ m $). Numerical simulations using the RK4 method with NumPy and Matplotlib enable detailed exploration of trajectory shapes, Larmor radius, and drift velocities.
+To analyze how variations in key parameters affect charged particle trajectories, modular functions are developed to adjust electric and magnetic field strengths ($\mathbf{E}$, $\mathbf{B}$), initial velocity ($\mathbf{v}$), charge ($q$), and mass ($m$). Numerical simulations using the RK4 method with NumPy and Matplotlib enable detailed exploration of trajectory shapes, Larmor radius, and drift velocities.
 
 ### 1. Parameter Adjustment Functions
 
-- **Field Strengths ($ \mathbf{E} $, $ \mathbf{B} $)**:
+- **Field Strengths ($\mathbf{E}$, $\mathbf{B}$)**:
     - Functions `set_electric_field(E_x, E_y, E_z)` and `set_magnetic_field(B_x, B_y, B_z)` allow scalar inputs for uniform or crossed fields.
-    - Test effects on curvature and drift by varying $ B_z $ (e.g., 0.1–10 T) and $ E_x $ (e.g., $ 10^4 $–$ 10^6 $ V/m).
+    - Test effects on curvature and drift by varying $B_z$ (e.g., 0.1–10 T) and $E_x$ (e.g., $10^4$–$10^6$ V/m).
 
-- **Initial Velocity ($ \mathbf{v} $)**:
-    - Function `set_initial_velocity(v_x, v_y, v_z)` supports perpendicular ($ v_\perp $) and parallel ($ v_z $) components.
-    - Explore speeds from $ 10^4 $ to $ 10^7 $ m/s to study trajectory shapes and Larmor radius.
+- **Initial Velocity ($\mathbf{v}$)**:
+    - Function `set_initial_velocity(v_x, v_y, v_z)` supports perpendicular ($v_\perp$) and parallel ($v_z$) components.
+    - Explore speeds from $10^4$ to $10^7$ m/s to study trajectory shapes and Larmor radius.
 
-- **Charge and Mass ($ q $, $ m $)**:
-    - Function `set_particle_properties(q, m)` adjusts $ q/m $ for particles like electrons, protons, or hypothetical cases.
-    - Analyze motion dependence on $ q/m $.
+- **Charge and Mass ($q$, $m$)**:
+    - Function `set_particle_properties(q, m)` adjusts $q/m$ for particles like electrons, protons, or hypothetical cases.
+    - Analyze motion dependence on $q/m$.
 
 ### 2. Effects on Trajectories
 
 - **Uniform Magnetic Field**:
-    - Higher $ B_z $ tightens circular/helical paths by reducing $ r_L \propto 1/B $.
-    - Larger $ v_\perp $ increases $ r_L \propto v_\perp $.
+    - Higher $B_z$ tightens circular/helical paths by reducing $r_L \propto 1/B$.
+    - Larger $v_\perp$ increases $r_L \propto v_\perp$.
 
 - **Combined Fields**:
-    - Increasing $ E_x $ stretches trajectories, creating trochoidal paths.
-    - Variations in $ \mathbf{v}_0 $ alter gyration and drift balance.
+    - Increasing $E_x$ stretches trajectories, creating trochoidal paths.
+    - Variations in $\mathbf{v}_0$ alter gyration and drift balance.
 
 - **Crossed Fields**:
-    - $ E_x $ and $ B_z $ changes modify $ \mathbf{E} \times \mathbf{B} $ drift velocity $ v_d \propto E_x/B_z $.
+    - $E_x$ and $B_z$ changes modify $\mathbf{E} \times \mathbf{B}$ drift velocity $v_d \propto E_x/B_z$.
 
-### 3. Larmor Radius ($ r_L $)
+### 3. Larmor Radius ($r_L$)
 
 The Larmor radius is:
 
-$$
-r_L = \frac{m v_\perp}{|q| B}
-$$
+$$r_L = \frac{m v_\perp}{|q| B}$$
 
 - **Dependence**:
-    - $ r_L \propto 1/B $: Tighter gyration with stronger $ B $.
-    - $ r_L \propto v_\perp $: Larger radius with higher $ v_\perp $.
-    - $ r_L \propto m $ and $ r_L \propto 1/|q| $: Radius increases with mass and decreases with charge.
+    - $r_L \propto 1/B$: Tighter gyration with stronger $B$.
+    - $r_L \propto v_\perp$: Larger radius with higher $v_\perp$.
+    - $r_L \propto m$ and $r_L \propto 1/|q|$: Radius increases with mass and decreases with charge.
 
-### 4. Drift Velocity ($ v_d $)
+### 4. Drift Velocity ($v_d$)
 
-For crossed fields ($ \mathbf{E} \perp \mathbf{B} $), the drift velocity is:
+For crossed fields ($\mathbf{E} \perp \mathbf{B}$), the drift velocity is:
 
-$$
-\mathbf{v}_{E \times B} = \frac{\mathbf{E} \times \mathbf{B}}{B^2}
-$$
+$$\mathbf{v}_{E \times B} = \frac{\mathbf{E} \times \mathbf{B}}{B^2}$$
 
 - **Dependence**:
-    - $ v_d \propto E_x $: Faster drift with stronger $ E_x $.
-    - $ v_d \propto 1/B_z $: Slower drift with stronger $ B_z $.
-    - Independent of $ \mathbf{v} $, $ q $, and $ m $.
+    - $v_d \propto E_x$: Faster drift with stronger $E_x$.
+    - $v_d \propto 1/B_z$: Slower drift with stronger $B_z$.
+    - Independent of $\mathbf{v}$, $q$, and $m$.
 
 ### 5. Simulation and Analysis
 
 - **Parameter Sweeps**:
-    - Iterate over $ B_z $, $ E_x $, $ v_\perp $, and $ q/m $.
+    - Iterate over $B_z$, $E_x$, $v_\perp$, and $q/m$.
     - Solve ODEs for each set, storing trajectories.
 
 - **Metrics**:
-    - Compute $ r_L $ from trajectory curvature.
-    - Measure $ v_d $ from guiding center displacement.
+    - Compute $r_L$ from trajectory curvature.
+    - Measure $v_d$ from guiding center displacement.
 
 - **Visualization**:
-    - Plot 3D trajectories, $ r_L $ vs. $ B $, $ v_\perp $, $ q $, $ m $, and $ v_d $ vs. $ E_x $, $ B_z $.
+    - Plot 3D trajectories, $r_L$ vs. $B$, $v_\perp$, $q$, $m$, and $v_d$ vs. $E_x$, $B_z$.
 
 - **Validation**:
     - Compare numerical results with analytical predictions.
-    - Verify expected scalings (e.g., $ r_L \propto 1/B $, $ v_d \propto E_x/B_z $).
+    - Verify expected scalings (e.g., $r_L \propto 1/B$, $v_d \propto E_x/B_z$).
 
 This systematic approach highlights the Lorentz force's role in shaping particle motion under varying conditions.
 
