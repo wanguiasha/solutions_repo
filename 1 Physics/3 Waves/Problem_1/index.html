@@ -90,18 +90,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#3-wave-equations-describing-waves-from-each-source_1">3. Wave Equations: Describing Waves from Each Source</a>
-<ul>
-<li class="toctree-l4"><a class="reference internal" href="#31-single-disturbance-equation_1">3.1 Single Disturbance Equation</a>
-</li>
-<li class="toctree-l4"><a class="reference internal" href="#32-distance-from-source-to-point_1">3.2 Distance from Source to Point</a>
-</li>
-<li class="toctree-l4"><a class="reference internal" href="#33-wave-equation-for-each-source_1">3.3 Wave Equation for Each Source</a>
-</li>
-<li class="toctree-l4"><a class="reference internal" href="#34-example-wave-equations-for-a-square_1">3.4 Example: Wave Equations for a Square</a>
-</li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#4-superposition-of-waves-combining-displacements">4. Superposition of Waves: Combining Displacements</a>
 <ul>
 <li class="toctree-l4"><a class="reference internal" href="#41-superposition-principle">4.1 Superposition Principle</a>
@@ -219,115 +207,88 @@
 <div class="section" itemprop="articleBody">
 <h1 id="problem-1">Problem 1</h1>
 <h2 id="2-positioning-the-sources-vertex-coordinates">2. Positioning the Sources: Vertex Coordinates</h2>
-<p>Once the regular polygon is selected, we position the wave sources at its vertices. For simplicity, we focus on a square and place it in the $ XY $-plane, centered at the origin $ (0, 0) $, with the side length $ s $ defining its geometry.</p>
+<p>Once the regular polygon is selected, we position the wave sources at its vertices. For simplicity, we focus on a square and place it in the <span class="arithmatex">\(XY\)</span>-plane, centered at the origin <span class="arithmatex">\((0, 0)\)</span>, with the side length <span class="arithmatex">\(s\)</span> defining its geometry.</p>
 <h3 id="21-general-approach-for-a-square">2.1 General Approach for a Square</h3>
-<p>The vertices of a square with side length $ s $, centered at the origin, can be determined by considering its symmetric placement in the $ XY $-plane. The coordinates are calculated such that the center of the square coincides with $ (0, 0) $, and the vertices are equidistant from the origin along the axes, offset by half the side length $ s/2 $ in both positive and negative directions.</p>
+<p>The vertices of a square with side length <span class="arithmatex">\(s\)</span>, centered at the origin, can be determined by considering its symmetric placement in the <span class="arithmatex">\(XY\)</span>-plane. The coordinates are calculated such that the center of the square coincides with <span class="arithmatex">\((0, 0)\)</span>, and the vertices are equidistant from the origin along the axes, offset by half the side length <span class="arithmatex">\(s/2\)</span> in both positive and negative directions.</p>
 <h3 id="22-vertex-coordinates">2.2 Vertex Coordinates</h3>
-<p>For a square with side length $ s $, the vertex positions are:</p>
-<div class="arithmatex">\[ (x_i, y_i) \in \left\{ \left( \frac{s}{2}, \frac{s}{2} \right), \left( \frac{s}{2}, -\frac{s}{2} \right), \left( -\frac{s}{2}, \frac{s}{2} \right), \left( -\frac{s}{2}, -\frac{s}{2} \right) \right\} \]</div>
+<p>For a square with side length <span class="arithmatex">\(s\)</span>, the vertex positions are:</p>
+<div class="arithmatex">\[(x_i, y_i) \in \left\{ \left( \frac{s}{2}, \frac{s}{2} \right), \left( \frac{s}{2}, -\frac{s}{2} \right), \left( -\frac{s}{2}, \frac{s}{2} \right), \left( -\frac{s}{2}, -\frac{s}{2} \right) \right\}\]</div>
 <p>These coordinates represent the four vertices:
-- First vertex at $ \left( \frac{s}{2}, \frac{s}{2} \right) $ (first quadrant),
-- Second vertex at $ \left( \frac{s}{2}, -\frac{s}{2} \right) $ (fourth quadrant),
-- Third vertex at $ \left( -\frac{s}{2}, \frac{s}{2} \right) $ (second quadrant),
-- Fourth vertex at $ \left( -\frac{s}{2}, -\frac{s}{2} \right) $ (third quadrant).</p>
-<p>The distance from the origin to any vertex is the radius of the circumscribed circle (circumradius) $ R $, which for a square is:</p>
-<div class="arithmatex">\[ R = \frac{s}{\sqrt{2}} \]</div>
-<p>This can be verified by calculating the Euclidean distance from $ (0, 0) $ to $ \left( \frac{s}{2}, \frac{s}{2} \right) $:</p>
-<div class="arithmatex">\[ R = \sqrt{\left( \frac{s}{2} - 0 \right)^2 + \left( \frac{s}{2} - 0 \right)^2} = \sqrt{\frac{s^2}{4} + \frac{s^2}{4}} = \sqrt{\frac{2s^2}{4}} = \frac{s}{\sqrt{2}} \]</div>
+- First vertex at <span class="arithmatex">\(\left( \frac{s}{2}, \frac{s}{2} \right)\)</span> (first quadrant),
+- Second vertex at <span class="arithmatex">\(\left( \frac{s}{2}, -\frac{s}{2} \right)\)</span> (fourth quadrant),
+- Third vertex at <span class="arithmatex">\(\left( -\frac{s}{2}, \frac{s}{2} \right)\)</span> (second quadrant),
+- Fourth vertex at <span class="arithmatex">\(\left( -\frac{s}{2}, -\frac{s}{2} \right)\)</span> (third quadrant).</p>
+<p>The distance from the origin to any vertex is the radius of the circumscribed circle (circumradius) <span class="arithmatex">\(R\)</span>, which for a square is:</p>
+<div class="arithmatex">\[R = \frac{s}{\sqrt{2}}\]</div>
+<p>This can be verified by calculating the Euclidean distance from <span class="arithmatex">\((0, 0)\)</span> to <span class="arithmatex">\(\left( \frac{s}{2}, \frac{s}{2} \right)\)</span>:</p>
+<div class="arithmatex">\[R = \sqrt{\left( \frac{s}{2} - 0 \right)^2 + \left( \frac{s}{2} - 0 \right)^2} = \sqrt{\frac{s^2}{4} + \frac{s^2}{4}} = \sqrt{\frac{2s^2}{4}} = \frac{s}{\sqrt{2}}\]</div>
 <h3 id="23-alternative-geometric-derivation">2.3 Alternative Geometric Derivation</h3>
-<p>Alternatively, we can derive the vertex coordinates using the angle-based method for a regular polygon. For a square ($ N = 4 $), the angular separation between vertices is $ \frac{2\pi}{4} = \frac{\pi}{2} $. With a circumradius $ R = \frac{s}{\sqrt{2}} $, the vertices can be expressed as:</p>
-<div class="arithmatex">\[ (x_i, y_i) = \left( R \cos\left(i \cdot \frac{\pi}{2}\right), R \sin\left(i \cdot \frac{\pi}{2}\right) \right) \text{ for } i = 0, 1, 2, 3 \]</div>
-<p>Substituting $ R = \frac{s}{\sqrt{2}} $:
-- For $ i = 0 $: $ (x_0, y_0) = \left( \frac{s}{\sqrt{2}} \cos(0), \frac{s}{\sqrt{2}} \sin(0) \right) = \left( \frac{s}{\sqrt{2}}, 0 \right) $ (needs adjustment to match centered coordinates),
-- For $ i = 1 $: $ (x_1, y_1) = \left( \frac{s}{\sqrt{2}} \cos\left(\frac{\pi}{2}\right), \frac{s}{\sqrt{2}} \sin\left(\frac{\pi}{2}\right) \right) = \left( 0, \frac{s}{\sqrt{2}} \right) $,
-- For $ i = 2 $: $ (x_2, y_2) = \left( \frac{s}{\sqrt{2}} \cos(\pi), \frac{s}{\sqrt{2}} \sin(\pi) \right) = \left( -\frac{s}{\sqrt{2}}, 0 \right) $,
-- For $ i = 3 $: $ (x_3, y_3) = \left( \frac{s}{\sqrt{2}} \cos\left(\frac{3\pi}{2}\right), \frac{s}{\sqrt{2}} \sin\left(\frac{3\pi}{2}\right) \right) = \left( 0, -\frac{s}{\sqrt{2}} \right) $.</p>
-<p>To center the square at the origin, we adjust by translating the coordinates. The centered vertices align with the $ \pm \frac{s}{2} $ formulation provided earlier, confirming consistency.</p>
+<p>Alternatively, we can derive the vertex coordinates using the angle-based method for a regular polygon. For a square (<span class="arithmatex">\(N = 4\)</span>), the angular separation between vertices is <span class="arithmatex">\(\frac{2\pi}{4} = \frac{\pi}{2}\)</span>. With a circumradius <span class="arithmatex">\(R = \frac{s}{\sqrt{2}}\)</span>, the vertices can be expressed as:</p>
+<div class="arithmatex">\[(x_i, y_i) = \left( R \cos\left(i \cdot \frac{\pi}{2}\right), R \sin\left(i \cdot \frac{\pi}{2}\right) \right) \text{ for } i = 0, 1, 2, 3\]</div>
+<p>Substituting <span class="arithmatex">\(R = \frac{s}{\sqrt{2}}\)</span>:
+- For <span class="arithmatex">\(i = 0\)</span>: <span class="arithmatex">\((x_0, y_0) = \left( \frac{s}{\sqrt{2}} \cos(0), \frac{s}{\sqrt{2}} \sin(0) \right) = \left( \frac{s}{\sqrt{2}}, 0 \right)\)</span> (needs adjustment to match centered coordinates),
+- For <span class="arithmatex">\(i = 1\)</span>: <span class="arithmatex">\((x_1, y_1) = \left( \frac{s}{\sqrt{2}} \cos\left(\frac{\pi}{2}\right), \frac{s}{\sqrt{2}} \sin\left(\frac{\pi}{2}\right) \right) = \left( 0, \frac{s}{\sqrt{2}} \right)\)</span>,
+- For <span class="arithmatex">\(i = 2\)</span>: <span class="arithmatex">\((x_2, y_2) = \left( \frac{s}{\sqrt{2}} \cos(\pi), \frac{s}{\sqrt{2}} \sin(\pi) \right) = \left( -\frac{s}{\sqrt{2}}, 0 \right)\)</span>,
+- For <span class="arithmatex">\(i = 3\)</span>: <span class="arithmatex">\((x_3, y_3) = \left( \frac{s}{\sqrt{2}} \cos\left(\frac{3\pi}{2}\right), \frac{s}{\sqrt{2}} \sin\left(\frac{3\pi}{2}\right) \right) = \left( 0, -\frac{s}{\sqrt{2}} \right)\)</span>.</p>
+<p>To center the square at the origin, we adjust by translating the coordinates. The centered vertices align with the <span class="arithmatex">\(\pm \frac{s}{2}\)</span> formulation provided earlier, confirming consistency.</p>
 <h3 id="24-practical-considerations">2.4 Practical Considerations</h3>
-<p>The choice of $ s $ determines the spatial scale of the interference pattern. A larger $ s $ increases the distance between sources, potentially leading to more distinct interference regions. The centered placement at $ (0, 0) $ ensures symmetry, simplifying the subsequent wave equation derivations.</p>
+<p>The choice of <span class="arithmatex">\(s\)</span> determines the spatial scale of the interference pattern. A larger <span class="arithmatex">\(s\)</span> increases the distance between sources, potentially leading to more distinct interference regions. The centered placement at <span class="arithmatex">\((0, 0)\)</span> ensures symmetry, simplifying the subsequent wave equation derivations.</p>
 <hr/>
 <h2 id="3-wave-equations-describing-waves-from-each-source">3. Wave Equations: Describing Waves from Each Source</h2>
-<p>Each point source at a vertex of the regular polygon emits a circular wave that propagates outward on the water surface. For each vertex (source) at position $ (x_i, y_i) $, we write the wave equation using the given single disturbance equation, accounting for the specific position of each source.</p>
+<p>Each point source at a vertex of the regular polygon emits a circular wave that propagates outward on the water surface. For each vertex (source) at position <span class="arithmatex">\((x_i, y_i)\)</span>, we write the wave equation using the given single disturbance equation, accounting for the specific position of each source.</p>
 <h3 id="31-single-disturbance-equation">3.1 Single Disturbance Equation</h3>
-<p>The displacement $ \eta_i(x, y, t) $ of the water surface at position $ (x, y) $ and time $ t $, due to a point source located at $ (x_i, y_i) $, is given by:</p>
-<div class="arithmatex">\[ \eta_i(x, y, t) = \frac{A}{\sqrt{r_i}} \cos(k r_i - \omega t + \phi) \]</div>
+<p>The displacement <span class="arithmatex">\(\eta_i(x, y, t)\)</span> of the water surface at position <span class="arithmatex">\((x, y)\)</span> and time <span class="arithmatex">\(t\)</span>, due to a point source located at <span class="arithmatex">\((x_i, y_i)\)</span>, is given by:</p>
+<div class="arithmatex">\[\eta_i(x, y, t) = \frac{A}{\sqrt{r_i}} \cos(k r_i - \omega t + \phi)\]</div>
 <p>where:</p>
 <ul>
-<li>$ \eta_i(x, y, t) $: Displacement of the water surface at point $ (x, y) $ and time $ t $,</li>
-<li>$ A $: Amplitude of the wave (assumed constant across all sources),</li>
-<li>$ r_i $: Distance from the source at $ (x_i, y_i) $ to the point $ (x, y) $,</li>
-<li>$ k $: Wave number, related to the wavelength $ \lambda $ by $ k = \frac{2\pi}{\lambda} $,</li>
-<li>$ \omega $: Angular frequency, related to the frequency $ f $ by $ \omega = 2\pi f $,</li>
-<li>$ \phi $: Initial phase (assumed constant across all sources for coherence),</li>
-<li>The factor $ \frac{1}{\sqrt{r_i}} $: Accounts for the amplitude decay of a two-dimensional circular wave as it spreads outward, ensuring energy conservation.</li>
+<li><span class="arithmatex">\(\eta_i(x, y, t)\)</span>: Displacement of the water surface at point <span class="arithmatex">\((x, y)\)</span> and time <span class="arithmatex">\(t\)</span>,</li>
+<li><span class="arithmatex">\(A\)</span>: Amplitude of the wave (assumed constant across all sources),</li>
+<li><span class="arithmatex">\(r_i\)</span>: Distance from the source at <span class="arithmatex">\((x_i, y_i)\)</span> to the point <span class="arithmatex">\((x, y)\)</span>,</li>
+<li><span class="arithmatex">\(k\)</span>: Wave number, related to the wavelength <span class="arithmatex">\(\lambda\)</span> by <span class="arithmatex">\(k = \frac{2\pi}{\lambda}\)</span>,</li>
+<li><span class="arithmatex">\(\omega\)</span>: Angular frequency, related to the frequency <span class="arithmatex">\(f\)</span> by <span class="arithmatex">\(\omega = 2\pi f\)</span>,</li>
+<li><span class="arithmatex">\(\phi\)</span>: Initial phase (assumed constant across all sources for coherence),</li>
+<li>The factor <span class="arithmatex">\(\frac{1}{\sqrt{r_i}}\)</span>: Accounts for the amplitude decay of a two-dimensional circular wave as it spreads outward, ensuring energy conservation.</li>
 </ul>
 <h3 id="32-distance-from-source-to-point">3.2 Distance from Source to Point</h3>
-<p>The distance $ r_i $ from the $ i $-th source at position $ (x_i, y_i) $ to the point $ (x, y) $ on the water surface is calculated using the Euclidean distance in the $ XY $-plane:</p>
-<div class="arithmatex">\[ r_i = \sqrt{(x - x_i)^2 + (y - y_i)^2} \]</div>
-<p>This distance determines both the amplitude decay (via the $ \frac{1}{\sqrt{r_i}} $ term) and the phase of the wave (via the $ k r_i $ term) at the point $ (x, y) $.</p>
+<p>The distance <span class="arithmatex">\(r_i\)</span> from the <span class="arithmatex">\(i\)</span>-th source at position <span class="arithmatex">\((x_i, y_i)\)</span> to the point <span class="arithmatex">\((x, y)\)</span> on the water surface is calculated using the Euclidean distance in the <span class="arithmatex">\(XY\)</span>-plane:</p>
+<div class="arithmatex">\[r_i = \sqrt{(x - x_i)^2 + (y - y_i)^2}\]</div>
+<p>This distance determines both the amplitude decay (via the <span class="arithmatex">\(\frac{1}{\sqrt{r_i}}\)</span> term) and the phase of the wave (via the <span class="arithmatex">\(k r_i\)</span> term) at the point <span class="arithmatex">\((x, y)\)</span>.</p>
 <h3 id="33-wave-equation-for-each-source">3.3 Wave Equation for Each Source</h3>
-<p>For the $ i $-th source located at $ (x_i, y_i) $, the wave equation, incorporating the distance $ r_i $, becomes:</p>
-<div class="arithmatex">\[ \eta_i(x, y, t) = \frac{A}{\sqrt{\sqrt{(x - x_i)^2 + (y - y_i)^2}}} \cos\left( k \sqrt{(x - x_i)^2 + (y - y_i)^2} - \omega t + \phi \right) \]</div>
-<p>Since all sources are assumed to emit waves with the same amplitude $ A $, wavelength $ \lambda $, frequency $ f $, and initial phase $ \phi $, the parameters $ A $, $ k $, $ \omega $, and $ \phi $ are identical for all $ i $. The only difference between the wave equations arises from the source positions $ (x_i, y_i) $, which affect the distance $ r_i $.</p>
+<p>For the <span class="arithmatex">\(i\)</span>-th source located at <span class="arithmatex">\((x_i, y_i)\)</span>, the wave equation, incorporating the distance <span class="arithmatex">\(r_i\)</span>, becomes:</p>
+<div class="arithmatex">\[\eta_i(x, y, t) = \frac{A}{\sqrt{\sqrt{(x - x_i)^2 + (y - y_i)^2}}} \cos\left( k \sqrt{(x - x_i)^2 + (y - y_i)^2} - \omega t + \phi \right)\]</div>
+<p>Since all sources are assumed to emit waves with the same amplitude <span class="arithmatex">\(A\)</span>, wavelength <span class="arithmatex">\(\lambda\)</span>, frequency <span class="arithmatex">\(f\)</span>, and initial phase <span class="arithmatex">\(\phi\)</span>, the parameters <span class="arithmatex">\(A\)</span>, <span class="arithmatex">\(k\)</span>, <span class="arithmatex">\(\omega\)</span>, and <span class="arithmatex">\(\phi\)</span> are identical for all <span class="arithmatex">\(i\)</span>. The only difference between the wave equations arises from the source positions <span class="arithmatex">\((x_i, y_i)\)</span>, which affect the distance <span class="arithmatex">\(r_i\)</span>.</p>
 <h3 id="34-example-wave-equations-for-a-square">3.4 Example: Wave Equations for a Square</h3>
-<p>Consider a square with side length $ s $, centered at the origin, with vertices at:</p>
-<div class="arithmatex">\[ (x_i, y_i) \in \left\{ \left( \frac{s}{2}, \frac{s}{2} \right), \left( \frac{s}{2}, -\frac{s}{2} \right), \left( -\frac{s}{2}, \frac{s}{2} \right), \left( -\frac{s}{2}, -\frac{s}{2} \right) \right\} \]</div>
-<p>For the first source at $ (x_0,</p>
-<h2 id="3-wave-equations-describing-waves-from-each-source_1">3. Wave Equations: Describing Waves from Each Source</h2>
-<p>Each point source at a vertex of the regular polygon emits a circular wave that propagates outward on the water surface. For each vertex (source) at position $ (x_i, y_i) $, we write the wave equation using the given single disturbance equation, accounting for the specific position of each source.</p>
-<h3 id="31-single-disturbance-equation_1">3.1 Single Disturbance Equation</h3>
-<p>The displacement $ \eta_i(x, y, t) $ of the water surface at position $ (x, y) $ and time $ t $, due to a point source located at $ (x_i, y_i) $, is given by:</p>
-<div class="arithmatex">\[ \eta_i(x, y, t) = \frac{A}{\sqrt{r_i}} \cos(k r_i - \omega t + \phi) \]</div>
-<p>where:</p>
-<ul>
-<li>$ \eta_i(x, y, t) $: Displacement of the water surface at point $ (x, y) $ and time $ t $,</li>
-<li>$ A $: Amplitude of the wave (assumed constant across all sources),</li>
-<li>$ r_i $: Distance from the source at $ (x_i, y_i) $ to the point $ (x, y) $,</li>
-<li>$ k $: Wave number, related to the wavelength $ \lambda $ by $ k = \frac{2\pi}{\lambda} $,</li>
-<li>$ \omega $: Angular frequency, related to the frequency $ f $ by $ \omega = 2\pi f $,</li>
-<li>$ \phi $: Initial phase (assumed constant across all sources for coherence),</li>
-<li>The factor $ \frac{1}{\sqrt{r_i}} $: Accounts for the amplitude decay of a two-dimensional circular wave as it spreads outward, ensuring energy conservation.</li>
-</ul>
-<h3 id="32-distance-from-source-to-point_1">3.2 Distance from Source to Point</h3>
-<p>The distance $ r_i $ from the $ i $-th source at position $ (x_i, y_i) $ to the point $ (x, y) $ on the water surface is calculated using the Euclidean distance in the $ XY $-plane:</p>
-<div class="arithmatex">\[ r_i = \sqrt{(x - x_i)^2 + (y - y_i)^2} \]</div>
-<p>This distance determines both the amplitude decay (via the $ \frac{1}{\sqrt{r_i}} $ term) and the phase of the wave (via the $ k r_i $ term) at the point $ (x, y) $.</p>
-<h3 id="33-wave-equation-for-each-source_1">3.3 Wave Equation for Each Source</h3>
-<p>For the $ i $-th source located at $ (x_i, y_i) $, the wave equation, incorporating the distance $ r_i $, becomes:</p>
-<div class="arithmatex">\[ \eta_i(x, y, t) = \frac{A}{\sqrt{\sqrt{(x - x_i)^2 + (y - y_i)^2}}} \cos\left( k \sqrt{(x - x_i)^2 + (y - y_i)^2} - \omega t + \phi \right) \]</div>
-<p>Since all sources are assumed to emit waves with the same amplitude $ A $, wavelength $ \lambda $, frequency $ f $, and initial phase $ \phi $, the parameters $ A $, $ k $, $ \omega $, and $ \phi $ are identical for all $ i $. The only difference between the wave equations arises from the source positions $ (x_i, y_i) $, which affect the distance $ r_i $.</p>
-<h3 id="34-example-wave-equations-for-a-square_1">3.4 Example: Wave Equations for a Square</h3>
-<p>Consider a square with side length $ s $, centered at the origin, with vertices at:</p>
-<div class="arithmatex">\[ (x_i, y_i) \in \left\{ \left( \frac{s}{2}, \frac{s}{2} \right), \left( \frac{s}{2}, -\frac{s}{2} \right), \left( -\frac{s}{2}, \frac{s}{2} \right), \left( -\frac{s}{2}, -\frac{s}{2} \right) \right\} \]</div>
-<p>For the first source at $ (x_0, y_0) = \left( \frac{s}{2}, \frac{s}{2} \right) $, the distance $ r_0 $ is:</p>
-<div class="arithmatex">\[ r_0 = \sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y - \frac{s}{2} \right)^2} \]</div>
+<p>Consider a square with side length <span class="arithmatex">\(s\)</span>, centered at the origin, with vertices at:</p>
+<div class="arithmatex">\[(x_i, y_i) \in \left\{ \left( \frac{s}{2}, \frac{s}{2} \right), \left( \frac{s}{2}, -\frac{s}{2} \right), \left( -\frac{s}{2}, \frac{s}{2} \right), \left( -\frac{s}{2}, -\frac{s}{2} \right) \right\}\]</div>
+<p>For the first source at <span class="arithmatex">\((x_0, y_0) = \left( \frac{s}{2}, \frac{s}{2} \right)\)</span>, the distance <span class="arithmatex">\(r_0\)</span> is:</p>
+<div class="arithmatex">\[r_0 = \sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y - \frac{s}{2} \right)^2}\]</div>
 <p>The wave equation is:</p>
-<div class="arithmatex">\[ \eta_0(x, y, t) = \frac{A}{\sqrt{\sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y - \frac{s}{2} \right)^2}}} \cos\left( k \sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y - \frac{s}{2} \right)^2} - \omega t + \phi \right) \]</div>
-<p>Similarly, for the second source at $ (x_1, y_1) = \left( \frac{s}{2}, -\frac{s}{2} \right) $:</p>
-<div class="arithmatex">\[ r_1 = \sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y + \frac{s}{2} \right)^2} \]</div>
-<div class="arithmatex">\[ \eta_1(x, y, t) = \frac{A}{\sqrt{\sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y + \frac{s}{2} \right)^2}}} \cos\left( k \sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y + \frac{s}{2} \right)^2} - \omega t + \phi \right) \]</div>
+<div class="arithmatex">\[\eta_0(x, y, t) = \frac{A}{\sqrt{\sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y - \frac{s}{2} \right)^2}}} \cos\left( k \sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y - \frac{s}{2} \right)^2} - \omega t + \phi \right)\]</div>
+<p>Similarly, for the second source at <span class="arithmatex">\((x_1, y_1) = \left( \frac{s}{2}, -\frac{s}{2} \right)\)</span>:</p>
+<div class="arithmatex">\[r_1 = \sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y + \frac{s}{2} \right)^2}\]</div>
+<div class="arithmatex">\[\eta_1(x, y, t) = \frac{A}{\sqrt{\sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y + \frac{s}{2} \right)^2}}} \cos\left( k \sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y + \frac{s}{2} \right)^2} - \omega t + \phi \right)\]</div>
 <p>The equations for the other two vertices follow the same pattern, adjusting for their respective coordinates.</p>
 <hr/>
 <h2 id="4-superposition-of-waves-combining-displacements">4. Superposition of Waves: Combining Displacements</h2>
-<p>To determine the total displacement of the water surface at any point $ (x, y) $, we apply the principle of superposition. Since water waves are linear under small amplitude assumptions, the total displacement is the sum of the displacements from all individual sources.</p>
+<p>To determine the total displacement of the water surface at any point <span class="arithmatex">\((x, y)\)</span>, we apply the principle of superposition. Since water waves are linear under small amplitude assumptions, the total displacement is the sum of the displacements from all individual sources.</p>
 <h3 id="41-superposition-principle">4.1 Superposition Principle</h3>
-<p>For $ N $ sources (corresponding to the $ N $ vertices of the polygon), the total displacement $ \eta_{\text{sum}}(x, y, t) $ at each point $ (x, y) $ on the water surface is given by:</p>
-<div class="arithmatex">\[ \eta_{\text{sum}}(x, y, t) = \sum_{i=1}^{N} \eta_i(x, y, t) \]</div>
-<p>where $ \eta_i(x, y, t) $ is the displacement contribution from the $ i $-th source, defined earlier as:</p>
-<div class="arithmatex">\[ \eta_i(x, y, t) = \frac{A}{\sqrt{\sqrt{(x - x_i)^2 + (y - y_i)^2}}} \cos\left( k \sqrt{(x - x_i)^2 + (y - y_i)^2} - \omega t + \phi \right) \]</div>
-<p>and $ N $ is the total number of sources (vertices).</p>
+<p>For <span class="arithmatex">\(N\)</span> sources (corresponding to the <span class="arithmatex">\(N\)</span> vertices of the polygon), the total displacement <span class="arithmatex">\(\eta_{\text{sum}}(x, y, t)\)</span> at each point <span class="arithmatex">\((x, y)\)</span> on the water surface is given by:</p>
+<div class="arithmatex">\[\eta_{\text{sum}}(x, y, t) = \sum_{i=1}^{N} \eta_i(x, y, t)\]</div>
+<p>where <span class="arithmatex">\(\eta_i(x, y, t)\)</span> is the displacement contribution from the <span class="arithmatex">\(i\)</span>-th source, defined earlier as:</p>
+<div class="arithmatex">\[\eta_i(x, y, t) = \frac{A}{\sqrt{\sqrt{(x - x_i)^2 + (y - y_i)^2}}} \cos\left( k \sqrt{(x - x_i)^2 + (y - y_i)^2} - \omega t + \phi \right)\]</div>
+<p>and <span class="arithmatex">\(N\)</span> is the total number of sources (vertices).</p>
 <h3 id="42-substitution-and-total-displacement">4.2 Substitution and Total Displacement</h3>
 <p>Substituting the wave equation for each source into the superposition formula, the total displacement becomes:</p>
-<div class="arithmatex">\[ \eta_{\text{sum}}(x, y, t) = \sum_{i=1}^{N} \frac{A}{\sqrt{\sqrt{(x - x_i)^2 + (y - y_i)^2}}} \cos\left( k \sqrt{(x - x_i)^2 + (y - y_i)^2} - \omega t + \phi \right) \]</div>
-<p>Here, $ r_i = \sqrt{(x - x_i)^2 + (y - y_i)^2} $ represents the distance from the $ i $-th source at $ (x_i, y_i) $ to the point $ (x, y) $, and the parameters $ A $, $ k $, $ \omega $, and $ \phi $ are identical for all sources, ensuring coherence.</p>
+<div class="arithmatex">\[\eta_{\text{sum}}(x, y, t) = \sum_{i=1}^{N} \frac{A}{\sqrt{\sqrt{(x - x_i)^2 + (y - y_i)^2}}} \cos\left( k \sqrt{(x - x_i)^2 + (y - y_i)^2} - \omega t + \phi \right)\]</div>
+<p>Here, <span class="arithmatex">\(r_i = \sqrt{(x - x_i)^2 + (y - y_i)^2}\)</span> represents the distance from the <span class="arithmatex">\(i\)</span>-th source at <span class="arithmatex">\((x_i, y_i)\)</span> to the point <span class="arithmatex">\((x, y)\)</span>, and the parameters <span class="arithmatex">\(A\)</span>, <span class="arithmatex">\(k\)</span>, <span class="arithmatex">\(\omega\)</span>, and <span class="arithmatex">\(\phi\)</span> are identical for all sources, ensuring coherence.</p>
 <h3 id="43-example-superposition-for-a-square">4.3 Example: Superposition for a Square</h3>
-<p>Consider a square with $ N = 4 $ vertices at:</p>
-<div class="arithmatex">\[ (x_i, y_i) \in \left\{ \left( \frac{s}{2}, \frac{s}{2} \right), \left( \frac{s}{2}, -\frac{s}{2} \right), \left( -\frac{s}{2}, \frac{s}{2} \right), \left( -\frac{s}{2}, -\frac{s}{2} \right) \right\} \]</div>
+<p>Consider a square with <span class="arithmatex">\(N = 4\)</span> vertices at:</p>
+<div class="arithmatex">\[(x_i, y_i) \in \left\{ \left( \frac{s}{2}, \frac{s}{2} \right), \left( \frac{s}{2}, -\frac{s}{2} \right), \left( -\frac{s}{2}, \frac{s}{2} \right), \left( -\frac{s}{2}, -\frac{s}{2} \right) \right\}\]</div>
 <p>The total displacement is:</p>
-<div class="arithmatex">\[ \eta_{\text{sum}}(x, y, t) = \sum_{i=1}^{4} \frac{A}{\sqrt{\sqrt{(x - x_i)^2 + (y - y_i)^2}}} \cos\left( k \sqrt{(x - x_i)^2 + (y - y_i)^2} - \omega t + \phi \right) \]</div>
-<p>For instance, the contribution from the first source at $ (x_1, y_1) = \left( \frac{s}{2}, \frac{s}{2} \right) $ is:</p>
-<div class="arithmatex">\[ \eta_1(x, y, t) = \frac{A}{\sqrt{\sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y - \frac{s}{2} \right)^2}}} \cos\left( k \sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y - \frac{s}{2} \right)^2} - \omega t + \phi \right) \]</div>
-<p>The sum includes similar terms for each of the four vertices, adjusted for their respective coordinates.</p>
+<div class="arithmatex">\[\eta_{\text{sum}}(x, y, t) = \sum_{i=1}^{4} \frac{A}{\sqrt{\sqrt{(x - x_i)^2 + (y - y_i)^2}}} \cos\left( k \sqrt{(x - x_i)^2 + (y - y_i)^2} - \omega t + \phi \right)\]</div>
+<p>For instance, the contribution from the first source at <span class="arithmatex">\((x_1, y_1) = \left( \frac{s}{2}, \frac{s}{2} \right)\)</span> is:</p>
+<p><span class="arithmatex">\(<span class="arithmatex">\(\eta_1(x, y, t) = \frac{A}{\sqrt{\sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y - \frac{s}{2} \right)^2}}} \cos\left( k \sqrt{\left( x - \frac{s}{2} \right)^2 + \left( y - \frac{s}{2} \right)^2} - \omega t + \phi \right)\)</span>\)</span>
+The sum includes similar terms for each of the four vertices, adjusted for their respective coordinates.</p>
 <hr/>
 <h1 id="codes-and-plots">Codes And Plots</h1>
 <p><img alt="alt text" src="../image.png"/>
