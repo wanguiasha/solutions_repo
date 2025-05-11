@@ -544,8 +544,8 @@ nx.draw_networkx_edge_labels(G, pos, edge_labels={
 plt.title("Series-Parallel Circuit Diagram")
 plt.axis("off")
 plt.show()
-```
 
+```
 ![alt text](image-3.png)
 ```python
 import matplotlib.pyplot as plt
