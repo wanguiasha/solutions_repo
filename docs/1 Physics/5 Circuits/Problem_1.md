@@ -342,6 +342,7 @@ ensures that nested structures are simplified step-by-step, making the algorithm
 
 ---
 ## Codes and Plots
+
 ![alt text](full_circuit_two_phases.gif)
 ```python
 import matplotlib.pyplot as plt
@@ -422,7 +423,7 @@ ani.save("full_circuit_two_phases.gif", writer=PillowWriter(fps=1))
 plt.close()
 print("✅ GIF saved as full_circuit_two_phases.gif")
  ```
-
+ 
  ![alt text](<series_parallel_circuit_animation (1).gif>)
  ```python
  import matplotlib.pyplot as plt
