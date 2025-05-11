@@ -422,11 +422,116 @@ ani = FuncAnimation(fig, update, frames=total_frames, interval=1000, repeat=Fals
 ani.save("full_circuit_two_phases.gif", writer=PillowWriter(fps=1))
 plt.close()
 print("✅ GIF saved as full_circuit_two_phases.gif")
-
  ```
-  ![alt text](<series_parallel_circuit_animation (1).gif>)
+ ![alt text](image-8.png)
  ```python
  import matplotlib.pyplot as plt
+import networkx as nx
+
+G = nx.Graph()
+
+# Add edges for series and parallel parts
+G.add_edges_from([
+    ('B+', 'R1'),
+    ('R1', 'J1'),
+    ('J1', 'R2'),
+    ('J1', 'R3'),
+    ('R2', 'J2'),
+    ('R3', 'J2'),
+    ('J2', 'R4'),
+    ('R4', 'B-')
+])
+
+# Custom layout to mimic circuit shape
+pos = {
+    'B+': (0, 2),
+    'R1': (1, 2),
+    'J1': (2, 2),
+    'R2': (3, 3),
+    'R3': (3, 1),
+    'J2': (4, 2),
+    'R4': (5, 2),
+    'B-': (6, 2)
+}
+
+plt.figure(figsize=(8, 5))
+nx.draw(G, pos, with_labels=True, node_size=1500, node_color="skyblue", font_weight="bold")
+nx.draw_networkx_edge_labels(G, pos, edge_labels={
+    ('B+', 'R1'): 'R1',
+    ('R1', 'J1'): '',
+    ('J1', 'R2'): 'R2',
+    ('J1', 'R3'): 'R3',
+    ('R2', 'J2'): '',
+    ('R3', 'J2'): '',
+    ('J2', 'R4'): 'R4',
+    ('R4', 'B-'): ''
+})
+plt.title("Series-Parallel Circuit Diagram")
+plt.axis("off")
+plt.show()
+```
+![alt text](image-9.png)
+```python
+import matplotlib.pyplot as plt
+import networkx as nx
+
+# Create the graph
+G = nx.Graph()
+edges = [('B+', 'R1'), ('R1', 'R2'), ('R2', 'R3'), ('R3', 'B-')]
+G.add_edges_from(edges)
+
+# Define positions to resemble a linear circuit
+pos = {
+    'B+': (0, 0),
+    'R1': (1, 0),
+    'R2': (2, 0),
+    'R3': (3, 0),
+    'B-': (4, 0)
+}
+
+# Draw the circuit
+plt.figure(figsize=(8, 2))
+nx.draw(G, pos, with_labels=True, node_size=1500, node_color="lightblue", font_weight="bold")
+nx.draw_networkx_edge_labels(G, pos, edge_labels={
+    ('B+', 'R1'): 'R1',
+    ('R1', 'R2'): 'R2',
+    ('R2', 'R3'): 'R3',
+    ('R3', 'B-'): ''
+})
+plt.title("Series Circuit: B+ → R1 → R2 → R3 → B-")
+plt.axis("off")
+plt.show()
+```
+![alt text](image-11.png)
+```python
+G = nx.Graph()
+G.add_edges_from([
+    ('A', 'B'), ('A', 'C'), ('B', 'D'), ('C', 'D'), ('B', 'C')
+])
+
+pos = {
+    'A': (0, 1),
+    'B': (2, 2),
+    'C': (2, 0),
+    'D': (4, 1)
+}
+
+plt.figure(figsize=(7, 4))
+nx.draw(G, pos, with_labels=True, node_size=1400, node_color="wheat", font_weight="bold")
+nx.draw_networkx_edge_labels(G, pos, edge_labels={
+    ('A', 'B'): 'R1',
+    ('A', 'C'): 'R2',
+    ('B', 'D'): 'R3',
+    ('C', 'D'): 'R4',
+    ('B', 'C'): 'Rx'  # Middle resistor
+})
+plt.title("Wheatstone Bridge Circuit")
+plt.axis("off")
+plt.show()
+```
+![alt text](<series_parallel_circuit_animation (2).gif>)
+```python
+import matplotlib.pyplot as plt
 import networkx as nx
 from matplotlib.animation import FuncAnimation
 
@@ -495,117 +600,42 @@ ani = FuncAnimation(fig, update, frames=len(node_order), interval=800, repeat=Fa
 gif_path = "/mnt/data/series_parallel_circuit_animation.gif"
 ani.save(gif_path, writer='pillow')
 
-# Displagif_pathy file path
-
+# Display file path
+gif_path
 ```
-![alt text](image-5.png)
+![alt text](image-12.png)
 ```python
-import matplotlib.pyplot as plt
-import networkx as nx
-
 G = nx.Graph()
-
-# Add edges for series and parallel parts
 G.add_edges_from([
-    ('B+', 'R1'),
-    ('R1', 'J1'),
-    ('J1', 'R2'),
-    ('J1', 'R3'),
-    ('R2', 'J2'),
-    ('R3', 'J2'),
-    ('J2', 'R4'),
-    ('R4', 'B-')
+    ('B+', 'R'),
+    ('R', 'Node1'),
+    ('Node1', 'C'),
+    ('C', 'B-'),
+    ('Node1', 'B-')  # To close loop
 ])
 
-# Custom layout to mimic circuit shape
 pos = {
     'B+': (0, 2),
-    'R1': (1, 2),
-    'J1': (2, 2),
-    'R2': (3, 3),
-    'R3': (3, 1),
-    'J2': (4, 2),
-    'R4': (5, 2),
-    'B-': (6, 2)
-}
-
-plt.figure(figsize=(8, 5))
-nx.draw(G, pos, with_labels=True, node_size=1500, node_color="skyblue", font_weight="bold")
-nx.draw_networkx_edge_labels(G, pos, edge_labels={
-    ('B+', 'R1'): 'R1',
-    ('R1', 'J1'): '',
-    ('J1', 'R2'): 'R2',
-    ('J1', 'R3'): 'R3',
-    ('R2', 'J2'): '',
-    ('R3', 'J2'): '',
-    ('J2', 'R4'): 'R4',
-    ('R4', 'B-'): ''
-})
-plt.title("Series-Parallel Circuit Diagram")
-plt.axis("off")
-plt.show()
-
-```
-![alt text](image-3.png)
-```python
-import matplotlib.pyplot as plt
-import networkx as nx
-
-# Create the graph
-G = nx.Graph()
-edges = [('B+', 'R1'), ('R1', 'R2'), ('R2', 'R3'), ('R3', 'B-')]
-G.add_edges_from(edges)
-
-# Define positions to resemble a linear circuit
-pos = {
-    'B+': (0, 0),
-    'R1': (1, 0),
-    'R2': (2, 0),
-    'R3': (3, 0),
-    'B-': (4, 0)
-}
-
-# Draw the circuit
-plt.figure(figsize=(8, 2))
-nx.draw(G, pos, with_labels=True, node_size=1500, node_color="lightblue", font_weight="bold")
-nx.draw_networkx_edge_labels(G, pos, edge_labels={
-    ('B+', 'R1'): 'R1',
-    ('R1', 'R2'): 'R2',
-    ('R2', 'R3'): 'R3',
-    ('R3', 'B-'): ''
-})
-plt.title("Series Circuit: B+ → R1 → R2 → R3 → B-")
-plt.axis("off")
-plt.show()
-```
-![alt text](image-4.png)
-```python
-G = nx.Graph()
-G.add_edges_from([
-    ('A', 'B'), ('A', 'C'), ('B', 'D'), ('C', 'D'), ('B', 'C')
-])
-
-pos = {
-    'A': (0, 1),
-    'B': (2, 2),
-    'C': (2, 0),
-    'D': (4, 1)
+    'R': (1, 2),
+    'Node1': (2, 2),
+    'C': (2, 1),
+    'B-': (3, 2)
 }
 
 plt.figure(figsize=(7, 4))
-nx.draw(G, pos, with_labels=True, node_size=1400, node_color="wheat", font_weight="bold")
+nx.draw(G, pos, with_labels=True, node_size=1400, node_color="lightyellow", font_weight="bold")
 nx.draw_networkx_edge_labels(G, pos, edge_labels={
-    ('A', 'B'): 'R1',
-    ('A', 'C'): 'R2',
-    ('B', 'D'): 'R3',
-    ('C', 'D'): 'R4',
-    ('B', 'C'): 'Rx'  # Middle resistor
+    ('B+', 'R'): 'R',
+    ('R', 'Node1'): '',
+    ('Node1', 'C'): 'C',
+    ('C', 'B-'): '',
+    ('Node1', 'B-'): ''
 })
-plt.title("Wheatstone Bridge Circuit")
+plt.title("RC Charging Circuit")
 plt.axis("off")
 plt.show()
 ```
-![alt text](image-6.png)
+![alt text](image-13.png)
 ```python
 # Create Star-Delta (Y-Δ) Circuit
 G = nx.DiGraph()
@@ -664,38 +694,7 @@ ani.save(gif_path, writer='pillow')
 # Display file path
 gif_path
 ```
-![alt text](image-7.png)
-```python
-G = nx.Graph()
-G.add_edges_from([
-    ('B+', 'R'),
-    ('R', 'Node1'),
-    ('Node1', 'C'),
-    ('C', 'B-'),
-    ('Node1', 'B-')  # To close loop
-])
 
-pos = {
-    'B+': (0, 2),
-    'R': (1, 2),
-    'Node1': (2, 2),
-    'C': (2, 1),
-    'B-': (3, 2)
-}
-
-plt.figure(figsize=(7, 4))
-nx.draw(G, pos, with_labels=True, node_size=1400, node_color="lightyellow", font_weight="bold")
-nx.draw_networkx_edge_labels(G, pos, edge_labels={
-    ('B+', 'R'): 'R',
-    ('R', 'Node1'): '',
-    ('Node1', 'C'): 'C',
-    ('C', 'B-'): '',
-    ('Node1', 'B-'): ''
-})
-plt.title("RC Charging Circuit")
-plt.axis("off")
-plt.show()
-```
 ## 7. Conclusion
 
 The graph-theoretic approach to simplifying electrical circuits provides a systematic and mathematically rigorous method for calculating equivalent resistance, as demonstrated through Case 1 and additional examples. By modeling circuits as graphs and applying iterative series and parallel reductions, we transform complex networks into a single equivalent resistance, such as $R_{eq} = 21\Omega$ for the series circuit in Case 1. The algorithm, with its ability to handle nested combinations through iterative simplification, proves versatile across configurations, yielding $R_{eq} = 9\Omega$ for a simple series circuit, $R_{eq} = 2\Omega$ for a parallel circuit, and $R_{eq} = 7\Omega$ for a nested series-parallel circuit. Despite a time complexity of $O((|V| + |E|)^2)$, potential enhancements like DFS-based pattern detection and delta-star transformations could reduce this to $O(|V| + |E|)$ per reduction, making the method highly efficient for large-scale circuit analysis. This framework not only deepens our understanding of circuit behavior but also lays the groundwork for advanced applications in electrical engineering, such as optimizing circuit design and analyzing power distribution networks.
