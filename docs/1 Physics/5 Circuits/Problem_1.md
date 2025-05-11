@@ -341,6 +341,7 @@ $$R_{\text{series}} = \sum_{i=1}^k R_i, \quad R_{\text{parallel}} = \left( \sum_
 ensures that nested structures are simplified step-by-step, making the algorithm a powerful tool for circuit analysis. Its ability to handle complex configurations through systematic subgraph reduction underscores its utility in both theoretical and practical applications.
 
 ---
+## Codes and Plots
 ![alt text](full_circuit_two_phases.gif)
 ```python
 import matplotlib.pyplot as plt
