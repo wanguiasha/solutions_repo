@@ -422,7 +422,8 @@ ani.save("full_circuit_two_phases.gif", writer=PillowWriter(fps=1))
 plt.close()
 print("✅ GIF saved as full_circuit_two_phases.gif")
  ```
- ![alt text](series_parallel_circuit_animation.gif)
+
+ ![alt text](<series_parallel_circuit_animation (1).gif>)
  ```python
  import matplotlib.pyplot as plt
 import networkx as nx
@@ -493,8 +494,8 @@ ani = FuncAnimation(fig, update, frames=len(node_order), interval=800, repeat=Fa
 gif_path = "/mnt/data/series_parallel_circuit_animation.gif"
 ani.save(gif_path, writer='pillow')
 
-# Display file path
-gif_path
+# Displagif_pathy file path
+
 ```
 ![alt text](image-5.png)
 ```python
