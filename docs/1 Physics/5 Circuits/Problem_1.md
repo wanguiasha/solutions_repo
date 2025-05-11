@@ -603,6 +603,53 @@ ani.save(gif_path, writer='pillow')
 # Display file path
 gif_path
 ```
+![alt text](image-14.png)
+```python
+import matplotlib.pyplot as plt
+import networkx as nx
+
+G = nx.Graph()
+
+# Add edges for series and parallel parts
+G.add_edges_from([
+    ('B+', 'R1'),
+    ('R1', 'J1'),
+    ('J1', 'R2'),
+    ('J1', 'R3'),
+    ('R2', 'J2'),
+    ('R3', 'J2'),
+    ('J2', 'R4'),
+    ('R4', 'B-')
+])
+
+# Custom layout to mimic circuit shape
+pos = {
+    'B+': (0, 2),
+    'R1': (1, 2),
+    'J1': (2, 2),
+    'R2': (3, 3),
+    'R3': (3, 1),
+    'J2': (4, 2),
+    'R4': (5, 2),
+    'B-': (6, 2)
+}
+
+plt.figure(figsize=(8, 5))
+nx.draw(G, pos, with_labels=True, node_size=1500, node_color="skyblue", font_weight="bold")
+nx.draw_networkx_edge_labels(G, pos, edge_labels={
+    ('B+', 'R1'): 'R1',
+    ('R1', 'J1'): '',
+    ('J1', 'R2'): 'R2',
+    ('J1', 'R3'): 'R3',
+    ('R2', 'J2'): '',
+    ('R3', 'J2'): '',
+    ('J2', 'R4'): 'R4',
+    ('R4', 'B-'): ''
+})
+plt.title("Series-Parallel Circuit Diagram")
+plt.axis("off")
+plt.show()
+```
 ![alt text](image-12.png)
 ```python
 G = nx.Graph()
