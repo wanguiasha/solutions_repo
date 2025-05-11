@@ -422,9 +422,9 @@ ani = FuncAnimation(fig, update, frames=total_frames, interval=1000, repeat=Fals
 ani.save("full_circuit_two_phases.gif", writer=PillowWriter(fps=1))
 plt.close()
 print("✅ GIF saved as full_circuit_two_phases.gif")
+
  ```
- 
- ![alt text](<series_parallel_circuit_animation (1).gif>)
+  ![alt text](<series_parallel_circuit_animation (1).gif>)
  ```python
  import matplotlib.pyplot as plt
 import networkx as nx
