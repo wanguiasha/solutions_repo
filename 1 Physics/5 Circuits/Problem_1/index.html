@@ -457,396 +457,433 @@ The process continues until the graph is reduced to a single edge between the in
 ensures that nested structures are simplified step-by-step, making the algorithm a powerful tool for circuit analysis. Its ability to handle complex configurations through systematic subgraph reduction underscores its utility in both theoretical and practical applications.</p>
 <hr/>
 <h2 id="codes-and-plots">Codes and Plots</h2>
-<p><img alt="alt text" src="../full_circuit_two_phases.gif"/></p>
-<pre><code class="language-python">import matplotlib.pyplot as plt
-import networkx as nx
-from matplotlib.animation import FuncAnimation, PillowWriter
+<p><img alt="alt text" src="../circuit_simplification_phased_layout%20%281%29.gif"/></p>
+<pre><code class="language-python">import networkx as nx
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import imageio
+import numpy as np
 
-# Phase 1: Linear layout positions
-positions_linear = {
-    'B+': (0, 0),
-    'R1': (1, 0),
-    'R2': (2, 0),
-    'R3': (3, 0),
-    'R4': (4, 0),
-    'R5': (5, 0),
-    'B-': (6, 0)
-}
-
-# Phase 2: Rectangular/circuit-style layout
-positions_rect = {
-    'B+': (0, 1),
-    'R1': (1, 1),
-    'R2': (2, 1),
-    'R3': (2, 0),
-    'R4': (1, 0),
-    'R5': (0, 0),
-    'B-': (-1, 0)
-}
-
-nodes = list(positions_linear.keys())
-edges = [(nodes[i], nodes[i+1]) for i in range(len(nodes)-1)]
-
-# Total frames: one for each edge in phase 1 + one for each edge in phase 2
-total_frames = len(edges) * 2
-
-fig, ax = plt.subplots(figsize=(8, 4))
-
-def update(frame):
-    ax.clear()
-
-    # Determine phase
-    phase = 1 if frame &lt; len(edges) else 2
-    step = frame if phase == 1 else frame - len(edges)
-
-    # Select positions
-    pos = positions_linear if phase == 1 else positions_rect
-    G = nx.MultiGraph()
-    G.add_nodes_from(nodes)
-    G.add_edges_from(edges)
-
-    # Node coloring
-    node_colors = []
-    for i, node in enumerate(nodes):
-        if i &lt;= step:
-            node_colors.append('limegreen')
+# Function to draw nodes as boxes or circles with specific colors
+def draw_custom_nodes(G, pos, ax, node_colors, node_shapes):
+    for node in G.nodes():
+        x, y = pos[node]
+        if node_shapes[node] == 'box':
+            rect = patches.Rectangle((x - 0.1, y - 0.05), 0.2, 0.1, linewidth=1, edgecolor='black', facecolor=node_colors[node])
+            ax.add_patch(rect)
+            ax.text(x, y, node, fontsize=10, ha='center', va='center')
         else:
-            node_colors.append('gray')
+            circle = patches.Circle((x, y), 0.05, linewidth=1, edgecolor='black', facecolor=node_colors[node])
+            ax.add_patch(circle)
+            ax.text(x, y, node, fontsize=10, ha='center', va='center')
 
-    # Draw graph
-    nx.draw(G, pos=pos, with_labels=True, node_color=node_colors,
-            node_size=1000, edge_color='black', font_weight='bold', ax=ax)
+# Function to draw edges with arrows and labels
+def draw_custom_edges(G, pos, ax):
+    for (u, v, d) in G.edges(data=True):
+        x1, y1 = pos[u]
+        x2, y2 = pos[v]
+        ax.arrow(x1, y1, (x2-x1)*0.8, (y2-y1)*0.8, head_width=0.02, head_length=0.04, fc='black', ec='black')
+        if 'label' in d and d['label']:
+            ax.text((x1+x2)/2, (y1+y2)/2, d['label'], fontsize=10, ha='center', va='center', color='black')
 
-    # Edge labels
-    edge_labels = {}
-    for i in range(min(step + 1, len(edges))):
-        edge_labels[edges[i]] = f'R{i+1}'
+# Create a MultiGraph to allow multiple edges
+G = nx.MultiGraph()
 
-    nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=edge_labels, ax=ax)
-
-    title = f"Phase {phase}: Current Flow through Circuit"
-    ax.set_title(title, fontsize=14)
-    ax.axis('off')
-
-# Create animation
-ani = FuncAnimation(fig, update, frames=total_frames, interval=1000, repeat=False)
-
-# Save as GIF
-ani.save("full_circuit_two_phases.gif", writer=PillowWriter(fps=1))
-plt.close()
-print("✅ GIF saved as full_circuit_two_phases.gif")
- ```
- ![alt text](image-8.png)
- ```python
- import matplotlib.pyplot as plt
-import networkx as nx
-
-G = nx.Graph()
-
-# Add edges for series and parallel parts
+# Initial graph (Case 1 Initial)
 G.add_edges_from([
-    ('B+', 'R1'),
-    ('R1', 'J1'),
-    ('J1', 'R2'),
-    ('J1', 'R3'),
-    ('R2', 'J2'),
-    ('R3', 'J2'),
-    ('J2', 'R4'),
-    ('R4', 'B-')
+    ('B+', 'R1', {'label': 'R1'}),
+    ('R1', 'R2', {'label': 'R2'}),
+    ('R2', 'R3', {'label': 'R3'}),
+    ('R3', 'R4', {'label': 'R4'}),
+    ('R4', 'R5', {'label': 'R5'}),
+    ('R5', 'B-', {'label': ''}),
+    ('B+', 'R4', {'label': ''})  # Parallel path
 ])
 
-# Custom layout to mimic circuit shape
-pos = {
-    'B+': (0, 2),
-    'R1': (1, 2),
-    'J1': (2, 2),
-    'R2': (3, 3),
-    'R3': (3, 1),
-    'J2': (4, 2),
-    'R4': (5, 2),
-    'B-': (6, 2)
+# Step 1: Combine R2 and R3
+G_step1 = nx.MultiGraph(G)
+G_step1.remove_edge('R2', 'R3')
+G_step1.remove_edge('R3', 'R4')
+G_step1.add_edge('R1', 'R4', label='R23')
+
+# Step 2: Combine R4 and R5
+G_step2 = nx.MultiGraph(G_step1)
+G_step2.remove_edge('R4', 'R5')
+G_step2.remove_edge('R5', 'B-')
+G_step2.add_edge('R1', 'B-', label='R45')
+
+# Step 3: Combine R1 and R23 (parallel) - Phase 1
+G_step3 = nx.MultiGraph(G_step2)
+G_step3.remove_edge('B+', 'R1')
+G_step3.remove_edge('R1', 'R4')
+G_step3.add_edge('B+', 'R4', label='R123')
+
+# Step 4: Final combination with R45 - Phase 2
+G_step4 = nx.MultiGraph(G_step3)
+G_step4.remove_edge('B+', 'R4')
+G_step4.remove_edge('R1', 'B-')
+G_step4.add_edge('B+', 'B-', label='R12345')
+
+# List of graphs for animation
+graphs = [G, G_step1, G_step2, G_step3, G_step4]
+titles = ["Initial Circuit", "Step 1: Combine R2 and R3", "Step 2: Combine R4 and R5", 
+          "Phase 1: Combine R1 and R23", "Phase 2: Final Combination"]
+
+# Define positions for each step
+# Linear layout for initial steps
+pos_initial = {'B+': (0, 0), 'R1': (1, 0), 'R2': (2, 0), 'R3': (3, 0), 'R4': (4, 0), 'R5': (5, 0), 'B-': (6, 0)}
+pos_step1 = {'B+': (0, 0), 'R1': (1, 0), 'R2': (2, 0), 'R4': (3, 0), 'R5': (4, 0), 'B-': (5, 0)}
+pos_step2 = {'B+': (0, 0), 'R1': (1, 0), 'R4': (2, 0), 'B-': (3, 0)}
+
+# Circular/compact layout for Phase 1 and Phase 2
+pos_step3 = {'B+': (0, 0), 'R1': (1, 1), 'R4': (1, -1), 'B-': (2, 0)}  # Circular arrangement
+pos_step4 = {'B+': (0, 0), 'B-': (1, 0)}  # Compact linear for final step
+
+positions = [pos_initial, pos_step1, pos_step2, pos_step3, pos_step4]
+
+# Define node colors and shapes
+node_colors = {
+    'B+': 'lightgray', 'R1': 'lightgreen', 'R2': 'lightgreen', 'R3': 'lightgreen',
+    'R4': 'lightgreen', 'R5': 'lightgreen', 'B-': 'lightgray',
+    'R23': 'lightgreen', 'R45': 'lightgreen', 'R123': 'lightgreen', 'R12345': 'lightgreen'
+}
+node_shapes = {
+    'B+': 'box', 'R1': 'box', 'R2': 'box', 'R3': 'box', 'R4': 'box', 'R5': 'box', 'B-': 'box',
+    'R23': 'box', 'R45': 'box', 'R123': 'box', 'R12345': 'box'
 }
 
-plt.figure(figsize=(8, 5))
-nx.draw(G, pos, with_labels=True, node_size=1500, node_color="skyblue", font_weight="bold")
-nx.draw_networkx_edge_labels(G, pos, edge_labels={
-    ('B+', 'R1'): 'R1',
-    ('R1', 'J1'): '',
-    ('J1', 'R2'): 'R2',
-    ('J1', 'R3'): 'R3',
-    ('R2', 'J2'): '',
-    ('R3', 'J2'): '',
-    ('J2', 'R4'): 'R4',
-    ('R4', 'B-'): ''
-})
-plt.title("Series-Parallel Circuit Diagram")
-plt.axis("off")
-plt.show()
+# Generate frames for animation
+frames = []
+num_steps = 10  # Number of frames per transition for smooth animation
+
+for i in range(len(graphs) - 1):
+    G_start = graphs[i]
+    G_end = graphs[i + 1]
+    pos_start = positions[i]
+    pos_end = positions[i + 1]
+
+    # Interpolate positions between steps
+    for t in np.linspace(0, 1, num_steps):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        pos_interp = {}
+        for node in set(pos_start.keys()) | set(pos_end.keys()):
+            start_pos = pos_start.get(node, pos_end.get(node, (0, 0)))
+            end_pos = pos_end.get(node, pos_start.get(node, (0, 0)))
+            pos_interp[node] = (start_pos[0] + t * (end_pos[0] - start_pos[0]), 
+                               start_pos[1] + t * (end_pos[1] - start_pos[1]))
+
+        # Draw the graph
+        draw_custom_nodes(G_start, pos_interp, ax, node_colors, node_shapes)
+        draw_custom_edges(G_start, pos_interp, ax)
+        ax.set_title(titles[i])
+        ax.set_xlim(-0.5, 6.5)
+        ax.set_ylim(-1.5, 1.5)  # Adjusted for circular layout
+        ax.axis('off')
+        plt.tight_layout()
+
+        # Save frame to a temporary file
+        frame = f"temp_frame_{len(frames)}.png"
+        plt.savefig(frame)
+        plt.close()
+        frames.append(imageio.imread(frame))
+
+# Create animated GIF
+imageio.mimsave('circuit_simplification_phased_layout.gif', frames, fps=10)
+
+print("Animated GIF 'circuit_simplification_phased_layout.gif' has been created.")
 </code></pre>
-<p><img alt="alt text" src="../image-9.png"/></p>
-<pre><code class="language-python">import matplotlib.pyplot as plt
-import networkx as nx
+<p><img alt="alt text" src="../image-15.png"/></p>
+<pre><code class="language-python">import networkx as nx
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
-# Create the graph
-G = nx.Graph()
-edges = [('B+', 'R1'), ('R1', 'R2'), ('R2', 'R3'), ('R3', 'B-')]
-G.add_edges_from(edges)
-
-# Define positions to resemble a linear circuit
-pos = {
-    'B+': (0, 0),
-    'R1': (1, 0),
-    'R2': (2, 0),
-    'R3': (3, 0),
-    'B-': (4, 0)
-}
-
-# Draw the circuit
-plt.figure(figsize=(8, 2))
-nx.draw(G, pos, with_labels=True, node_size=1500, node_color="lightblue", font_weight="bold")
-nx.draw_networkx_edge_labels(G, pos, edge_labels={
-    ('B+', 'R1'): 'R1',
-    ('R1', 'R2'): 'R2',
-    ('R2', 'R3'): 'R3',
-    ('R3', 'B-'): ''
-})
-plt.title("Series Circuit: B+ → R1 → R2 → R3 → B-")
-plt.axis("off")
-plt.show()
-</code></pre>
-<p><img alt="alt text" src="../image-11.png"/></p>
-<pre><code class="language-python">G = nx.Graph()
-G.add_edges_from([
-    ('A', 'B'), ('A', 'C'), ('B', 'D'), ('C', 'D'), ('B', 'C')
-])
-
-pos = {
-    'A': (0, 1),
-    'B': (2, 2),
-    'C': (2, 0),
-    'D': (4, 1)
-}
-
-plt.figure(figsize=(7, 4))
-nx.draw(G, pos, with_labels=True, node_size=1400, node_color="wheat", font_weight="bold")
-nx.draw_networkx_edge_labels(G, pos, edge_labels={
-    ('A', 'B'): 'R1',
-    ('A', 'C'): 'R2',
-    ('B', 'D'): 'R3',
-    ('C', 'D'): 'R4',
-    ('B', 'C'): 'Rx'  # Middle resistor
-})
-plt.title("Wheatstone Bridge Circuit")
-plt.axis("off")
-plt.show()
-</code></pre>
-<p><img alt="alt text" src="../series_parallel_circuit_animation%20%282%29.gif"/></p>
-<pre><code class="language-python">import matplotlib.pyplot as plt
-import networkx as nx
-from matplotlib.animation import FuncAnimation
-
-# Create the circuit graph (Series-Parallel Mix)
-G = nx.DiGraph()
-
-# Add edges for the circuit (Series-Parallel mix)
-G.add_edges_from([
-    ('B+', 'R1'),  # Battery to Resistor R1
-    ('R1', 'J1'),  # Resistor R1 to Junction J1
-    ('J1', 'R2'),  # Junction J1 to Resistor R2 (Parallel)
-    ('J1', 'R3'),  # Junction J1 to Resistor R3 (Parallel)
-    ('R2', 'J2'),  # Resistor R2 to Junction J2
-    ('R3', 'J2'),  # Resistor R3 to Junction J2
-    ('J2', 'R4'),  # Junction J2 to Resistor R4
-    ('R4', 'B-')   # Resistor R4 to Battery Negative Terminal
-])
-
-# Define positions for the circuit nodes to resemble a simple layout
-pos = {
-    'B+': (0, 2),
-    'R1': (1, 2),
-    'J1': (2, 2),
-    'R2': (3, 3),
-    'R3': (3, 1),
-    'J2': (4, 2),
-    'R4': (5, 2),
-    'B-': (6, 2)
-}
-
-# Initial node color state (all are gray at first)
-node_order = ['B+', 'R1', 'J1', 'R2', 'R3', 'J2', 'R4', 'B-']
-node_colors = ['gray'] * len(node_order)
-
-# Create a plot and axes for drawing the circuit
-fig, ax = plt.subplots(figsize=(8, 5))
-
-# Update function for animation
-def update(frame):
-    ax.clear()
-    ax.set_title("Series-Parallel Circuit - Current Flow Animation", fontsize=14)
-
-    # Update node colors based on the frame
-    for i in range(len(node_colors)):
-        if i &lt;= frame:
-            node_colors[i] = 'limegreen'
+# Function to draw nodes as boxes or circles with specific colors
+def draw_custom_nodes(G, pos, ax, node_colors, node_shapes):
+    for node in G.nodes():
+        x, y = pos[node]
+        if node_shapes[node] == 'box':
+            # Draw a rectangle for resistors
+            rect = patches.Rectangle((x - 0.1, y - 0.05), 0.2, 0.1, linewidth=1, edgecolor='black', facecolor=node_colors[node])
+            ax.add_patch(rect)
+            ax.text(x, y, node, fontsize=10, ha='center', va='center')
         else:
-            node_colors[i] = 'gray'
+            # Draw a circle for junctions or battery terminals
+            circle = patches.Circle((x, y), 0.05, linewidth=1, edgecolor='black', facecolor=node_colors[node])
+            ax.add_patch(circle)
+            ax.text(x, y, node, fontsize=10, ha='center', va='center')
 
-    # Map the node colors
-    color_map = {node_order[i]: node_colors[i] for i in range(len(node_order))}
-    colors = [color_map.get(node, 'gray') for node in G.nodes]
+# Function to draw edges with arrows and labels
+def draw_custom_edges(G, pos, ax):
+    for (u, v, d) in G.edges(data=True):
+        x1, y1 = pos[u]
+        x2, y2 = pos[v]
+        # Draw an arrow from u to v
+        ax.arrow(x1, y1, (x2-x1)*0.8, (y2-y1)*0.8, head_width=0.02, head_length=0.04, fc='black', ec='black')
+        # Add edge label
+        if 'label' in d and d['label']:
+            ax.text((x1+x2)/2, (y1+y2)/2, d['label'], fontsize=10, ha='center', va='center', color='black')
 
-    # Draw the circuit
-    nx.draw(G, pos, with_labels=True, node_color=colors, node_size=1400, font_weight='bold', ax=ax)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels={
-        ('B+', 'R1'): 'R1', ('J1', 'R2'): 'R2', ('J1', 'R3'): 'R3', ('J2', 'R4'): 'R4'
-    }, ax=ax)
-
-    ax.axis('off')
-
-# Create the animation (steps from B+ to B-)
-ani = FuncAnimation(fig, update, frames=len(node_order), interval=800, repeat=False)
-
-# Save the animation as a gif (optional, can also display directly)
-gif_path = "/mnt/data/series_parallel_circuit_animation.gif"
-ani.save(gif_path, writer='pillow')
-
-# Display file path
-gif_path
-</code></pre>
-<p><img alt="alt text" src="../image-14.png"/></p>
-<pre><code class="language-python">import matplotlib.pyplot as plt
-import networkx as nx
-
-G = nx.Graph()
-
-# Add edges for series and parallel parts
-G.add_edges_from([
-    ('B+', 'R1'),
-    ('R1', 'J1'),
-    ('J1', 'R2'),
-    ('J1', 'R3'),
-    ('R2', 'J2'),
-    ('R3', 'J2'),
-    ('J2', 'R4'),
-    ('R4', 'B-')
+# Series Configuration
+G_series = nx.MultiGraph()
+G_series.add_edges_from([
+    ('In', 'o1', {'label': ''}),
+    ('o1', 'R1', {'label': 'R1'}),
+    ('R1', 'o2', {'label': ''}),
+    ('o2', 'R2', {'label': 'R2'}),
+    ('o2', 'o3', {'label': ''}),
+    ('o3', 'D1', {'label': 'D1'})
 ])
 
-# Custom layout to mimic circuit shape
-pos = {
-    'B+': (0, 2),
-    'R1': (1, 2),
-    'J1': (2, 2),
-    'R2': (3, 3),
-    'R3': (3, 1),
-    'J2': (4, 2),
-    'R4': (5, 2),
-    'B-': (6, 2)
+# Simplified Series
+G_series_simplified = nx.MultiGraph()
+G_series_simplified.add_edges_from([
+    ('In', 'o1', {'label': ''}),
+    ('o1', 'R12', {'label': 'R12'}),
+    ('R12', 'o3', {'label': ''}),
+    ('o3', 'D1', {'label': 'D1'})
+])
+
+# Parallel Configuration
+G_parallel = nx.MultiGraph()
+G_parallel.add_edges_from([
+    ('In', 'o1', {'label': ''}),
+    ('o1', 'R1', {'label': 'R1'}),
+    ('o1', 'R2', {'label': 'R2'}),
+    ('R1', 'o3', {'label': ''}),
+    ('R2', 'o3', {'label': ''}),
+    ('o3', 'D1', {'label': 'D1'})
+])
+
+# Simplified Parallel
+G_parallel_simplified = nx.MultiGraph()
+G_parallel_simplified.add_edges_from([
+    ('In', 'o1', {'label': ''}),
+    ('o1', 'R12', {'label': 'R12'}),
+    ('R12', 'o3', {'label': ''}),
+    ('o3', 'D1', {'label': 'D1'})
+])
+
+# Define custom positions for linear/structured layout
+pos_series = {
+    'In': (0, 0), 'o1': (1, 0), 'R1': (2, 0), 'o2': (3, 0), 'R2': (4, 0), 'o3': (5, 0), 'D1': (6, 0)
+}
+pos_series_simplified = {
+    'In': (0, 0), 'o1': (1, 0), 'R12': (3, 0), 'o3': (5, 0), 'D1': (6, 0)
+}
+pos_parallel = {
+    'In': (0, 0), 'o1': (1, 0), 'R1': (2, 1), 'R2': (2, -1), 'o3': (3, 0), 'D1': (4, 0)
+}
+pos_parallel_simplified = {
+    'In': (0, 0), 'o1': (1, 0), 'R12': (2, 0), 'o3': (3, 0), 'D1': (4, 0)
 }
 
-plt.figure(figsize=(8, 5))
-nx.draw(G, pos, with_labels=True, node_size=1500, node_color="skyblue", font_weight="bold")
-nx.draw_networkx_edge_labels(G, pos, edge_labels={
-    ('B+', 'R1'): 'R1',
-    ('R1', 'J1'): '',
-    ('J1', 'R2'): 'R2',
-    ('J1', 'R3'): 'R3',
-    ('R2', 'J2'): '',
-    ('R3', 'J2'): '',
-    ('J2', 'R4'): 'R4',
-    ('R4', 'B-'): ''
-})
-plt.title("Series-Parallel Circuit Diagram")
-plt.axis("off")
+# Define node colors and shapes
+node_colors_series = {'In': 'lightgray', 'o1': 'white', 'R1': 'lightgreen', 'o2': 'white', 'R2': 'lightgreen', 'o3': 'white', 'D1': 'lightgray'}
+node_colors_series_simplified = {'In': 'lightgray', 'o1': 'white', 'R12': 'lightgreen', 'o3': 'white', 'D1': 'lightgray'}
+node_colors_parallel = {'In': 'lightgray', 'o1': 'white', 'R1': 'lightblue', 'R2': 'lightblue', 'o3': 'white', 'D1': 'lightgray'}
+node_colors_parallel_simplified = {'In': 'lightgray', 'o1': 'white', 'R12': 'lightblue', 'o3': 'white', 'D1': 'lightgray'}
+
+node_shapes_series = {'In': 'box', 'o1': 'circle', 'R1': 'box', 'o2': 'circle', 'R2': 'box', 'o3': 'circle', 'D1': 'box'}
+node_shapes_series_simplified = {'In': 'box', 'o1': 'circle', 'R12': 'box', 'o3': 'circle', 'D1': 'box'}
+node_shapes_parallel = {'In': 'box', 'o1': 'circle', 'R1': 'box', 'R2': 'box', 'o3': 'circle', 'D1': 'box'}
+node_shapes_parallel_simplified = {'In': 'box', 'o1': 'circle', 'R12': 'box', 'o3': 'circle', 'D1': 'box'}
+
+# Draw graphs
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+
+# Series Configuration
+ax = axes[0, 0]
+draw_custom_nodes(G_series, pos_series, ax, node_colors_series, node_shapes_series)
+draw_custom_edges(G_series, pos_series, ax)
+ax.set_title("Series Configuration")
+ax.set_xlim(-0.5, 6.5)
+ax.set_ylim(-0.5, 0.5)
+ax.axis('off')
+
+# Simplified Series
+ax = axes[0, 1]
+draw_custom_nodes(G_series_simplified, pos_series_simplified, ax, node_colors_series_simplified, node_shapes_series_simplified)
+draw_custom_edges(G_series_simplified, pos_series_simplified, ax)
+ax.set_title("Simplified Series (R12 = R1 + R2)")
+ax.set_xlim(-0.5, 6.5)
+ax.set_ylim(-0.5, 0.5)
+ax.axis('off')
+
+# Parallel Configuration
+ax = axes[1, 0]
+draw_custom_nodes(G_parallel, pos_parallel, ax, node_colors_parallel, node_shapes_parallel)
+draw_custom_edges(G_parallel, pos_parallel, ax)
+ax.set_title("Parallel Configuration")
+ax.set_xlim(-0.5, 4.5)
+ax.set_ylim(-1.5, 1.5)
+ax.axis('off')
+
+# Simplified Parallel
+ax = axes[1, 1]
+draw_custom_nodes(G_parallel_simplified, pos_parallel_simplified, ax, node_colors_parallel_simplified, node_shapes_parallel_simplified)
+draw_custom_edges(G_parallel_simplified, pos_parallel_simplified, ax)
+ax.set_title("Simplified Parallel (R12 = R1 || R2)")
+ax.set_xlim(-0.5, 4.5)
+ax.set_ylim(-0.5, 0.5)
+ax.axis('off')
+
+plt.tight_layout()
 plt.show()
 </code></pre>
-<p><img alt="alt text" src="../image-12.png"/></p>
-<pre><code class="language-python">G = nx.Graph()
-G.add_edges_from([
-    ('B+', 'R'),
-    ('R', 'Node1'),
-    ('Node1', 'C'),
-    ('C', 'B-'),
-    ('Node1', 'B-')  # To close loop
-])
+<p><img alt="alt text" src="../image-16.png"/></p>
+<pre><code class="language-python">import networkx as nx
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
-pos = {
-    'B+': (0, 2),
-    'R': (1, 2),
-    'Node1': (2, 2),
-    'C': (2, 1),
-    'B-': (3, 2)
-}
-
-plt.figure(figsize=(7, 4))
-nx.draw(G, pos, with_labels=True, node_size=1400, node_color="lightyellow", font_weight="bold")
-nx.draw_networkx_edge_labels(G, pos, edge_labels={
-    ('B+', 'R'): 'R',
-    ('R', 'Node1'): '',
-    ('Node1', 'C'): 'C',
-    ('C', 'B-'): '',
-    ('Node1', 'B-'): ''
-})
-plt.title("RC Charging Circuit")
-plt.axis("off")
-plt.show()
-</code></pre>
-<p><img alt="alt text" src="../image-13.png"/></p>
-<pre><code class="language-python"># Create Star-Delta (Y-Δ) Circuit
-G = nx.DiGraph()
-
-# Add nodes and edges for the circuit (Y and Delta configurations)
-G.add_edges_from([
-    ('B+', 'R1'), ('R1', 'J1'), ('J1', 'R2'), ('R2', 'B-'),
-    ('J1', 'R3'), ('R2', 'R4'), ('R3', 'R4')
-])
-
-# Define positions for the circuit nodes
-pos = {
-    'B+': (0, 2), 'R1': (1, 2), 'J1': (2, 2), 'R2': (3, 2), 'R3': (4, 1),
-    'R4': (4, 3), 'B-': (5, 2)
-}
-
-# Initial node color state (all are gray at first)
-node_order = ['B+', 'R1', 'J1', 'R2', 'R3', 'R4', 'B-']
-node_colors = ['gray'] * len(node_order)
-
-# Create a plot and axes for drawing the circuit
-fig, ax = plt.subplots(figsize=(8, 5))
-
-# Update function for animation
-def update(frame):
-    ax.clear()
-    ax.set_title("Star-Delta Transformation - Current Flow", fontsize=14)
-
-    # Update node colors based on the frame
-    for i in range(len(node_colors)):
-        if i &lt;= frame:
-            node_colors[i] = 'limegreen'
+# Function to draw nodes as boxes or circles with specific colors
+def draw_custom_nodes(G, pos, ax, node_colors, node_shapes):
+    for node in G.nodes():
+        x, y = pos[node]
+        if node_shapes[node] == 'box':
+            # Draw a rectangle for resistors, battery terminals, or diodes
+            rect = patches.Rectangle((x - 0.1, y - 0.05), 0.2, 0.1, linewidth=1, edgecolor='black', facecolor=node_colors[node])
+            ax.add_patch(rect)
+            ax.text(x, y, node, fontsize=10, ha='center', va='center')
         else:
-            node_colors[i] = 'gray'
+            # Draw a circle for junctions
+            circle = patches.Circle((x, y), 0.05, linewidth=1, edgecolor='black', facecolor=node_colors[node])
+            ax.add_patch(circle)
+            ax.text(x, y, node, fontsize=10, ha='center', va='center')
 
-    # Map the node colors
-    color_map = {node_order[i]: node_colors[i] for i in range(len(node_order))}
-    colors = [color_map.get(node, 'gray') for node in G.nodes]
+# Function to draw edges with arrows and labels
+def draw_custom_edges(G, pos, ax):
+    for (u, v, d) in G.edges(data=True):
+        x1, y1 = pos[u]
+        x2, y2 = pos[v]
+        # Draw an arrow from u to v
+        ax.arrow(x1, y1, (x2-x1)*0.8, (y2-y1)*0.8, head_width=0.02, head_length=0.04, fc='black', ec='black')
+        # Add edge label if it exists
+        if 'label' in d and d['label']:
+            ax.text((x1+x2)/2, (y1+y2)/2, d['label'], fontsize=10, ha='center', va='center', color='black')
 
-    # Draw the circuit
-    nx.draw(G, pos, with_labels=True, node_color=colors, node_size=1400, font_weight='bold', ax=ax)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels={
-        ('B+', 'R1'): 'R1', ('R1', 'J1'): 'J1', ('J1', 'R2'): 'R2', ('R2', 'B-'): 'R2',
-        ('J1', 'R3'): 'R3', ('R2', 'R4'): 'R4'
-    }, ax=ax)
+# Series Configuration
+G_series = nx.MultiGraph()
+G_series.add_edges_from([
+    ('B+', 'o1'), ('o1', 'R1'), ('R1', 'o2'), ('o2', 'R2'), ('o2', 'R3'), ('R3', 'o3'), ('o3', 'B-')
+])
+G_series.add_edges_from([('o2', 'D1'), ('o2', 'D4')])  # Parallel diodes
 
-    ax.axis('off')
+# Simplified Series (replaced by R12)
+G_series_simplified = nx.MultiGraph()
+G_series_simplified.add_edges_from([
+    ('B+', 'o1'), ('o1', 'R12', label='R1+R2+R3'), ('R12', 'o3'), ('o3', 'B-'),
+    ('o2', 'D1'), ('o2', 'D4')
+])
 
-# Create the animation (steps from B+ to B-)
-ani = FuncAnimation(fig, update, frames=len(node_order), interval=800, repeat=False)
+# Parallel Configuration
+G_parallel = nx.MultiGraph()
+G_parallel.add_edges_from([
+    ('B+', 'o1'), ('o1', 'R1', label='R1'), ('o1', 'R2', label='R2'), ('R1', 'o3'), ('R2', 'o3'),
+    ('o3', 'B-')
+])
+G_parallel.add_edges_from([('o1', 'D1'), ('o3', 'D4')])  # Parallel diodes
 
-# Save the animation as a gif (optional)
-gif_path = "/mnt/data/star_delta_circuit.gif"
-ani.save(gif_path, writer='pillow')
+# Simplified Parallel (replaced by R12)
+G_parallel_simplified = nx.MultiGraph()
+G_parallel_simplified.add_edges_from([
+    ('B+', 'o1'), ('o1', 'R12', label='R1||R2'), ('R12', 'o3'), ('o3', 'B-'),
+    ('o1', 'D1'), ('o3', 'D4')
+])
 
-# Display file path
-gif_path
+# Define custom positions for linear/structured layout
+pos_series = {
+    'B+': (0, 0), 'o1': (1, 0), 'R1': (2, 0), 'o2': (3, 0), 'R2': (4, 0), 'R3': (5, 0), 'o3': (6, 0), 'B-': (7, 0),
+    'D1': (3, 1), 'D4': (3, -1)
+}
+pos_series_simplified = {
+    'B+': (0, 0), 'o1': (1, 0), 'R12': (3.5, 0), 'o3': (6, 0), 'B-': (7, 0),
+    'o2': (3, 0), 'D1': (3, 1), 'D4': (3, -1)
+}
+pos_parallel = {
+    'B+': (0, 0), 'o1': (1, 0), 'R1': (2, 1), 'R2': (2, -1), 'o3': (3, 0), 'B-': (4, 0),
+    'D1': (1, 1), 'D4': (3, 1)
+}
+pos_parallel_simplified = {
+    'B+': (0, 0), 'o1': (1, 0), 'R12': (2, 0), 'o3': (3, 0), 'B-': (4, 0),
+    'D1': (1, 1), 'D4': (3, 1)
+}
+
+# Define node colors and shapes
+node_colors_series = {
+    'B+': 'lightgray', 'o1': 'white', 'R1': 'lightgreen', 'o2': 'white', 'R2': 'lightgreen', 'R3': 'lightgreen',
+    'o3': 'white', 'B-': 'lightgray', 'D1': 'lightgray', 'D4': 'lightgray'
+}
+node_colors_series_simplified = {
+    'B+': 'lightgray', 'o1': 'white', 'R12': 'lightgreen', 'o3': 'white', 'B-': 'lightgray',
+    'o2': 'white', 'D1': 'lightgray', 'D4': 'lightgray'
+}
+node_colors_parallel = {
+    'B+': 'lightgray', 'o1': 'white', 'R1': 'lightblue', 'R2': 'lightblue', 'o3': 'white', 'B-': 'lightgray',
+    'D1': 'lightgray', 'D4': 'lightgray'
+}
+node_colors_parallel_simplified = {
+    'B+': 'lightgray', 'o1': 'white', 'R12': 'lightblue', 'o3': 'white', 'B-': 'lightgray',
+    'D1': 'lightgray', 'D4': 'lightgray'
+}
+
+node_shapes_series = {
+    'B+': 'box', 'o1': 'circle', 'R1': 'box', 'o2': 'circle', 'R2': 'box', 'R3': 'box',
+    'o3': 'circle', 'B-': 'box', 'D1': 'box', 'D4': 'box'
+}
+node_shapes_series_simplified = {
+    'B+': 'box', 'o1': 'circle', 'R12': 'box', 'o3': 'circle', 'B-': 'box',
+    'o2': 'circle', 'D1': 'box', 'D4': 'box'
+}
+node_shapes_parallel = {
+    'B+': 'box', 'o1': 'circle', 'R1': 'box', 'R2': 'box', 'o3': 'circle', 'B-': 'box',
+    'D1': 'box', 'D4': 'box'
+}
+node_shapes_parallel_simplified = {
+    'B+': 'box', 'o1': 'circle', 'R12': 'box', 'o3': 'circle', 'B-': 'box',
+    'D1': 'box', 'D4': 'box'
+}
+
+# Draw graphs
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+
+# Series Configuration
+ax = axes[0, 0]
+draw_custom_nodes(G_series, pos_series, ax, node_colors_series, node_shapes_series)
+draw_custom_edges(G_series, pos_series, ax)
+ax.set_title("Series Configuration")
+ax.set_xlim(-0.5, 7.5)
+ax.set_ylim(-1.5, 1.5)
+ax.axis('off')
+
+# Simplified Series
+ax = axes[0, 1]
+draw_custom_nodes(G_series_simplified, pos_series_simplified, ax, node_colors_series_simplified, node_shapes_series_simplified)
+draw_custom_edges(G_series_simplified, pos_series_simplified, ax)
+ax.set_title("Simplified Series")
+ax.set_xlim(-0.5, 7.5)
+ax.set_ylim(-1.5, 1.5)
+ax.axis('off')
+
+# Parallel Configuration
+ax = axes[1, 0]
+draw_custom_nodes(G_parallel, pos_parallel, ax, node_colors_parallel, node_shapes_parallel)
+draw_custom_edges(G_parallel, pos_parallel, ax)
+ax.set_title("Parallel Configuration")
+ax.set_xlim(-0.5, 4.5)
+ax.set_ylim(-1.5, 1.5)
+ax.axis('off')
+
+# Simplified Parallel
+ax = axes[1, 1]
+draw_custom_nodes(G_parallel_simplified, pos_parallel_simplified, ax, node_colors_parallel_simplified, node_shapes_parallel_simplified)
+draw_custom_edges(G_parallel_simplified, pos_parallel_simplified, ax)
+ax.set_title("Simplified Parallel")
+ax.set_xlim(-0.5, 4.5)
+ax.set_ylim(-1.5, 1.5)
+ax.axis('off')
+
+plt.tight_layout()
+plt.show()
 </code></pre>
 <h2 id="7-conclusion">7. Conclusion</h2>
 <p>The graph-theoretic approach to simplifying electrical circuits provides a systematic and mathematically rigorous method for calculating equivalent resistance, as demonstrated through Case 1 and additional examples. By modeling circuits as graphs and applying iterative series and parallel reductions, we transform complex networks into a single equivalent resistance, such as <span class="arithmatex">\(R_{eq} = 21\Omega\)</span> for the series circuit in Case 1. The algorithm, with its ability to handle nested combinations through iterative simplification, proves versatile across configurations, yielding <span class="arithmatex">\(R_{eq} = 9\Omega\)</span> for a simple series circuit, <span class="arithmatex">\(R_{eq} = 2\Omega\)</span> for a parallel circuit, and <span class="arithmatex">\(R_{eq} = 7\Omega\)</span> for a nested series-parallel circuit. Despite a time complexity of <span class="arithmatex">\(O((|V| + |E|)^2)\)</span>, potential enhancements like DFS-based pattern detection and delta-star transformations could reduce this to <span class="arithmatex">\(O(|V| + |E|)\)</span> per reduction, making the method highly efficient for large-scale circuit analysis. This framework not only deepens our understanding of circuit behavior but also lays the groundwork for advanced applications in electrical engineering, such as optimizing circuit design and analyzing power distribution networks.</p>
