@@ -885,6 +885,207 @@ ax.axis('off')
 plt.tight_layout()
 plt.show()
 </code></pre>
+<p><img alt="alt text" src="../circuit_simplification_animation%20%281%29.gif"/></p>
+<pre><code class="language-python">import networkx as nx
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import imageio
+import numpy as np
+import os
+
+# Function to draw nodes as boxes or circles with specific colors
+def draw_custom_nodes(G, pos, ax, node_colors, node_shapes):
+    for node in G.nodes():
+        x, y = pos[node]
+        if node_shapes[node] == 'box':
+            rect = patches.Rectangle((x - 0.1, y - 0.05), 0.2, 0.1, linewidth=1, edgecolor='black', facecolor=node_colors[node])
+            ax.add_patch(rect)
+            ax.text(x, y, node, fontsize=10, ha='center', va='center')
+
+# Function to draw edges with arrows, labels, and annotations for current/voltage
+def draw_custom_edges(G, pos, ax, currents):
+    for (u, v, d) in G.edges(data=True):
+        x1, y1 = pos[u]
+        x2, y2 = pos[v]
+        # Adjust the parallel path to be visually distinct
+        if (u == 'B+' and v == 'R4') or (v == 'B+' and u == 'R4'):
+            # Draw a curved path for the parallel branch
+            mid_x, mid_y = (x1 + x2) / 2, (y1 + y2) / 2 + 0.3
+            control_points = [(x1, y1), (mid_x, mid_y), (x2, y2)]
+            x_coords, y_coords = zip(*control_points)
+            t = np.linspace(0, 1, 100)
+            x = (1-t)**2 * x_coords[0] + 2*(1-t)*t * x_coords[1] + t**2 * x_coords[2]
+            y = (1-t)**2 * y_coords[0] + 2*(1-t)*t * y_coords[1] + t**2 * y_coords[2]
+            ax.plot(x, y, 'k-')
+            # Add arrow manually
+            arrow_pos = 0.8
+            ax.arrow(x[int(len(x)*arrow_pos)], y[int(len(y)*arrow_pos)], 
+                     (x[int(len(x)*arrow_pos)+1] - x[int(len(x)*arrow_pos)]), 
+                     (y[int(len(y)*arrow_pos)+1] - y[int(len(y)*arrow_pos)]), 
+                     head_width=0.02, head_length=0.04, fc='black', ec='black')
+        else:
+            ax.arrow(x1, y1, (x2-x1)*0.8, (y2-y1)*0.8, head_width=0.02, head_length=0.04, fc='black', ec='black')
+
+        label = d.get('label', '')
+        resistance = d.get('resistance', 0)
+        current = currents.get((u, v), currents.get((v, u), 0))  # Handle undirected edges
+        voltage_drop = current * resistance
+        # Position text above the edge (adjust for parallel path)
+        if (u == 'B+' and v == 'R4') or (v == 'B+' and u == 'R4'):
+            ax.text((x1+x2)/2, (y1+y2)/2 + 0.4, f"{label}\nI={current:.2f}A\nV={voltage_drop:.2f}V", 
+                    fontsize=8, ha='center', va='center', color='blue')
+        else:
+            ax.text((x1+x2)/2, (y1+y2)/2 + 0.1, f"{label}\nI={current:.2f}A\nV={voltage_drop:.2f}V", 
+                    fontsize=8, ha='center', va='center', color='blue')
+
+# Create initial MultiGraph for Case 1
+G = nx.MultiGraph()
+G.add_edges_from([
+    ('B+', 'R1', {'label': 'R1', 'resistance': 10}),
+    ('R1', 'R2', {'label': 'R2', 'resistance': 20}),
+    ('R2', 'R3', {'label': 'R3', 'resistance': 30}),
+    ('R3', 'R4', {'label': 'R4', 'resistance': 40}),
+    ('R4', 'R5', {'label': 'R5', 'resistance': 50}),
+    ('R5', 'B-', {'label': '', 'resistance': 0}),
+    ('B+', 'R4', {'label': '', 'resistance': 0})
+])
+
+# Define node colors and shapes
+node_colors = {'B+': 'lightgray', 'R1': 'lightgreen', 'R2': 'lightgreen', 'R3': 'lightgreen',
+               'R4': 'lightgreen', 'R5': 'lightgreen', 'B-': 'lightgray', 'R23': 'lightgreen',
+               'R2345': 'lightgreen', 'Req': 'lightgreen'}
+node_shapes = {'B+': 'box', 'R1': 'box', 'R2': 'box', 'R3': 'box', 'R4': 'box', 'R5': 'box', 
+               'B-': 'box', 'R23': 'box', 'R2345': 'box', 'Req': 'box'}
+
+# Define positions (linear layout)
+pos = {'B+': (0, 0), 'R1': (1, 0), 'R2': (2, 0), 'R3': (3, 0), 'R4': (4, 0), 'R5': (5, 0), 'B-': (6, 0)}
+pos_step1 = {'B+': (0, 0), 'R1': (1, 0), 'R23': (2.5, 0), 'R4': (4, 0), 'R5': (5, 0), 'B-': (6, 0)}
+pos_step2 = {'B+': (0, 0), 'R1': (1, 0), 'R2345': (3.5, 0), 'B-': (6, 0)}
+pos_final = {'B+': (0, 0), 'Req': (3, 0), 'B-': (6, 0)}
+
+# Create simplified graphs
+G_step1 = nx.MultiGraph()
+G_step1.add_edges_from([
+    ('B+', 'R1', {'label': 'R1', 'resistance': 10}),
+    ('R1', 'R23', {'label': 'R23', 'resistance': 50}),
+    ('R23', 'R4', {'label': 'R4', 'resistance': 40}),
+    ('R4', 'R5', {'label': 'R5', 'resistance': 50}),
+    ('R5', 'B-', {'label': '', 'resistance': 0}),
+    ('B+', 'R4', {'label': '', 'resistance': 0})
+])
+
+G_step2 = nx.MultiGraph()
+G_step2.add_edges_from([
+    ('B+', 'R1', {'label': 'R1', 'resistance': 10}),
+    ('R1', 'R2345', {'label': 'R2345', 'resistance': 140}),
+    ('R2345', 'B-', {'label': '', 'resistance': 0}),
+    ('B+', 'R2345', {'label': '', 'resistance': 0})
+])
+
+G_final = nx.MultiGraph()
+G_final.add_edges_from([
+    ('B+', 'Req', {'label': 'Req', 'resistance': 9.33}),
+    ('Req', 'B-', {'label': '', 'resistance': 0})
+])
+
+graphs = [G, G_step1, G_step2, G_final]
+positions = [pos, pos_step1, pos_step2, pos_final]
+titles = ["Initial Circuit", "Step 1: R2+R3=R23 (50Ω)", "Step 2: R23+R4+R5=R2345 (140Ω)", "Final: R1||R2345=Req (9.33Ω)"]
+
+# Voltage source
+V_total = 12.0
+
+# Calculate currents for each step with error handling
+def calculate_currents(G, V_total):
+    resistances = {(u, v): d.get('resistance', 0) for u, v, d in G.edges(data=True)}
+    try:
+        if ('B+', 'R1') in resistances and ('R1', 'R2') in resistances:
+            r1 = resistances[('B+', 'R1')]
+            r2 = resistances[('R1', 'R2')]
+            r3 = resistances[('R2', 'R3')]
+            r4 = resistances[('R3', 'R4')]
+            r5 = resistances[('R4', 'R5')]
+            r23 = r2 + r3
+            r2345 = r23 + r4 + r5
+            req = (r1 * r2345) / (r1 + r2345)
+            I_total = V_total / req
+            V_parallel = V_total
+            I_r1 = V_parallel / r1
+            I_branch = V_parallel / r2345
+            return {
+                ('B+', 'R1'): I_r1, ('R1', 'R2'): I_branch, ('R2', 'R3'): I_branch,
+                ('R3', 'R4'): I_branch, ('R4', 'R5'): I_branch, ('R5', 'B-'): I_branch,
+                ('B+', 'R4'): I_branch
+            }, I_total, req
+        elif ('R1', 'R23') in resistances:
+            r1 = resistances[('B+', 'R1')]
+            r23 = resistances[('R1', 'R23')]
+            r4 = resistances[('R23', 'R4')]
+            r5 = resistances[('R4', 'R5')]
+            r2345 = r23 + r4 + r5
+            req = (r1 * r2345) / (r1 + r2345)
+            I_total = V_total / req
+            V_parallel = V_total
+            I_r1 = V_parallel / r1
+            I_branch = V_parallel / r2345
+            return {
+                ('B+', 'R1'): I_r1, ('R1', 'R23'): I_branch, ('R23', 'R4'): I_branch,
+                ('R4', 'R5'): I_branch, ('R5', 'B-'): I_branch, ('B+', 'R4'): I_branch
+            }, I_total, req
+        elif ('R1', 'R2345') in resistances:
+            r1 = resistances[('B+', 'R1')]
+            r2345 = resistances[('R1', 'R2345')]
+            req = (r1 * r2345) / (r1 + r2345)
+            I_total = V_total / req
+            V_parallel = V_total
+            I_r1 = V_parallel / r1
+            I_branch = V_parallel / r2345
+            return {
+                ('B+', 'R1'): I_r1, ('R1', 'R2345'): I_branch, ('R2345', 'B-'): I_branch,
+                ('B+', 'R2345'): I_branch
+            }, I_total, req
+        elif ('B+', 'Req') in resistances:
+            req = resistances[('B+', 'Req')]
+            I_total = V_total / req
+            return {('B+', 'Req'): I_total, ('Req', 'B-'): I_total}, I_total, req
+        else:
+            raise ValueError("Graph structure not recognized for current calculation.")
+    except Exception as e:
+        print(f"Error calculating currents: {e}")
+        return {}, 0, 0
+
+# Generate frames
+frames = []
+frames_per_step = 20  # Frames per step for smoother transitions
+
+for i in range(len(graphs)):
+    currents, I_total, req = calculate_currents(graphs[i], V_total)
+
+    # Hold each step for multiple frames
+    for _ in range(frames_per_step):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        draw_custom_nodes(graphs[i], positions[i], ax, node_colors, node_shapes)
+        draw_custom_edges(graphs[i], positions[i], ax, currents)
+        ax.set_title(f"{titles[i]}\nTotal V = {V_total}V, I_total = {I_total:.2f}A, Req = {req:.2f}Ω")
+        ax.set_xlim(-0.5, 6.5)
+        ax.set_ylim(-0.5, 0.6)  # Adjusted to accommodate parallel path
+        ax.axis('off')
+        plt.tight_layout()
+
+        frame_file = f"temp_frame_{len(frames)}.png"
+        plt.savefig(frame_file)
+        plt.close()
+        frames.append(imageio.imread(frame_file))
+
+# Create animated GIF
+imageio.mimsave('circuit_simplification_animation.gif', frames, fps=10)
+
+# Clean up temporary frame files
+for i in range(len(frames)):
+    os.remove(f"temp_frame_{i}.png")
+
+print("Animated GIF 'circuit_simplification_animation.gif' has been created.")
+</code></pre>
 <h2 id="7-conclusion">7. Conclusion</h2>
 <p>The graph-theoretic approach to simplifying electrical circuits provides a systematic and mathematically rigorous method for calculating equivalent resistance, as demonstrated through Case 1 and additional examples. By modeling circuits as graphs and applying iterative series and parallel reductions, we transform complex networks into a single equivalent resistance, such as <span class="arithmatex">\(R_{eq} = 21\Omega\)</span> for the series circuit in Case 1. The algorithm, with its ability to handle nested combinations through iterative simplification, proves versatile across configurations, yielding <span class="arithmatex">\(R_{eq} = 9\Omega\)</span> for a simple series circuit, <span class="arithmatex">\(R_{eq} = 2\Omega\)</span> for a parallel circuit, and <span class="arithmatex">\(R_{eq} = 7\Omega\)</span> for a nested series-parallel circuit. Despite a time complexity of <span class="arithmatex">\(O((|V| + |E|)^2)\)</span>, potential enhancements like DFS-based pattern detection and delta-star transformations could reduce this to <span class="arithmatex">\(O(|V| + |E|)\)</span> per reduction, making the method highly efficient for large-scale circuit analysis. This framework not only deepens our understanding of circuit behavior but also lays the groundwork for advanced applications in electrical engineering, such as optimizing circuit design and analyzing power distribution networks.</p>
 <div class="arithmatex">\[ R_{eq} = R_1 + R_2 \quad \text{(Series Combination)} \]</div>
