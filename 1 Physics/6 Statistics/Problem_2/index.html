@@ -172,6 +172,503 @@
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
 <h1 id="problem-2">Problem 2</h1>
+<h1 id="monte-carlo-estimation-of-theoretical-foundations">Monte Carlo Estimation of π — Theoretical Foundations</h1>
+<h2 id="1-introduction-to-geometric-probability-and-monte-carlo-estimation">1. Introduction to Geometric Probability and Monte Carlo Estimation</h2>
+<p>Monte Carlo methods are a class of computational algorithms that rely on repeated random sampling to obtain numerical results. One of the most elegant applications of Monte Carlo simulation is the estimation of the mathematical constant π through <strong>geometric probability</strong>.</p>
+<p>Geometric probability involves calculating the likelihood of a point landing in a particular region of space, typically relative to some well-defined geometric shapes. In the context of π estimation, we exploit the relationship between the area of a circle and that of the square that bounds it.</p>
+<hr/>
+<h2 id="2-geometric-setup">2. Geometric Setup</h2>
+<p>Consider a <strong>unit circle</strong> centered at the origin <span class="arithmatex">\((0, 0)\)</span>, with a radius <span class="arithmatex">\(r = 1\)</span>. This circle is inscribed within a square of side length <span class="arithmatex">\(2\)</span>, spanning from <span class="arithmatex">\((-1, -1)\)</span> to <span class="arithmatex">\((1, 1)\)</span>.</p>
+<p>Let’s denote:
+- <span class="arithmatex">\(A_{\text{circle}}\)</span> as the area of the unit circle,
+- <span class="arithmatex">\(A_{\text{square}}\)</span> as the area of the bounding square.</p>
+<div class="arithmatex">\[
+A_{\text{circle}} = \pi r^2 = \pi \cdot 1^2 = \pi
+\]</div>
+<div class="arithmatex">\[
+A_{\text{square}} = (2r)^2 = (2 \cdot 1)^2 = 4
+\]</div>
+<p>Thus, the ratio of the circle’s area to the square’s area is:</p>
+<div class="arithmatex">\[
+\frac{A_{\text{circle}}}{A_{\text{square}}} = \frac{\pi}{4}
+\]</div>
+<hr/>
+<h2 id="3-probabilistic-interpretation">3. Probabilistic Interpretation</h2>
+<p>Assume we generate random points <span class="arithmatex">\((x, y)\)</span> uniformly in the square <span class="arithmatex">\([-1, 1] \times [-1, 1]\)</span>. The <strong>probability</strong> that a point lies inside the circle is equal to the ratio of the areas:</p>
+<div class="arithmatex">\[
+P(\text{point inside circle}) = \frac{A_{\text{circle}}}{A_{\text{square}}} = \frac{\pi}{4}
+\]</div>
+<p>Let:
+- <span class="arithmatex">\(N\)</span> be the total number of randomly generated points,
+- <span class="arithmatex">\(N_{\text{circle}}\)</span> be the number of points that fall inside the unit circle.</p>
+<p>Then, the empirical probability (based on simulation) that a point falls within the circle is approximately:</p>
+<div class="arithmatex">\[
+P_{\text{empirical}} = \frac{N_{\text{circle}}}{N}
+\]</div>
+<p>By equating the empirical probability to the theoretical one:</p>
+<div class="arithmatex">\[
+\frac{N_{\text{circle}}}{N} \approx \frac{\pi}{4}
+\]</div>
+<p>Multiplying both sides by 4 gives the Monte Carlo estimate of π:</p>
+<div class="arithmatex">\[
+\pi \approx 4 \times \frac{N_{\text{circle}}}{N}
+\]</div>
+<p>This is the fundamental formula for estimating π using random sampling in a unit square.</p>
+<hr/>
+<h2 id="4-determining-point-inclusion-in-the-circle">4. Determining Point Inclusion in the Circle</h2>
+<p>To decide whether a randomly generated point <span class="arithmatex">\((x, y)\)</span> lies within the unit circle, we check:</p>
+<div class="arithmatex">\[
+x^2 + y^2 \leq 1
+\]</div>
+<p>This is derived from the standard equation of a circle centered at the origin:</p>
+<div class="arithmatex">\[
+x^2 + y^2 = r^2
+\]</div>
+<p>where <span class="arithmatex">\(r = 1\)</span>. If the inequality holds, the point lies within or on the boundary of the circle.</p>
+<hr/>
+<h2 id="5-assumptions-and-accuracy-considerations">5. Assumptions and Accuracy Considerations</h2>
+<ul>
+<li><strong>Uniform Distribution</strong>: The method assumes the random number generator produces points uniformly over the square domain.</li>
+<li><strong>Law of Large Numbers</strong>: As <span class="arithmatex">\(N \rightarrow \infty\)</span>, the estimate <span class="arithmatex">\(4 \cdot \frac{N_{\text{circle}}}{N}\)</span> converges to the true value of π.</li>
+<li><strong>Independence</strong>: Each sample point is drawn independently.</li>
+</ul>
+<hr/>
+<h2 id="part-2-theoretical-foundation-buffons-needle">Part 2: Theoretical Foundation — Buffon’s Needle</h2>
+<h3 id="introduction-to-buffons-needle-problem">Introduction to Buffon’s Needle Problem</h3>
+<p><strong>Buffon’s Needle</strong> is one of the earliest problems in geometric probability, first posed by Georges-Louis Leclerc, Comte de Buffon, in the 18th century. It provides a surprising and elegant way to estimate the value of π using physical randomness.</p>
+<p>The problem involves dropping a needle of a given length onto a plane ruled with equally spaced parallel lines and calculating the probability that the needle will cross one of the lines.</p>
+<hr/>
+<h3 id="problem-setup">Problem Setup</h3>
+<p>Consider the following configuration:</p>
+<ul>
+<li>The plane has horizontal lines spaced a constant distance <span class="arithmatex">\(H\)</span> apart.</li>
+<li>A needle of length <span class="arithmatex">\(L\)</span> is dropped randomly onto the plane.</li>
+<li>The position of the needle is completely random: both the distance of the center of the needle from the nearest line and the angle the needle makes with the horizontal are uniformly distributed.</li>
+</ul>
+<p>We assume that:</p>
+<div class="arithmatex">\[
+0 &lt; L \leq H
+\]</div>
+<p>This condition simplifies the mathematics and ensures the needle cannot cross more than one line at a time.</p>
+<hr/>
+<h3 id="geometric-probability">Geometric Probability</h3>
+<p>Let:
+- <span class="arithmatex">\(N\)</span> = total number of needle drops
+- <span class="arithmatex">\(t\)</span> = number of times the needle crosses a line
+- <span class="arithmatex">\(L\)</span> = length of the needle
+- <span class="arithmatex">\(H\)</span> = distance between the parallel lines</p>
+<p>The theoretical probability <span class="arithmatex">\(P\)</span> that the needle <strong>crosses a line</strong> is given by:</p>
+<div class="arithmatex">\[
+P = \frac{2L}{\pi H}
+\]</div>
+<p>This result is obtained through integrating over all possible positions and orientations of the needle, which involves calculus and trigonometry.</p>
+<hr/>
+<h3 id="derivation-of-the-formula-to-estimate">Derivation of the Formula to Estimate π</h3>
+<p>From the theoretical probability:</p>
+<div class="arithmatex">\[
+P = \frac{2L}{\pi H}
+\]</div>
+<p>We can rearrange to solve for <span class="arithmatex">\(\pi\)</span>:</p>
+<div class="arithmatex">\[
+\pi = \frac{2L}{P H}
+\]</div>
+<p>In practice, we do not know <span class="arithmatex">\(P\)</span> exactly but can estimate it from a simulation by computing the proportion of drops that result in a crossing:</p>
+<div class="arithmatex">\[
+P_{\text{empirical}} = \frac{t}{N}
+\]</div>
+<p>Substituting into the formula gives the Monte Carlo estimate of <span class="arithmatex">\(\pi\)</span>:</p>
+<div class="arithmatex">\[
+\pi \approx \frac{2L \cdot N}{t \cdot H}
+\]</div>
+<hr/>
+<h3 id="final-formula">Final Formula</h3>
+<p>We summarize the result with the following boxed expression:</p>
+<div class="arithmatex">\[
+\boxed{
+\pi \approx \frac{2L \cdot N}{t \cdot H}
+}
+\]</div>
+<p>Where:
+- <span class="arithmatex">\(L\)</span> = needle length,
+- <span class="arithmatex">\(H\)</span> = distance between parallel lines,
+- <span class="arithmatex">\(N\)</span> = number of needle drops,
+- <span class="arithmatex">\(t\)</span> = number of crossings observed.</p>
+<hr/>
+<h3 id="assumptions">Assumptions</h3>
+<ul>
+<li>The needle is <strong>uniformly dropped</strong> (random angle and position).</li>
+<li>The length of the needle <span class="arithmatex">\(L\)</span> does not exceed the distance between lines <span class="arithmatex">\(H\)</span>.</li>
+<li>Each drop is independent of the others.</li>
+<li>The number of trials <span class="arithmatex">\(N\)</span> is sufficiently large for the Law of Large Numbers to ensure convergence.</li>
+</ul>
+<hr/>
+<h2 id="2-simulation">2. Simulation</h2>
+<p>The Monte Carlo estimation of π relies on random sampling and simple geometric tests. In this section, we simulate the process of generating random points within a square and determining how many fall within a unit circle inscribed in the square.</p>
+<h3 id="step-by-step-process">Step-by-Step Process</h3>
+<p>We consider a square of side length <span class="arithmatex">\(2\)</span> centered at the origin. This square spans the region <span class="arithmatex">\([-1, 1] \times [-1, 1]\)</span>. Within this square lies a <strong>unit circle</strong> centered at the origin with radius <span class="arithmatex">\(r = 1\)</span>.</p>
+<p>To estimate π, we proceed with the following steps:</p>
+<hr/>
+<h3 id="1-random-point-generation">1. Random Point Generation</h3>
+<p>We generate a large number of random points <span class="arithmatex">\((x, y)\)</span> such that:</p>
+<div class="arithmatex">\[
+x, y \sim \mathcal{U}(-1, 1)
+\]</div>
+<p>That is, both <span class="arithmatex">\(x\)</span> and <span class="arithmatex">\(y\)</span> are sampled independently from a <strong>uniform distribution</strong> over the interval <span class="arithmatex">\([-1, 1]\)</span>. This ensures that the points are uniformly scattered across the square.</p>
+<hr/>
+<h3 id="2-circle-inclusion-test">2. Circle Inclusion Test</h3>
+<p>For each point <span class="arithmatex">\((x, y)\)</span>, we check whether it lies within the unit circle centered at the origin. This is done using the condition:</p>
+<div class="arithmatex">\[
+x^2 + y^2 \leq 1
+\]</div>
+<p>If the inequality holds, the point lies <strong>inside or on the boundary</strong> of the circle. Otherwise, it lies outside.</p>
+<p>Let:
+- <span class="arithmatex">\(N\)</span> be the total number of points generated,
+- <span class="arithmatex">\(N_{\text{circle}}\)</span> be the number of points that satisfy <span class="arithmatex">\(x^2 + y^2 \leq 1\)</span>.</p>
+<hr/>
+<h3 id="3-estimating">3. Estimating π</h3>
+<p>Using the geometric probability derived earlier, the fraction of points that fall inside the circle approximates the ratio of the circle’s area to the square’s area:</p>
+<div class="arithmatex">\[
+\frac{N_{\text{circle}}}{N} \approx \frac{\pi}{4}
+\]</div>
+<p>Multiplying both sides by 4 gives the estimate of π:</p>
+<div class="arithmatex">\[
+\pi \approx 4 \cdot \frac{N_{\text{circle}}}{N}
+\]</div>
+<p>This formula becomes increasingly accurate as <span class="arithmatex">\(N\)</span> grows larger, due to the Law of Large Numbers.</p>
+<hr/>
+<h3 id="4-summary-of-simulation-algorithm">4. Summary of Simulation Algorithm</h3>
+<p>The procedure can be described algorithmically as follows:</p>
+<ol>
+<li>Initialize counters:</li>
+<li><span class="arithmatex">\(N = 0\)</span></li>
+<li><span class="arithmatex">\(N_{\text{circle}} = 0\)</span></li>
+<li>For a specified number of iterations:</li>
+<li>Generate a random point <span class="arithmatex">\((x, y)\)</span> where <span class="arithmatex">\(x, y \in [-1, 1]\)</span></li>
+<li>Increment <span class="arithmatex">\(N\)</span> by 1</li>
+<li>If <span class="arithmatex">\(x^2 + y^2 \leq 1\)</span>, increment <span class="arithmatex">\(N_{\text{circle}}\)</span> by 1</li>
+<li>Compute:
+   $$
+   \pi \approx 4 \cdot \frac{N_{\text{circle}}}{N}
+   $$</li>
+</ol>
+<hr/>
+<h3 id="notes-on-implementation">Notes on Implementation</h3>
+<ul>
+<li>The number of samples <span class="arithmatex">\(N\)</span> strongly influences the accuracy of the estimate.</li>
+<li>For a robust result, typical values of <span class="arithmatex">\(N\)</span> might range from <span class="arithmatex">\(10^3\)</span> to <span class="arithmatex">\(10^7\)</span>.</li>
+<li>The algorithm is trivially parallelizable and benefits from vectorized computation in languages such as Python (using NumPy).</li>
+</ul>
+<hr/>
+<blockquote>
+<p><strong>Tip</strong>: Plotting the points inside and outside the circle (e.g., with different colors) helps visualize the effectiveness of the method.</p>
+</blockquote>
+<hr/>
+<h2 id="2-simulation-buffons-needle">2. Simulation — Buffon’s Needle</h2>
+<p>In this section, we implement a Monte Carlo simulation to estimate <span class="arithmatex">\(\pi\)</span> using the geometric probability technique introduced in <strong>Buffon’s Needle</strong> problem.</p>
+<hr/>
+<h3 id="objective">Objective</h3>
+<p>To simulate the experiment, we:</p>
+<ol>
+<li>Randomly generate the position and orientation of a needle.</li>
+<li>Determine whether it intersects any of the parallel lines.</li>
+<li>Use the total number of needle drops and intersections to estimate <span class="arithmatex">\(\pi\)</span>.</li>
+</ol>
+<hr/>
+<h3 id="step-by-step-simulation-procedure">Step-by-Step Simulation Procedure</h3>
+<h4 id="1-random-needle-drop-setup">1. Random Needle Drop Setup</h4>
+<p>Each needle drop is defined by two random variables:</p>
+<ul>
+<li>The <strong>distance</strong> <span class="arithmatex">\(d\)</span> from the center of the needle to the nearest horizontal line:</li>
+</ul>
+<p>$$
+  d \sim \mathcal{U}(0, \frac{H}{2})
+  $$</p>
+<p>Since the geometry is symmetric, we only need to consider distances from the center of the needle to the nearest line within half the spacing (<span class="arithmatex">\(H/2\)</span>).</p>
+<ul>
+<li>The <strong>angle</strong> <span class="arithmatex">\(\theta\)</span> that the needle makes with the horizontal (in radians):</li>
+</ul>
+<p>$$
+  \theta \sim \mathcal{U}(0, \frac{\pi}{2})
+  $$</p>
+<p>Again, symmetry allows us to limit the angular range to <span class="arithmatex">\([0, \frac{\pi}{2}]\)</span>.</p>
+<hr/>
+<h4 id="2-crossing-condition">2. Crossing Condition</h4>
+<p>The needle crosses a line <strong>if the vertical component of half its length exceeds <span class="arithmatex">\(d\)</span></strong>, the distance from the needle's center to the nearest line.</p>
+<p>This condition can be mathematically expressed as:</p>
+<div class="arithmatex">\[
+\frac{L}{2} \cdot \sin(\theta) \geq d
+\]</div>
+<p>If the above inequality holds, the needle intersects one of the horizontal lines.</p>
+<hr/>
+<h4 id="3-simulation-loop">3. Simulation Loop</h4>
+<p>To estimate <span class="arithmatex">\(\pi\)</span>, the simulation proceeds as follows:</p>
+<ul>
+<li>Initialize counters:</li>
+<li><span class="arithmatex">\(N = 0\)</span> (total number of needle drops)</li>
+<li><span class="arithmatex">\(t = 0\)</span> (total number of crossings)</li>
+<li>For each trial:</li>
+<li>Generate <span class="arithmatex">\(d \sim \mathcal{U}(0, \frac{H}{2})\)</span></li>
+<li>Generate <span class="arithmatex">\(\theta \sim \mathcal{U}(0, \frac{\pi}{2})\)</span></li>
+<li>Check if <span class="arithmatex">\(\frac{L}{2} \cdot \sin(\theta) \geq d\)</span></li>
+<li>If true, increment <span class="arithmatex">\(t\)</span></li>
+<li>Increment <span class="arithmatex">\(N\)</span></li>
+<li>Estimate π using the formula:</li>
+</ul>
+<p>$$
+  \pi \approx \frac{2L \cdot N}{t \cdot H}
+  $$</p>
+<hr/>
+<h3 id="notes-on-implementation_1">Notes on Implementation</h3>
+<ul>
+<li>The simulation requires generating <strong>two independent random variables</strong> per needle drop.</li>
+<li>For high accuracy, a large number of drops <span class="arithmatex">\(N\)</span> is recommended (e.g., <span class="arithmatex">\(10^5\)</span> or more).</li>
+<li>The crossing condition is purely geometric and does not require explicit line drawing.</li>
+<li>Ensure that the condition <span class="arithmatex">\(L \leq H\)</span> holds to validate the single-line crossing assumption.</li>
+</ul>
+<hr/>
+<h2 id="4-analysis">4. Analysis</h2>
+<h3 id="convergence-behavior-of-the-monte-carlo-estimator">Convergence Behavior of the Monte Carlo Estimator</h3>
+<p>To assess the reliability of the Monte Carlo method for estimating π, we perform simulations with progressively increasing numbers of random points:</p>
+<ul>
+<li><span class="arithmatex">\(N = 10^2\)</span></li>
+<li><span class="arithmatex">\(N = 10^3\)</span></li>
+<li><span class="arithmatex">\(N = 10^4\)</span></li>
+<li><span class="arithmatex">\(N = 10^5\)</span></li>
+<li><span class="arithmatex">\(N = 10^6\)</span></li>
+<li><span class="arithmatex">\(N = 10^7\)</span> (optional, depending on computational resources)</li>
+</ul>
+<p>For each value of <span class="arithmatex">\(N\)</span>, we compute an estimate of π using the standard formula:</p>
+<div class="arithmatex">\[
+\pi \approx 4 \cdot \frac{N_{\text{circle}}}{N}
+\]</div>
+<p>We then compare the estimated values to the actual value of π, denoted:</p>
+<div class="arithmatex">\[
+\pi_{\text{true}} \approx 3.141592653589793
+\]</div>
+<hr/>
+<h3 id="visualization-convergence-plot">Visualization: Convergence Plot</h3>
+<p>To visually analyze convergence, we construct a plot of:</p>
+<ul>
+<li><strong>x-axis</strong>: Number of points <span class="arithmatex">\(N\)</span> (on a logarithmic scale)</li>
+<li><strong>y-axis</strong>: Estimated value of π</li>
+</ul>
+<p>This allows us to observe how the Monte Carlo estimate approaches the true value of π as <span class="arithmatex">\(N\)</span> increases. Ideally, the estimate will oscillate around π with decreasing amplitude.</p>
+<blockquote>
+<p><strong>Optional Addition</strong>: Add a horizontal reference line at <span class="arithmatex">\(y = \pi_{\text{true}}\)</span> to visualize convergence clearly.</p>
+</blockquote>
+<hr/>
+<h3 id="error-analysis">Error Analysis</h3>
+<p>To quantify accuracy, we define the <strong>absolute error</strong> of each estimate as:</p>
+<div class="arithmatex">\[
+\text{Error}(N) = \left| \pi_{\text{estimate}} - \pi_{\text{true}} \right|
+\]</div>
+<p>Alternatively, the <strong>relative error</strong> can be computed as:</p>
+<div class="arithmatex">\[
+\text{Relative Error}(N) = \left| \frac{\pi_{\text{estimate}} - \pi_{\text{true}}}{\pi_{\text{true}}} \right|
+\]</div>
+<p>Plotting the error versus <span class="arithmatex">\(N\)</span> can illustrate how error diminishes with more samples.</p>
+<hr/>
+<h3 id="computational-efficiency">Computational Efficiency</h3>
+<p>Monte Carlo methods are inherently <strong>probabilistic</strong> and <strong>stochastic</strong>. They converge slowly compared to deterministic numerical integration methods. The standard error of a Monte Carlo estimate is proportional to:</p>
+<div class="arithmatex">\[
+\text{Standard Error} \propto \frac{1}{\sqrt{N}}
+\]</div>
+<p>This implies a convergence rate of <span class="arithmatex">\(\mathcal{O}(N^{-1/2})\)</span>. Therefore, <strong>to reduce the error by a factor of 10, we must increase the number of samples by a factor of 100</strong>.</p>
+<hr/>
+<h3 id="practical-considerations">Practical Considerations</h3>
+<ul>
+<li><strong>Efficiency</strong>: Vectorized implementations (e.g., using NumPy) are essential for handling large <span class="arithmatex">\(N\)</span> efficiently.</li>
+<li><strong>Variance</strong>: Due to random sampling, each run produces slightly different results. Averaging results over multiple independent runs may yield smoother convergence curves.</li>
+<li><strong>Trade-off</strong>: There is a computational trade-off between accuracy and runtime. Larger values of <span class="arithmatex">\(N\)</span> improve accuracy but increase computation time.</li>
+</ul>
+<hr/>
+<h2 id="4-analysis-buffons-needle">4. Analysis — Buffon’s Needle</h2>
+<p>In this section, we analyze the convergence behavior of Buffon’s Needle simulation for estimating <span class="arithmatex">\(\pi\)</span>, and compare it with the classical Monte Carlo method using a circle.</p>
+<hr/>
+<h3 id="1-experimental-design">1. Experimental Design</h3>
+<p>To study convergence, we run simulations with increasing numbers of needle drops:</p>
+<ul>
+<li><span class="arithmatex">\(N = 10^2\)</span></li>
+<li><span class="arithmatex">\(N = 10^3\)</span></li>
+<li><span class="arithmatex">\(N = 10^4\)</span></li>
+<li><span class="arithmatex">\(N = 10^5\)</span></li>
+<li><span class="arithmatex">\(N = 10^6\)</span></li>
+</ul>
+<p>For each <span class="arithmatex">\(N\)</span>, we estimate <span class="arithmatex">\(\pi\)</span> using the formula:</p>
+<div class="arithmatex">\[
+\pi \approx \frac{2L \cdot N}{t \cdot H}
+\]</div>
+<p>Where:
+- <span class="arithmatex">\(L\)</span> is the needle length,
+- <span class="arithmatex">\(H\)</span> is the distance between the parallel lines,
+- <span class="arithmatex">\(t\)</span> is the number of successful crossings.</p>
+<hr/>
+<h3 id="2-visualization-estimated-pi-vs-number-of-drops">2. Visualization: Estimated <span class="arithmatex">\(\pi\)</span> vs Number of Drops</h3>
+<p>We plot:</p>
+<ul>
+<li><strong>x-axis</strong>: Number of needle drops <span class="arithmatex">\(N\)</span> (logarithmic scale).</li>
+<li><strong>y-axis</strong>: Estimated value of <span class="arithmatex">\(\pi\)</span>.</li>
+</ul>
+<p>We overlay a horizontal reference line at the true value of <span class="arithmatex">\(\pi\)</span>:</p>
+<div class="arithmatex">\[
+\pi_{\text{true}} \approx 3.141592653589793
+\]</div>
+<p>This allows us to visually assess how closely and consistently the estimate converges to <span class="arithmatex">\(\pi\)</span>.</p>
+<hr/>
+<h3 id="3-error-analysis">3. Error Analysis</h3>
+<p>We define the <strong>absolute error</strong> of the estimate as:</p>
+<div class="arithmatex">\[
+\text{Error}(N) = \left| \pi_{\text{estimate}} - \pi_{\text{true}} \right|
+\]</div>
+<p>Alternatively, we may use the <strong>relative error</strong>:</p>
+<div class="arithmatex">\[
+\text{Relative Error}(N) = \left| \frac{\pi_{\text{estimate}} - \pi_{\text{true}}}{\pi_{\text{true}}} \right|
+\]</div>
+<p>We expect the error to decrease as <span class="arithmatex">\(N\)</span> increases, but at a slow rate due to the stochastic nature of the method.</p>
+<hr/>
+<h3 id="4-comparison-with-circle-based-method">4. Comparison with Circle-Based Method</h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Circle-Based Method</th>
+<th>Buffon's Needle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Conceptual Complexity</strong></td>
+<td>Low (simple geometry)</td>
+<td>Moderate (trigonometry)</td>
+</tr>
+<tr>
+<td><strong>Convergence Speed</strong></td>
+<td>Faster</td>
+<td>Slower</td>
+</tr>
+<tr>
+<td><strong>Random Variables Needed</strong></td>
+<td>2D point (<span class="arithmatex">\(x\)</span>, <span class="arithmatex">\(y\)</span>)</td>
+<td>Distance <span class="arithmatex">\(d\)</span>, angle $\the</td>
+</tr>
+</tbody>
+</table>
+<h3 id="codes-and-plots">Codes And  Plots</h3>
+<p><img alt="alt text" src="../image-12.png"/></p>
+<pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate random points
+n_points = 1000
+x = np.random.uniform(-1, 1, n_points)
+y = np.random.uniform(-1, 1, n_points)
+
+# Check if inside circle
+inside = x**2 + y**2 &lt;= 1
+
+# Plot
+plt.figure(figsize=(6, 6))
+plt.scatter(x[inside], y[inside], color='blue', s=5, label='Inside Circle')
+plt.scatter(x[~inside], y[~inside], color='red', s=5, label='Outside Circle')
+
+# Draw unit circle
+circle = plt.Circle((0, 0), 1, edgecolor='black', facecolor='none', linewidth=2)
+plt.gca().add_patch(circle)
+
+# Draw square boundary
+plt.xlim(-1, 1)
+plt.ylim(-1, 1)
+plt.axhline(y=1, color='black', linewidth=1)
+plt.axhline(y=-1, color='black', linewidth=1)
+plt.axvline(x=1, color='black', linewidth=1)
+plt.axvline(x=-1, color='black', linewidth=1)
+
+plt.gca().set_aspect('equal')
+plt.title('Monte Carlo Points: Inside vs Outside the Circle')
+plt.legend()
+plt.grid(True)
+plt.show()
+</code></pre>
+<p><img alt="alt text" src="../image-13.png"/></p>
+<pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate uniform points
+x = np.random.uniform(-1, 1, 300)
+y = np.random.uniform(-1, 1, 300)
+
+# Plot
+plt.figure(figsize=(6, 6))
+plt.scatter(x, y, color='gray', s=5, alpha=0.5)
+
+# Draw unit circle and square
+circle = plt.Circle((0, 0), 1, edgecolor='green', facecolor='none', linewidth=2)
+plt.gca().add_patch(circle)
+
+# Square boundary
+plt.axhline(y=1, color='black', linewidth=1)
+plt.axhline(y=-1, color='black', linewidth=1)
+plt.axvline(x=1, color='black', linewidth=1)
+plt.axvline(x=-1, color='black', linewidth=1)
+
+plt.xlim(-1, 1)
+plt.ylim(-1, 1)
+plt.gca().set_aspect('equal')
+plt.title('Uniform Random Points and Unit Circle')
+plt.grid(True)
+plt.show()
+</code></pre>
+<p><img alt="alt text" src="../image-14.png"/></p>
+<pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+N = 100  # number of needles
+L = 1.0  # length of needle
+H = 2.0  # distance between parallel lines
+num_lines = 5  # number of horizontal lines
+
+# Generate random needle centers (y only needs to stay within line region)
+x_centers = np.random.uniform(0, 10, N)
+y_centers = np.random.uniform(0, num_lines * H, N)
+
+# Generate random angles (0 to pi)
+angles = np.random.uniform(0, np.pi, N)
+
+# Compute endpoints of each needle
+x1 = x_centers - (L / 2) * np.cos(angles)
+x2 = x_centers + (L / 2) * np.cos(angles)
+y1 = y_centers - (L / 2) * np.sin(angles)
+y2 = y_centers + (L / 2) * np.sin(angles)
+
+# Determine if a needle crosses a line
+crosses = np.floor(y1 / H) != np.floor(y2 / H)
+
+# Plot setup
+plt.figure(figsize=(10, 6))
+
+# Draw parallel lines
+for i in range(num_lines + 1):
+    y_line = i * H
+    plt.axhline(y=y_line, color='black', linewidth=1)
+
+# Plot needles: red = crossing, blue = non-crossing
+for i in range(N):
+    color = 'red' if crosses[i] else 'blue'
+    plt.plot([x1[i], x2[i]], [y1[i], y2[i]], color=color, linewidth=1)
+
+# Labels and formatting
+plt.title('Buffon\'s Needle Simulation\nRed = Crosses Line, Blue = Does Not')
+plt.xlim(0, 10)
+plt.ylim(0, num_lines * H)
+plt.gca().set_aspect('equal')
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.grid(True)
+plt.show()
+</code></pre>
+<h2 id="colab">Colab</h2>
+<p><a href="https://colab.research.google.com/drive/1Pk5LFyZwBzSTsAeUJyRkwx5aOuyY-RP9">colab10</a></p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
