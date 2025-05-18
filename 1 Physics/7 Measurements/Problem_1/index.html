@@ -172,6 +172,370 @@
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
 <h1 id="problem-1">Problem 1</h1>
+<h1 id="experimental-physics-notes-measuring-gravitational-acceleration-with-a-pendulum">Experimental Physics Notes: Measuring Gravitational Acceleration with a Pendulum</h1>
+<p><strong>Date:</strong> 02:07 PM CEST, Sunday, May 18, 2025<br/>
+<strong>Prepared by:</strong> Grok 3, xAI</p>
+<h2 id="section-1-perform-calculations">Section 1: Perform Calculations</h2>
+<p>This section details the mathematical framework for calculating the period (<span class="arithmatex">\(T\)</span>) and gravitational acceleration (<span class="arithmatex">\(g\)</span>) of a simple pendulum, using experimental data collected on May 18, 2025. The approach emphasizes precision, uncertainty propagation, and adherence to rigorous academic standards suitable for a Harvard-level experimental physics course.</p>
+<h3 id="11-calculation-of-the-period-t">1.1 Calculation of the Period (<span class="arithmatex">\(T\)</span>)</h3>
+<p>The period of oscillation (<span class="arithmatex">\(T\)</span>) is determined from the mean time for 10 oscillations (<span class="arithmatex">\(\overline{T}_{10}\)</span>). Given the data for 10 sets of 10 oscillations—13.58 s, 12.44 s, 13.13 s, 13.34 s, 12.68 s, 12.44 s, 11.76 s, 11.53 s, 11.49 s, 10.88 s—we first compute the mean:</p>
+<div class="arithmatex">\[
+\overline{T}_{10} = \frac{1}{n} \sum_{i=1}^{n} T_{10,i}
+\]</div>
+<p>Where:
+- <span class="arithmatex">\(T_{10,i}\)</span> represents each measurement of time for 10 oscillations.
+- <span class="arithmatex">\(n = 10\)</span> is the number of trials.</p>
+<p>Summing the measurements:</p>
+<div class="arithmatex">\[
+\sum_{i=1}^{10} T_{10,i} = 13.58 + 12.44 + 13.13 + 13.34 + 12.68 + 12.44 + 11.76 + 11.53 + 11.49 + 10.88 = 123.27 \, \text{s}
+\]</div>
+<p>Thus:</p>
+<div class="arithmatex">\[
+\overline{T}_{10} = \frac{123.27}{10} = 12.327 \, \text{s}
+\]</div>
+<p>The period (<span class="arithmatex">\(T\)</span>) is then:</p>
+<div class="arithmatex">\[
+T = \frac{\overline{T}_{10}}{10} = \frac{12.327}{10} = 1.2327 \, \text{s}
+\]</div>
+<p>Next, we calculate the uncertainty in <span class="arithmatex">\(\overline{T}_{10}\)</span> (<span class="arithmatex">\(\Delta T_{10}\)</span>). First, compute the standard deviation (<span class="arithmatex">\(\sigma_T\)</span>):</p>
+<div class="arithmatex">\[
+\sigma_T = \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} (T_{10,i} - \overline{T}_{10})^2}
+\]</div>
+<p>The squared deviations are:</p>
+<ul>
+<li><span class="arithmatex">\((13.58 - 12.327)^2 = 1.5625\)</span></li>
+<li><span class="arithmatex">\((12.44 - 12.327)^2 = 0.0128\)</span></li>
+<li><span class="arithmatex">\((13.13 - 12.327)^2 = 0.6456\)</span></li>
+<li><span class="arithmatex">\((13.34 - 12.327)^2 = 1.0276\)</span></li>
+<li><span class="arithmatex">\((12.68 - 12.327)^2 = 0.1250\)</span></li>
+<li><span class="arithmatex">\((12.44 - 12.327)^2 = 0.0128\)</span></li>
+<li><span class="arithmatex">\((11.76 - 12.327)^2 = 0.3215\)</span></li>
+<li><span class="arithmatex">\((11.53 - 12.327)^2 = 0.6340\)</span></li>
+<li><span class="arithmatex">\((11.49 - 12.327)^2 = 0.6845\)</span></li>
+<li><span class="arithmatex">\((10.88 - 12.327)^2 = 2.1132\)</span></li>
+</ul>
+<p>Sum of squared deviations:</p>
+<div class="arithmatex">\[
+\sum_{i=1}^{10} (T_{10,i} - \overline{T}_{10})^2 = 1.5625 + 0.0128 + 0.6456 + 1.0276 + 0.1250 + 0.0128 + 0.3215 + 0.6340 + 0.6845 + 2.1132 = 7.1395
+\]</div>
+<p>Variance:</p>
+<div class="arithmatex">\[
+\frac{\sum_{i=1}^{10} (T_{10,i} - \overline{T}_{10})^2}{n-1} = \frac{7.1395}{9} \approx 0.7933
+\]</div>
+<p>Standard deviation:</p>
+<div class="arithmatex">\[
+\sigma_T = \sqrt{0.7933} \approx 0.8907 \, \text{s}
+\]</div>
+<p>The uncertainty in the mean (<span class="arithmatex">\(\Delta T_{10}\)</span>) is:</p>
+<div class="arithmatex">\[
+\Delta T_{10} = \frac{\sigma_T}{\sqrt{n}} = \frac{0.8907}{\sqrt{10}} \approx \frac{0.8907}{3.1623} \approx 0.2816 \, \text{s}
+\]</div>
+<p>Thus, the uncertainty in the period (<span class="arithmatex">\(\Delta T\)</span>) is:</p>
+<div class="arithmatex">\[
+\Delta T = \frac{\Delta T_{10}}{10} = \frac{0.2816}{10} = 0.02816 \, \text{s}
+\]</div>
+<h3 id="12-determination-of-gravitational-acceleration-g">1.2 Determination of Gravitational Acceleration (<span class="arithmatex">\(g\)</span>)</h3>
+<p>The gravitational acceleration (<span class="arithmatex">\(g\)</span>) is calculated using the simple pendulum formula:</p>
+<div class="arithmatex">\[
+g = \frac{4 \pi^2 L}{T^2}
+\]</div>
+<p>Where:
+- <span class="arithmatex">\(\pi \approx 3.1415926535\)</span>.
+- <span class="arithmatex">\(L = 0.9 \, \text{m}\)</span> (given).
+- <span class="arithmatex">\(T = 1.2327 \, \text{s}\)</span> (from Section 1.1).</p>
+<p>First, compute the denominator:</p>
+<div class="arithmatex">\[
+T^2 = (1.2327)^2 \approx 1.5197 \, \text{s}^2
+\]</div>
+<p>Numerator:</p>
+<div class="arithmatex">\[
+4 \pi^2 L = 4 \cdot (3.1415926535)^2 \cdot 0.9 \approx 4 \cdot 9.8696 \cdot 0.9 \approx 35.5306 \, \text{m}
+\]</div>
+<p>Thus:</p>
+<div class="arithmatex">\[
+g = \frac{35.5306}{1.5197} \approx 23.38 \, \text{m/s}^2
+\]</div>
+<h3 id="13-uncertainty-propagation-for-g-additional-step-for-completeness">1.3 Uncertainty Propagation for <span class="arithmatex">\(g\)</span> (Additional Step for Completeness)</h3>
+<p>To provide a complete analysis, we propagate the uncertainty in <span class="arithmatex">\(g\)</span> (<span class="arithmatex">\(\Delta g\)</span>) using:</p>
+<div class="arithmatex">\[
+\frac{\Delta g}{g} = \sqrt{\left( \frac{\Delta L}{L} \right)^2 + \left( 2 \frac{\Delta T}{T} \right)^2}
+\]</div>
+<p>Given:
+- <span class="arithmatex">\(\Delta L = 0.005 \, \text{m}\)</span>.
+- <span class="arithmatex">\(\Delta T = 0.02816 \, \text{s}\)</span>.</p>
+<p>Relative uncertainties:
+- <span class="arithmatex">\(\frac{\Delta L}{L} = \frac{0.005}{0.9} \approx 0.005556\)</span>
+- <span class="arithmatex">\(2 \frac{\Delta T}{T} = 2 \cdot \frac{0.02816}{1.2327} \approx 2 \cdot 0.02284 \approx 0.04568\)</span></p>
+<p>Combined relative uncertainty:</p>
+<div class="arithmatex">\[
+\frac{\Delta g}{g} = \sqrt{(0.005556)^2 + (0.04568)^2} = \sqrt{0.00003086 + 0.0020868} \approx \sqrt{0.0021177} \approx 0.04602
+\]</div>
+<p>Absolute uncertainty:</p>
+<div class="arithmatex">\[
+\Delta g = g \cdot \frac{\Delta g}{g} = 23.38 \cdot 0.04602 \approx 1.08 \, \text{m/s}^2
+\]</div>
+<h3 id="14-discussion-of-results">1.4 Discussion of Results</h3>
+<p>The calculated <span class="arithmatex">\(g \approx 23.38 \pm 1.08 \, \text{m/s}^2\)</span> is significantly higher than the accepted value of <span class="arithmatex">\(9.81 \, \text{m/s}^2\)</span>. This discrepancy suggests potential experimental errors, such as an incorrect pendulum length (<span class="arithmatex">\(L\)</span>) measurement or systematic timing errors. The pendulum length <span class="arithmatex">\(L = 0.9 \, \text{m}\)</span> yields a theoretical period of <span class="arithmatex">\(T \approx 1.9 \, \text{s}\)</span> (using <span class="arithmatex">\(T = 2\pi \sqrt{\frac{L}{g}}\)</span>), which is higher than the measured <span class="arithmatex">\(1.2327 \, \text{s}\)</span>, indicating a need to verify the setup.</p>
+<h3 id="15-key-considerations">1.5 Key Considerations</h3>
+<ul>
+<li>The small-angle approximation (<span class="arithmatex">\(\theta &lt; 15^\circ\)</span>) must hold for the formula <span class="arithmatex">\(g = \frac{4 \pi^2 L}{T^2}\)</span> to be valid.</li>
+<li>Systematic errors (e.g., air resistance, pivot friction) may affect <span class="arithmatex">\(T\)</span>.</li>
+<li>Ensure <span class="arithmatex">\(L\)</span> is measured to the center of mass of the pendulum bob.</li>
+</ul>
+<p>This analysis provides a rigorous framework for calculating <span class="arithmatex">\(g\)</span>, suitable for advanced experimental physics studies.</p>
+<h1 id="experimental-physics-notes-measuring-gravitational-acceleration-with-a-pendulum_1">Experimental Physics Notes: Measuring Gravitational Acceleration with a Pendulum</h1>
+<p><strong>Date:</strong> 02:09 PM CEST, Sunday, May 18, 2025<br/>
+<strong>Prepared by:</strong> Grok 3, xAI</p>
+<h2 id="section-2-propagate-uncertainties">Section 2: Propagate Uncertainties</h2>
+<p>This section outlines the rigorous methodology for propagating uncertainties in the gravitational acceleration (<span class="arithmatex">\(g\)</span>) derived from a simple pendulum experiment, conducted on May 18, 2025. The process adheres to advanced experimental physics standards, ensuring a comprehensive analysis suitable for a Harvard-level academic context.</p>
+<h3 id="21-uncertainty-propagation-for-g-delta-g">2.1 Uncertainty Propagation for <span class="arithmatex">\(g\)</span> (<span class="arithmatex">\(\Delta g\)</span>)</h3>
+<p>The uncertainty in the gravitational acceleration (<span class="arithmatex">\(\Delta g\)</span>) is calculated using the propagation of errors for the functional relationship <span class="arithmatex">\(g = \frac{4 \pi^2 L}{T^2}\)</span>. The formula for the relative uncertainty in <span class="arithmatex">\(g\)</span> is given by:</p>
+<div class="arithmatex">\[
+\frac{\Delta g}{g} = \sqrt{\left( \frac{\Delta L}{L} \right)^2 + \left( 2 \frac{\Delta T}{T} \right)^2}
+\]</div>
+<p>Where:
+- <span class="arithmatex">\(\Delta g\)</span> is the absolute uncertainty in <span class="arithmatex">\(g\)</span>.
+- <span class="arithmatex">\(g = 23.38 \, \text{m/s}^2\)</span> is the calculated gravitational acceleration.
+- <span class="arithmatex">\(\Delta L = 0.005 \, \text{m}\)</span> is the uncertainty in the pendulum length.
+- <span class="arithmatex">\(L = 0.9 \, \text{m}\)</span> is the measured pendulum length.
+- <span class="arithmatex">\(\Delta T = 0.02816 \, \text{s}\)</span> is the uncertainty in the period.
+- <span class="arithmatex">\(T = 1.2327 \, \text{s}\)</span> is the calculated period.
+- The factor of 2</p>
+<h1 id="experimental-physics-notes-measuring-gravitational-acceleration-with-a-pendulum_2">Experimental Physics Notes: Measuring Gravitational Acceleration with a Pendulum</h1>
+<p><strong>Date:</strong> 02:11 PM CEST, Sunday, May 18, 2025<br/>
+<strong>Prepared by:</strong> Grok 3, xAI</p>
+<h2 id="section-3-analyze-results">Section 3: Analyze Results</h2>
+<p>This section provides a detailed comparison of the experimentally determined gravitational acceleration (<span class="arithmatex">\(g\)</span>) with the accepted standard value, conducted on May 18, 2025. The analysis adheres to rigorous academic standards suitable for a Harvard-level experimental physics course, emphasizing statistical and physical interpretation.</p>
+<h3 id="31-comparison-of-measured-and-standard-g">3.1 Comparison of Measured and Standard <span class="arithmatex">\(g\)</span></h3>
+<p>The gravitational acceleration (<span class="arithmatex">\(g\)</span>) measured from the pendulum experiment is <span class="arithmatex">\(g = 23.38 \pm 1.08 \, \text{m/s}^2\)</span>, derived from the data collected. This value is compared against the internationally accepted standard gravitational acceleration at the Earth's surface, which is:</p>
+<div class="arithmatex">\[
+g_{\text{standard}} = 9.81 \, \text{m/s}^2
+\]</div>
+<p>The relative difference between the measured <span class="arithmatex">\(g\)</span> and the standard <span class="arithmatex">\(g_{\text{standard}}\)</span> is calculated as:</p>
+<div class="arithmatex">\[
+\text{Relative Difference} = \frac{|g - g_{\text{standard}}|}{g_{\text{standard}}} \cdot 100\%
+\]</div>
+<p>Substituting the values:</p>
+<div class="arithmatex">\[
+\text{Relative Difference} = \frac{|23.38 - 9.81|}{9.81} \cdot 100\% = \frac{13.57}{9.81} \cdot 100\% \approx 138.33\%
+\]</div>
+<p>This indicates a significant deviation of approximately 138% from the standard value.</p>
+<h3 id="32-statistical-significance">3.2 Statistical Significance</h3>
+<p>To assess the statistical significance of the discrepancy, consider the uncertainty in the measured <span class="arithmatex">\(g\)</span> (<span class="arithmatex">\(\Delta g = 1.08 \, \text{m/s}^2\)</span>). The measured value is considered consistent with the standard value if <span class="arithmatex">\(g_{\text{standard}}\)</span> lies within the uncertainty range:</p>
+<div class="arithmatex">\[
+g \pm \Delta g = 23.38 \pm 1.08 \, \text{m/s}^2
+\]</div>
+<p>The range is:</p>
+<div class="arithmatex">\[
+22.30 \, \text{m/s}^2 \text{ to } 24.46 \, \text{m/s}^2
+\]</div>
+<p>Since <span class="arithmatex">\(9.81 \, \text{m/s}^2\)</span> falls outside this range, the measured <span class="arithmatex">\(g\)</span> is statistically inconsistent with the standard value at the <span class="arithmatex">\(1\sigma\)</span> confidence level (68% confidence).</p>
+<h3 id="33-potential-sources-of-discrepancy">3.3 Potential Sources of Discrepancy</h3>
+<p>The large deviation suggests systematic errors or experimental misconfigurations. Key factors to investigate include:
+- <strong>Pendulum Length (<span class="arithmatex">\(L\)</span>)</strong>: The assumed <span class="arithmatex">\(L = 0.9 \, \text{m}\)</span> yields a theoretical period <span class="arithmatex">\(T = 2\pi \sqrt{\frac{L}{g_{\text{standard}}}} \approx 1.9 \, \text{s}\)</span> (using <span class="arithmatex">\(g_{\text{standard}} = 9.81 \, \text{m/s}^2\)</span>), whereas the measured <span class="arithmatex">\(T = 1.2327 \, \text{s}\)</span> is lower. This discrepancy implies <span class="arithmatex">\(L\)</span> may be underestimated or mismeasured.
+- <strong>Small-Angle Approximation</strong>: The formula <span class="arithmatex">\(g = \frac{4 \pi^2 L}{T^2}\)</span> assumes oscillations with an amplitude less than <span class="arithmatex">\(15^\circ\)</span>. If exceeded, the period increases, affecting <span class="arithmatex">\(g\)</span>.
+- <strong>Timing Accuracy</strong>: Human reaction time or stopwatch resolution may introduce errors in the measured times (e.g., 13.58 s, 12.44 s, etc.), skewing <span class="arithmatex">\(\overline{T}_{10}\)</span>.</p>
+<h3 id="34-adjusted-theoretical-check">3.4 Adjusted Theoretical Check</h3>
+<p>Using the measured <span class="arithmatex">\(T = 1.2327 \, \text{s}\)</span> and solving for <span class="arithmatex">\(g\)</span> with <span class="arithmatex">\(L = 0.9 \, \text{m}\)</span>:</p>
+<div class="arithmatex">\[
+g = \frac{4 \pi^2 L}{T^2} = \frac{4 \cdot (3.1416)^2 \cdot 0.9}{(1.2327)^2} \approx 23.38 \, \text{m/s}^2
+\]</div>
+<p>This confirms the calculation, but the inconsistency with <span class="arithmatex">\(9.81 \, \text{m/s}^2\)</span> suggests <span class="arithmatex">\(L\)</span> should be re-evaluated. If <span class="arithmatex">\(g = 9.81 \, \text{m/s}^2\)</span>, the expected <span class="arithmatex">\(L\)</span> would be:</p>
+<div class="arithmatex">\[
+L = \frac{g T^2}{4 \pi^2} = \frac{9.81 \cdot (1.2327)^2}{4 \cdot (3.1416)^2} \approx 0.376 \, \text{m}
+\]</div>
+<p>This indicates the measured <span class="arithmatex">\(L = 0.9 \, \text{m}\)</span> may be incorrect, possibly due to measurement error or misalignment.</p>
+<h3 id="35-conclusion-and-recommendations">3.5 Conclusion and Recommendations</h3>
+<p>The measured <span class="arithmatex">\(g = 23.38 \pm 1.08 \, \text{m/s}^2\)</span> is not consistent with <span class="arithmatex">\(g_{\text{standard}} = 9.81 \, \text{m/s}^2\)</span>, with a relative error exceeding the uncertainty bounds. Recommendations include:
+- Recheck <span class="arithmatex">\(L\)</span> measurement to the center of mass.
+- Ensure oscillation amplitude remains below <span class="arithmatex">\(15^\circ\)</span>.
+- Use a more precise timing method to reduce <span class="arithmatex">\(\Delta T\)</span>.</p>
+<p>This analysis underscores the importance of systematic error identification in experimental physics.</p>
+<h1 id="experimental-physics-notes-measuring-gravitational-acceleration-with-a-pendulum_3">Experimental Physics Notes: Measuring Gravitational Acceleration with a Pendulum</h1>
+<h2 id="section-4-discuss-findings">Section 4: Discuss Findings</h2>
+<p>This section provides a critical evaluation of the experimental findings from the pendulum-based measurement of gravitational acceleration (<span class="arithmatex">\(g\)</span>), conducted on May 18, 2025. The discussion addresses the impact of measurement resolution on length uncertainty (<span class="arithmatex">\(\Delta L\)</span>), the variability in timing and its effect on period uncertainty (<span class="arithmatex">\(\Delta T\)</span>), and the underlying assumptions and limitations. The analysis meets the rigorous standards expected in a Harvard-level experimental physics course.</p>
+<h3 id="41-effect-of-measurement-resolution-on-delta-l">4.1 Effect of Measurement Resolution on <span class="arithmatex">\(\Delta L\)</span></h3>
+<p>The uncertainty in the pendulum length (<span class="arithmatex">\(\Delta L\)</span>) is determined by the resolution of the measuring tool, typically defined as half the smallest division. Given <span class="arithmatex">\(\Delta L = 0.005 \, \text{m}\)</span> and <span class="arithmatex">\(L = 0.9 \, \text{m}\)</span>, the resolution is:</p>
+<div class="arithmatex">\[
+\text{Resolution} = 2 \cdot \Delta L = 2 \cdot 0.005 = 0.01 \, \text{m}
+\]</div>
+<p>This suggests a ruler or measuring tape with a minimum division of 1 cm was used. The relative uncertainty in length is:</p>
+<div class="arithmatex">\[
+\frac{\Delta L}{L} = \frac{0.005}{0.9} \approx 0.005556
+\]</div>
+<p>This small relative uncertainty (approximately 0.56%) indicates that the resolution has a minimal direct impact on the overall <span class="arithmatex">\(g\)</span> calculation. However, any systematic offset in <span class="arithmatex">\(L\)</span> (e.g., misjudging the center of mass) could amplify errors, as <span class="arithmatex">\(g \propto L\)</span>. For instance, a 1 cm error in <span class="arithmatex">\(L = 0.9 \, \text{m}\)</span> (a 1.11% change) would alter <span class="arithmatex">\(g\)</span> by approximately 2.22%, highlighting the need for precise alignment despite the low <span class="arithmatex">\(\Delta L\)</span>.</p>
+<h3 id="42-variability-in-timing-and-its-impact-on-delta-t">4.2 Variability in Timing and Its Impact on <span class="arithmatex">\(\Delta T\)</span></h3>
+<p>The variability in timing is assessed through the standard deviation (<span class="arithmatex">\(\sigma_T\)</span>) of the 10 oscillation time measurements: 13.58 s, 12.44 s, 13.13 s, 13.34 s, 12.68 s, 12.44 s, 11.76 s, 11.53 s, 11.49 s, 10.88 s. The mean (<span class="arithmatex">\(\overline{T}_{10}\)</span>) is <span class="arithmatex">\(12.327 \, \text{s}\)</span>, and the standard deviation is calculated as:</p>
+<div class="arithmatex">\[
+\sigma_T = \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} (T_{10,i} - \overline{T}_{10})^2}
+\]</div>
+<p>With the sum of squared deviations approximately <span class="arithmatex">\(7.1395\)</span> (as computed earlier), the variance is:</p>
+<div class="arithmatex">\[
+\frac{7.1395}{9} \approx 0.7933
+\]</div>
+<p>Thus:</p>
+<div class="arithmatex">\[
+\sigma_T = \sqrt{0.7933} \approx 0.8907 \, \text{s}
+\]</div>
+<p>The uncertainty in the mean time (<span class="arithmatex">\(\Delta T_{10}\)</span>) is:</p>
+<div class="arithmatex">\[
+\Delta T_{10} = \frac{\sigma_T}{\sqrt{n}} = \frac{0.8907}{\sqrt{10}} \approx 0.2816 \, \text{s}
+\]</div>
+<p>And the uncertainty in the period (<span class="arithmatex">\(\Delta T\)</span>) is:</p>
+<div class="arithmatex">\[
+\Delta T = \frac{\Delta T_{10}}{10} = \frac{0.2816}{10} = 0.02816 \, \text{s}
+\]</div>
+<p>The relative uncertainty in <span class="arithmatex">\(T\)</span> is:</p>
+<div class="arithmatex">\[
+\frac{\Delta T}{T} = \frac{0.02816}{1.2327} \approx 0.02284
+\]</div>
+<p>This variability, amplified by the factor of 2 in the <span class="arithmatex">\(g\)</span> uncertainty propagation (<span class="arithmatex">\(\frac{\Delta g}{g} \propto 2 \frac{\Delta T}{T}\)</span>), contributes significantly to <span class="arithmatex">\(\Delta g\)</span>. The standard deviation (<span class="arithmatex">\(\sigma_T = 0.8907 \, \text{s}\)</span>) suggests human reaction time or stopwatch precision (likely on the order of 0.1–0.5 s) as primary sources, impacting the reliability of <span class="arithmatex">\(g = 23.38 \pm 1.08 \, \text{m/s}^2\)</span>.</p>
+<h3 id="43-assumptions-and-experimental-limitations">4.3 Assumptions and Experimental Limitations</h3>
+<p>Several assumptions and limitations underpin this experiment:
+- <strong>Small-Angle Approximation</strong>: The formula <span class="arithmatex">\(g = \frac{4 \pi^2 L}{T^2}\)</span> assumes oscillations with amplitude <span class="arithmatex">\(\theta &lt; 15^\circ\)</span>. If exceeded, the period increases nonlinearly (e.g., <span class="arithmatex">\(T \approx 2\pi \sqrt{\frac{L}{g}} (1 + \frac{\theta^2}{16})\)</span> for small <span class="arithmatex">\(\theta\)</span> in radians), skewing <span class="arithmatex">\(g\)</span>.
+- <strong>Ideal Pendulum Model</strong>: The derivation assumes a massless string and point mass bob, neglecting air resistance and pivot friction, which dampen oscillations and slightly reduce <span class="arithmatex">\(T\)</span>.
+- <strong>Measurement Precision</strong>: The ruler resolution (0.01 m) and timing variability (0.8907 s) limit accuracy. Systematic errors (e.g., misaligning <span class="arithmatex">\(L\)</span> to the center of mass) may further distort results.
+- <strong>Environmental Factors</strong>: Temperature-induced length changes or air currents could affect <span class="arithmatex">\(L\)</span> and <span class="arithmatex">\(T\)</span>, though likely minimal in a controlled setting.</p>
+<h3 id="44-synthesis-and-implications">4.4 Synthesis and Implications</h3>
+<p>The effect of measurement resolution on <span class="arithmatex">\(\Delta L\)</span> is minor (0.56% relative uncertainty), but timing variability drives a larger <span class="arithmatex">\(\Delta T\)</span> (2.28% relative uncertainty), dominating <span class="arithmatex">\(\Delta g\)</span>. The calculated <span class="arithmatex">\(g = 23.38 \, \text{m/s}^2\)</span> exceeds the standard <span class="arithmatex">\(9.81 \, \text{m/s}^2\)</span> by 138%, likely due to an overestimated <span class="arithmatex">\(L\)</span> or unaccounted systematic errors. Re-evaluating <span class="arithmatex">\(L\)</span> (e.g., <span class="arithmatex">\(L \approx 0.376 \, \text{m}\)</span> for <span class="arithmatex">\(g = 9.81 \, \text{m/s}^2\)</span> with <span class="arithmatex">\(T = 1.2327 \, \text{s}\)</span>) and improving timing precision are recommended to align with theoretical expectations.</p>
+<h3 id="45-recommendations">4.5 Recommendations</h3>
+<ul>
+<li>Use a higher-resolution tool (e.g., 1 mm scale) to refine <span class="arithmatex">\(\Delta L\)</span>.</li>
+<li>Employ automated timing (e.g., photogates) to reduce <span class="arithmatex">\(\sigma_T\)</span>.</li>
+<li>Verify <span class="arithmatex">\(\theta &lt; 15^\circ\)</span> and adjust <span class="arithmatex">\(L\)</span> measurement to the bob’s center of mass.</li>
+</ul>
+<p>This discussion highlights the critical role of uncertainty analysis in interpreting experimental data in advanced physics.</p>
+<h1 id="experimental-physics-notes-measuring-gravitational-acceleration-with-a-pendulum_4">Experimental Physics Notes: Measuring Gravitational Acceleration with a Pendulum</h1>
+<p><strong>Date:</strong> 02:20 PM CEST, Sunday, May 18, 2025<br/>
+<strong>Prepared by:</strong> Grok 3, xAI</p>
+<h1 id="experimental-physics-notes-measuring-gravitational-acceleration-with-a-pendulum_5">Experimental Physics Notes: Measuring Gravitational Acceleration with a Pendulum</h1>
+<p><strong>Date:</strong> 02:22 PM CEST, Sunday, May 18, 2025<br/>
+<strong>Prepared by:</strong> Grok 3, xAI</p>
+<h2 id="section-6-tabulated-data-for-10-trials-and-t_10">Section 6: Tabulated Data for 10 Trials and <span class="arithmatex">\(T_{10}\)</span></h2>
+<p>This section presents the raw timing data for the 10 trials of 10 oscillations each (<span class="arithmatex">\(T_{10}\)</span>), along with the calculated mean time (<span class="arithmatex">\(\overline{T}_{10}\)</span>), from the pendulum experiment conducted on May 18, 2025. The table is structured to provide a clear overview of the measurements, adhering to the rigorous academic standards expected in a Harvard-level experimental physics course.</p>
+<h3 id="61-table-of-t_10-measurements-across-10-trials">6.1 Table of <span class="arithmatex">\(T_{10}\)</span> Measurements Across 10 Trials</h3>
+<table>
+<thead>
+<tr>
+<th><strong>Trial Number</strong></th>
+<th><strong><span class="arithmatex">\(T_{10}\)</span> (s)</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>13.58</td>
+<td>Time for 10 oscillations in trial 1.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>12.44</td>
+<td>Time for 10 oscillations in trial 2.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>13.13</td>
+<td>Time for 10 oscillations in trial 3.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>13.34</td>
+<td>Time for 10 oscillations in trial 4.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>12.68</td>
+<td>Time for 10 oscillations in trial 5.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>12.44</td>
+<td>Time for 10 oscillations in trial 6.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>11.76</td>
+<td>Time for 10 oscillations in trial 7.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>11.53</td>
+<td>Time for 10 oscillations in trial 8.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>11.49</td>
+<td>Time for 10 oscillations in trial 9.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>10.88</td>
+<td>Time for 10 oscillations in trial 10.</td>
+</tr>
+<tr>
+<td><strong>Mean</strong></td>
+<td><strong><span class="arithmatex">\(\overline{T}_{10}\)</span> = 12.327</strong></td>
+<td>Mean time for 10 oscillations, calculated as <span class="arithmatex">\(\overline{T}_{10} = \frac{\sum T_{10,i}}{10}\)</span>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-notes-on-the-data">6.2 Notes on the Data</h3>
+<ul>
+<li>The <span class="arithmatex">\(T_{10}\)</span> values range from 10.88 s to 13.58 s, indicating variability in timing measurements, likely due to human reaction time or inconsistencies in pendulum release.</li>
+<li>The mean <span class="arithmatex">\(\overline{T}_{10} = 12.327 \, \text{s}\)</span> serves as the basis for calculating the period <span class="arithmatex">\(T = \frac{\overline{T}_{10}}{10} = 1.2327 \, \text{s}\)</span>, which is used in determining <span class="arithmatex">\(g\)</span>.</li>
+<li>Variability in <span class="arithmatex">\(T_{10}\)</span> suggests the need for more precise timing methods (e.g., photogates) to reduce uncertainty in subsequent calculations.</li>
+</ul>
+<p>This table provides a concise summary of the raw timing data, facilitating further analysis of the experiment's reliability and precision.</p>
+<h2 id="codes-and-plots">Codes And Plots</h2>
+<p><img alt="alt text" src="../image.png"/></p>
+<pre><code class="language-python">import matplotlib.pyplot as plt
+
+trials = ["Trial 1", "Trial 2", "Trial 3", "Trial 4", "Trial 5", "Trial 6", "Trial 7", "Trial 8", "Trial 9", "Trial 10"]
+t10_values = [13.58, 12.44, 13.13, 13.34, 12.68, 12.44, 11.76, 11.53, 11.49, 10.88]
+mean_t10 = 12.327
+deviations = [t - mean_t10 for t in t10_values]
+
+plt.figure(figsize=(10, 6))
+plt.bar(trials, deviations, color='coral', edgecolor='black')
+plt.xlabel('Trial Number')
+plt.ylabel('Deviation from Mean T10 (s)')
+plt.title('Deviations of T10 from Mean (12.327 s)')
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.show()
+</code></pre>
+<p><img alt="alt text" src="../image-1.png"/></p>
+<pre><code class="language-python">import matplotlib.pyplot as plt
+
+trials = ["Trial 1", "Trial 2", "Trial 3", "Trial 4", "Trial 5", "Trial 6", "Trial 7", "Trial 8", "Trial 9", "Trial 10"]
+t10_values = [13.58, 12.44, 13.13, 13.34, 12.68, 12.44, 11.76, 11.53, 11.49, 10.88]
+
+plt.figure(figsize=(10, 6))
+plt.plot(trials, t10_values, color='forestgreen', marker='o', linestyle='-', linewidth=2)
+plt.xlabel('Trial Number')
+plt.ylabel('Time for 10 Oscillations (s)')
+plt.title('T10 Measurements Over 10 Trials')
+plt.ylim(0, 15)
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.show()
+</code></pre>
+<p><img alt="alt text" src="../image-2.png"/></p>
+<pre><code class="language-python">import matplotlib.pyplot as plt
+
+labels = ['Length Uncertainty', 'Period Uncertainty']
+contributions = [0.005556, 0.04568]  # $\frac{\Delta L}{L} = 0.005/0.9$, $2 \cdot \frac{\Delta T}{T} = 2 \cdot 0.02816/1.2327$
+
+plt.figure(figsize=(8, 6))
+plt.bar(labels, contributions, color=['gold', 'cyan'], edgecolor='black')
+plt.xlabel('Uncertainty Source')
+plt.ylabel('Relative Uncertainty')
+plt.title('Contributions to Uncertainty in g')
+plt.ylim(0, 0.05)
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.show()
+</code></pre>
+<h2 id="colab">Colab</h2>
+<p><a href="https://colab.research.google.com/drive/16krdw9EPAc5-32J3YKll1ri1p04sAd6t">colab 11</a></p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
