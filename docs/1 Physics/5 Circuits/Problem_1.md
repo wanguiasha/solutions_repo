@@ -616,7 +616,7 @@ $$ R_{eq} = \frac{R_1 \cdot R_2}{R_1 + R_2} \quad \text{(Parallel Combination)} 
 $$ R_{star} = \frac{R_{delta}^2}{\sum R_{delta}} \quad \text{(Delta-Star Transformation)} $$
 
 ## Colab
-[Colab8](https://colab.research.google.com/drive/1VsM05vl8oYle0gtSq_aOMugcn0R4Evza)
+[Colab8](https://colab.research.google.com/drive/1hlh6-DtTuBSNl1UTuvoT1yjh9tXMVTbz)
 
 
 
