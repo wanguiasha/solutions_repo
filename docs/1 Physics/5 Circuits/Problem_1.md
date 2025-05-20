@@ -343,638 +343,266 @@ ensures that nested structures are simplified step-by-step, making the algorithm
 ---
 ## Codes and Plots
 
-![alt text](<circuit_simplification_phased_layout (1).gif>)
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
 ```python
 import networkx as nx
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import imageio
-import numpy as np
 
-# Function to draw nodes as boxes or circles with specific colors
-def draw_custom_nodes(G, pos, ax, node_colors, node_shapes):
-    for node in G.nodes():
-        x, y = pos[node]
-        if node_shapes[node] == 'box':
-            rect = patches.Rectangle((x - 0.1, y - 0.05), 0.2, 0.1, linewidth=1, edgecolor='black', facecolor=node_colors[node])
-            ax.add_patch(rect)
-            ax.text(x, y, node, fontsize=10, ha='center', va='center')
-        else:
-            circle = patches.Circle((x, y), 0.05, linewidth=1, edgecolor='black', facecolor=node_colors[node])
-            ax.add_patch(circle)
-            ax.text(x, y, node, fontsize=10, ha='center', va='center')
+def draw_graph(G, step_title):
+    pos = nx.spring_layout(G, seed=42)
+    plt.figure(figsize=(6, 4))
+    edge_labels = {}
+    for u, v, data in G.edges(data=True):
+        label = f"{data['resistance']}Ω"
+        if G.number_of_edges(u, v) > 1:
+            label = ', '.join(f"{d['resistance']}Ω" for d in G.get_edge_data(u, v).values())
+        edge_labels[(u, v)] = label
+    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=800)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    plt.title(step_title)
+    plt.show()
 
-# Function to draw edges with arrows and labels
-def draw_custom_edges(G, pos, ax):
-    for (u, v, d) in G.edges(data=True):
-        x1, y1 = pos[u]
-        x2, y2 = pos[v]
-        ax.arrow(x1, y1, (x2-x1)*0.8, (y2-y1)*0.8, head_width=0.02, head_length=0.04, fc='black', ec='black')
-        if 'label' in d and d['label']:
-            ax.text((x1+x2)/2, (y1+y2)/2, d['label'], fontsize=10, ha='center', va='center', color='black')
+def combine_series(G):
+    changed = True
+    while changed:
+        changed = False
+        for node in list(G.nodes):
+            if G.degree(node) == 2 and node not in ("B+", "B-"):
+                neighbors = list(G.neighbors(node))
+                if len(neighbors) == 2:
+                    u, v = neighbors
+                    edge1 = next(iter(G.get_edge_data(u, node).values()))
+                    edge2 = next(iter(G.get_edge_data(node, v).values()))
+                    R_new = edge1['resistance'] + edge2['resistance']
+                    G.remove_node(node)
+                    G.add_edge(u, v, resistance=R_new)
+                    changed = True
+                    draw_graph(G, f"{u} - {v} (series): {R_new}Ω")
+                    break
 
-# Create a MultiGraph to allow multiple edges
+def reduce_graph_initial_step(G):
+    draw_graph(G, "Initial Graph (Case 1)")
+    combine_series(G)
+    return G
+
+# Initial graph setup based on Case 1 initial diagram
 G = nx.MultiGraph()
+G.add_nodes_from(["B+", "B-", "A", "B", "C"])
+G.add_edge("B+", "A", resistance=2)  # R2
+G.add_edge("A", "B", resistance=3)   # R3
+G.add_edge("B+", "B", resistance=5)  # R1
+G.add_edge("B", "C", resistance=4)   # R4
+G.add_edge("C", "B-", resistance=6)  # R5
 
-# Initial graph (Case 1 Initial)
-G.add_edges_from([
-    ('B+', 'R1', {'label': 'R1'}),
-    ('R1', 'R2', {'label': 'R2'}),
-    ('R2', 'R3', {'label': 'R3'}),
-    ('R3', 'R4', {'label': 'R4'}),
-    ('R4', 'R5', {'label': 'R5'}),
-    ('R5', 'B-', {'label': ''}),
-    ('B+', 'R4', {'label': ''})  # Parallel path
-])
-
-# Step 1: Combine R2 and R3
-G_step1 = nx.MultiGraph(G)
-G_step1.remove_edge('R2', 'R3')
-G_step1.remove_edge('R3', 'R4')
-G_step1.add_edge('R1', 'R4', label='R23')
-
-# Step 2: Combine R4 and R5
-G_step2 = nx.MultiGraph(G_step1)
-G_step2.remove_edge('R4', 'R5')
-G_step2.remove_edge('R5', 'B-')
-G_step2.add_edge('R1', 'B-', label='R45')
-
-# Step 3: Combine R1 and R23 (parallel) - Phase 1
-G_step3 = nx.MultiGraph(G_step2)
-G_step3.remove_edge('B+', 'R1')
-G_step3.remove_edge('R1', 'R4')
-G_step3.add_edge('B+', 'R4', label='R123')
-
-# Step 4: Final combination with R45 - Phase 2
-G_step4 = nx.MultiGraph(G_step3)
-G_step4.remove_edge('B+', 'R4')
-G_step4.remove_edge('R1', 'B-')
-G_step4.add_edge('B+', 'B-', label='R12345')
-
-# List of graphs for animation
-graphs = [G, G_step1, G_step2, G_step3, G_step4]
-titles = ["Initial Circuit", "Step 1: Combine R2 and R3", "Step 2: Combine R4 and R5", 
-          "Phase 1: Combine R1 and R23", "Phase 2: Final Combination"]
-
-# Define positions for each step
-# Linear layout for initial steps
-pos_initial = {'B+': (0, 0), 'R1': (1, 0), 'R2': (2, 0), 'R3': (3, 0), 'R4': (4, 0), 'R5': (5, 0), 'B-': (6, 0)}
-pos_step1 = {'B+': (0, 0), 'R1': (1, 0), 'R2': (2, 0), 'R4': (3, 0), 'R5': (4, 0), 'B-': (5, 0)}
-pos_step2 = {'B+': (0, 0), 'R1': (1, 0), 'R4': (2, 0), 'B-': (3, 0)}
-
-# Circular/compact layout for Phase 1 and Phase 2
-pos_step3 = {'B+': (0, 0), 'R1': (1, 1), 'R4': (1, -1), 'B-': (2, 0)}  # Circular arrangement
-pos_step4 = {'B+': (0, 0), 'B-': (1, 0)}  # Compact linear for final step
-
-positions = [pos_initial, pos_step1, pos_step2, pos_step3, pos_step4]
-
-# Define node colors and shapes
-node_colors = {
-    'B+': 'lightgray', 'R1': 'lightgreen', 'R2': 'lightgreen', 'R3': 'lightgreen',
-    'R4': 'lightgreen', 'R5': 'lightgreen', 'B-': 'lightgray',
-    'R23': 'lightgreen', 'R45': 'lightgreen', 'R123': 'lightgreen', 'R12345': 'lightgreen'
-}
-node_shapes = {
-    'B+': 'box', 'R1': 'box', 'R2': 'box', 'R3': 'box', 'R4': 'box', 'R5': 'box', 'B-': 'box',
-    'R23': 'box', 'R45': 'box', 'R123': 'box', 'R12345': 'box'
-}
-
-# Generate frames for animation
-frames = []
-num_steps = 10  # Number of frames per transition for smooth animation
-
-for i in range(len(graphs) - 1):
-    G_start = graphs[i]
-    G_end = graphs[i + 1]
-    pos_start = positions[i]
-    pos_end = positions[i + 1]
-
-    # Interpolate positions between steps
-    for t in np.linspace(0, 1, num_steps):
-        fig, ax = plt.subplots(figsize=(8, 6))
-        pos_interp = {}
-        for node in set(pos_start.keys()) | set(pos_end.keys()):
-            start_pos = pos_start.get(node, pos_end.get(node, (0, 0)))
-            end_pos = pos_end.get(node, pos_start.get(node, (0, 0)))
-            pos_interp[node] = (start_pos[0] + t * (end_pos[0] - start_pos[0]), 
-                               start_pos[1] + t * (end_pos[1] - start_pos[1]))
-
-        # Draw the graph
-        draw_custom_nodes(G_start, pos_interp, ax, node_colors, node_shapes)
-        draw_custom_edges(G_start, pos_interp, ax)
-        ax.set_title(titles[i])
-        ax.set_xlim(-0.5, 6.5)
-        ax.set_ylim(-1.5, 1.5)  # Adjusted for circular layout
-        ax.axis('off')
-        plt.tight_layout()
-
-        # Save frame to a temporary file
-        frame = f"temp_frame_{len(frames)}.png"
-        plt.savefig(frame)
-        plt.close()
-        frames.append(imageio.imread(frame))
-
-# Create animated GIF
-imageio.mimsave('circuit_simplification_phased_layout.gif', frames, fps=10)
-
-print("Animated GIF 'circuit_simplification_phased_layout.gif' has been created.")
+reduce_graph_initial_step(G)
 ```
-![alt text](image-15.png)
+![alt text](image-3.png)
+![alt text](image-4.png)
 ```python
 import networkx as nx
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 
-# Function to draw nodes as boxes or circles with specific colors
-def draw_custom_nodes(G, pos, ax, node_colors, node_shapes):
-    for node in G.nodes():
-        x, y = pos[node]
-        if node_shapes[node] == 'box':
-            # Draw a rectangle for resistors
-            rect = patches.Rectangle((x - 0.1, y - 0.05), 0.2, 0.1, linewidth=1, edgecolor='black', facecolor=node_colors[node])
-            ax.add_patch(rect)
-            ax.text(x, y, node, fontsize=10, ha='center', va='center')
-        else:
-            # Draw a circle for junctions or battery terminals
-            circle = patches.Circle((x, y), 0.05, linewidth=1, edgecolor='black', facecolor=node_colors[node])
-            ax.add_patch(circle)
-            ax.text(x, y, node, fontsize=10, ha='center', va='center')
+def draw_graph(G, step_title):
+    pos = nx.spring_layout(G, seed=42)
+    plt.figure(figsize=(6, 4))
+    edge_labels = {}
+    for u, v, data in G.edges(data=True):
+        label = f"{data['resistance']}Ω"
+        if G.number_of_edges(u, v) > 1:
+            label = ', '.join(f"{d['resistance']}Ω" for d in G.get_edge_data(u, v).values())
+        edge_labels[(u, v)] = label
+    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=800)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    plt.title(step_title)
+    plt.show()
 
-# Function to draw edges with arrows and labels
-def draw_custom_edges(G, pos, ax):
-    for (u, v, d) in G.edges(data=True):
-        x1, y1 = pos[u]
-        x2, y2 = pos[v]
-        # Draw an arrow from u to v
-        ax.arrow(x1, y1, (x2-x1)*0.8, (y2-y1)*0.8, head_width=0.02, head_length=0.04, fc='black', ec='black')
-        # Add edge label
-        if 'label' in d and d['label']:
-            ax.text((x1+x2)/2, (y1+y2)/2, d['label'], fontsize=10, ha='center', va='center', color='black')
+def combine_series(G):
+    changed = True
+    while changed:
+        changed = False
+        for node in list(G.nodes):
+            if G.degree(node) == 2 and node not in ("B+", "B-"):
+                neighbors = list(G.neighbors(node))
+                if len(neighbors) == 2:
+                    u, v = neighbors
+                    edge1 = next(iter(G.get_edge_data(u, node).values()))
+                    edge2 = next(iter(G.get_edge_data(node, v).values()))
+                    R_new = edge1['resistance'] + edge2['resistance']
+                    G.remove_node(node)
+                    G.add_edge(u, v, resistance=R_new)
+                    changed = True
+                    draw_graph(G, f"{u} - {v} (series): {R_new}Ω")
+                    break
 
-# Series Configuration
-G_series = nx.MultiGraph()
-G_series.add_edges_from([
-    ('In', 'o1', {'label': ''}),
-    ('o1', 'R1', {'label': 'R1'}),
-    ('R1', 'o2', {'label': ''}),
-    ('o2', 'R2', {'label': 'R2'}),
-    ('o2', 'o3', {'label': ''}),
-    ('o3', 'D1', {'label': 'D1'})
-])
+def combine_parallel(G):
+    to_process = list(G.edges(keys=True))
+    seen = set()
+    for u, v, k in to_process:
+        if (u, v) in seen or (v, u) in seen:
+            continue
+        if G.number_of_edges(u, v) > 1:
+            resistances = [d['resistance'] for d in G.get_edge_data(u, v).values()]
+            R_parallel = 1 / sum(1/r for r in resistances)
+            G.remove_edges_from([(u, v, key) for key in G.get_edge_data(u, v).keys()])
+            G.add_edge(u, v, resistance=R_parallel)
+            draw_graph(G, f"{u} - {v} (parallel): {R_parallel:.2f}Ω")
+        seen.add((u, v))
 
-# Simplified Series
-G_series_simplified = nx.MultiGraph()
-G_series_simplified.add_edges_from([
-    ('In', 'o1', {'label': ''}),
-    ('o1', 'R12', {'label': 'R12'}),
-    ('R12', 'o3', {'label': ''}),
-    ('o3', 'D1', {'label': 'D1'})
-])
+def reduce_graph_second_step(G):
+    draw_graph(G, "After First Series Reduction (Case 1)")
+    combine_parallel(G)
+    return G
 
-# Parallel Configuration
-G_parallel = nx.MultiGraph()
-G_parallel.add_edges_from([
-    ('In', 'o1', {'label': ''}),
-    ('o1', 'R1', {'label': 'R1'}),
-    ('o1', 'R2', {'label': 'R2'}),
-    ('R1', 'o3', {'label': ''}),
-    ('R2', 'o3', {'label': ''}),
-    ('o3', 'D1', {'label': 'D1'})
-])
-
-# Simplified Parallel
-G_parallel_simplified = nx.MultiGraph()
-G_parallel_simplified.add_edges_from([
-    ('In', 'o1', {'label': ''}),
-    ('o1', 'R12', {'label': 'R12'}),
-    ('R12', 'o3', {'label': ''}),
-    ('o3', 'D1', {'label': 'D1'})
-])
-
-# Define custom positions for linear/structured layout
-pos_series = {
-    'In': (0, 0), 'o1': (1, 0), 'R1': (2, 0), 'o2': (3, 0), 'R2': (4, 0), 'o3': (5, 0), 'D1': (6, 0)
-}
-pos_series_simplified = {
-    'In': (0, 0), 'o1': (1, 0), 'R12': (3, 0), 'o3': (5, 0), 'D1': (6, 0)
-}
-pos_parallel = {
-    'In': (0, 0), 'o1': (1, 0), 'R1': (2, 1), 'R2': (2, -1), 'o3': (3, 0), 'D1': (4, 0)
-}
-pos_parallel_simplified = {
-    'In': (0, 0), 'o1': (1, 0), 'R12': (2, 0), 'o3': (3, 0), 'D1': (4, 0)
-}
-
-# Define node colors and shapes
-node_colors_series = {'In': 'lightgray', 'o1': 'white', 'R1': 'lightgreen', 'o2': 'white', 'R2': 'lightgreen', 'o3': 'white', 'D1': 'lightgray'}
-node_colors_series_simplified = {'In': 'lightgray', 'o1': 'white', 'R12': 'lightgreen', 'o3': 'white', 'D1': 'lightgray'}
-node_colors_parallel = {'In': 'lightgray', 'o1': 'white', 'R1': 'lightblue', 'R2': 'lightblue', 'o3': 'white', 'D1': 'lightgray'}
-node_colors_parallel_simplified = {'In': 'lightgray', 'o1': 'white', 'R12': 'lightblue', 'o3': 'white', 'D1': 'lightgray'}
-
-node_shapes_series = {'In': 'box', 'o1': 'circle', 'R1': 'box', 'o2': 'circle', 'R2': 'box', 'o3': 'circle', 'D1': 'box'}
-node_shapes_series_simplified = {'In': 'box', 'o1': 'circle', 'R12': 'box', 'o3': 'circle', 'D1': 'box'}
-node_shapes_parallel = {'In': 'box', 'o1': 'circle', 'R1': 'box', 'R2': 'box', 'o3': 'circle', 'D1': 'box'}
-node_shapes_parallel_simplified = {'In': 'box', 'o1': 'circle', 'R12': 'box', 'o3': 'circle', 'D1': 'box'}
-
-# Draw graphs
-fig, axes = plt.subplots(2, 2, figsize=(12, 8))
-
-# Series Configuration
-ax = axes[0, 0]
-draw_custom_nodes(G_series, pos_series, ax, node_colors_series, node_shapes_series)
-draw_custom_edges(G_series, pos_series, ax)
-ax.set_title("Series Configuration")
-ax.set_xlim(-0.5, 6.5)
-ax.set_ylim(-0.5, 0.5)
-ax.axis('off')
-
-# Simplified Series
-ax = axes[0, 1]
-draw_custom_nodes(G_series_simplified, pos_series_simplified, ax, node_colors_series_simplified, node_shapes_series_simplified)
-draw_custom_edges(G_series_simplified, pos_series_simplified, ax)
-ax.set_title("Simplified Series (R12 = R1 + R2)")
-ax.set_xlim(-0.5, 6.5)
-ax.set_ylim(-0.5, 0.5)
-ax.axis('off')
-
-# Parallel Configuration
-ax = axes[1, 0]
-draw_custom_nodes(G_parallel, pos_parallel, ax, node_colors_parallel, node_shapes_parallel)
-draw_custom_edges(G_parallel, pos_parallel, ax)
-ax.set_title("Parallel Configuration")
-ax.set_xlim(-0.5, 4.5)
-ax.set_ylim(-1.5, 1.5)
-ax.axis('off')
-
-# Simplified Parallel
-ax = axes[1, 1]
-draw_custom_nodes(G_parallel_simplified, pos_parallel_simplified, ax, node_colors_parallel_simplified, node_shapes_parallel_simplified)
-draw_custom_edges(G_parallel_simplified, pos_parallel_simplified, ax)
-ax.set_title("Simplified Parallel (R12 = R1 || R2)")
-ax.set_xlim(-0.5, 4.5)
-ax.set_ylim(-0.5, 0.5)
-ax.axis('off')
-
-plt.tight_layout()
-plt.show()
-```
-![alt text](image-16.png)
-```python
-import networkx as nx
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-
-# Function to draw nodes as boxes or circles with specific colors
-def draw_custom_nodes(G, pos, ax, node_colors, node_shapes):
-    for node in G.nodes():
-        x, y = pos[node]
-        if node_shapes[node] == 'box':
-            # Draw a rectangle for resistors, battery terminals, or diodes
-            rect = patches.Rectangle((x - 0.1, y - 0.05), 0.2, 0.1, linewidth=1, edgecolor='black', facecolor=node_colors[node])
-            ax.add_patch(rect)
-            ax.text(x, y, node, fontsize=10, ha='center', va='center')
-        else:
-            # Draw a circle for junctions
-            circle = patches.Circle((x, y), 0.05, linewidth=1, edgecolor='black', facecolor=node_colors[node])
-            ax.add_patch(circle)
-            ax.text(x, y, node, fontsize=10, ha='center', va='center')
-
-# Function to draw edges with arrows and labels
-def draw_custom_edges(G, pos, ax):
-    for (u, v, d) in G.edges(data=True):
-        x1, y1 = pos[u]
-        x2, y2 = pos[v]
-        # Draw an arrow from u to v
-        ax.arrow(x1, y1, (x2-x1)*0.8, (y2-y1)*0.8, head_width=0.02, head_length=0.04, fc='black', ec='black')
-        # Add edge label if it exists
-        if 'label' in d and d['label']:
-            ax.text((x1+x2)/2, (y1+y2)/2, d['label'], fontsize=10, ha='center', va='center', color='black')
-
-# Series Configuration
-G_series = nx.MultiGraph()
-G_series.add_edges_from([
-    ('B+', 'o1'), ('o1', 'R1'), ('R1', 'o2'), ('o2', 'R2'), ('o2', 'R3'), ('R3', 'o3'), ('o3', 'B-')
-])
-G_series.add_edges_from([('o2', 'D1'), ('o2', 'D4')])  # Parallel diodes
-
-# Simplified Series (replaced by R12)
-G_series_simplified = nx.MultiGraph()
-G_series_simplified.add_edges_from([
-    ('B+', 'o1'), ('o1', 'R12', label='R1+R2+R3'), ('R12', 'o3'), ('o3', 'B-'),
-    ('o2', 'D1'), ('o2', 'D4')
-])
-
-# Parallel Configuration
-G_parallel = nx.MultiGraph()
-G_parallel.add_edges_from([
-    ('B+', 'o1'), ('o1', 'R1', label='R1'), ('o1', 'R2', label='R2'), ('R1', 'o3'), ('R2', 'o3'),
-    ('o3', 'B-')
-])
-G_parallel.add_edges_from([('o1', 'D1'), ('o3', 'D4')])  # Parallel diodes
-
-# Simplified Parallel (replaced by R12)
-G_parallel_simplified = nx.MultiGraph()
-G_parallel_simplified.add_edges_from([
-    ('B+', 'o1'), ('o1', 'R12', label='R1||R2'), ('R12', 'o3'), ('o3', 'B-'),
-    ('o1', 'D1'), ('o3', 'D4')
-])
-
-# Define custom positions for linear/structured layout
-pos_series = {
-    'B+': (0, 0), 'o1': (1, 0), 'R1': (2, 0), 'o2': (3, 0), 'R2': (4, 0), 'R3': (5, 0), 'o3': (6, 0), 'B-': (7, 0),
-    'D1': (3, 1), 'D4': (3, -1)
-}
-pos_series_simplified = {
-    'B+': (0, 0), 'o1': (1, 0), 'R12': (3.5, 0), 'o3': (6, 0), 'B-': (7, 0),
-    'o2': (3, 0), 'D1': (3, 1), 'D4': (3, -1)
-}
-pos_parallel = {
-    'B+': (0, 0), 'o1': (1, 0), 'R1': (2, 1), 'R2': (2, -1), 'o3': (3, 0), 'B-': (4, 0),
-    'D1': (1, 1), 'D4': (3, 1)
-}
-pos_parallel_simplified = {
-    'B+': (0, 0), 'o1': (1, 0), 'R12': (2, 0), 'o3': (3, 0), 'B-': (4, 0),
-    'D1': (1, 1), 'D4': (3, 1)
-}
-
-# Define node colors and shapes
-node_colors_series = {
-    'B+': 'lightgray', 'o1': 'white', 'R1': 'lightgreen', 'o2': 'white', 'R2': 'lightgreen', 'R3': 'lightgreen',
-    'o3': 'white', 'B-': 'lightgray', 'D1': 'lightgray', 'D4': 'lightgray'
-}
-node_colors_series_simplified = {
-    'B+': 'lightgray', 'o1': 'white', 'R12': 'lightgreen', 'o3': 'white', 'B-': 'lightgray',
-    'o2': 'white', 'D1': 'lightgray', 'D4': 'lightgray'
-}
-node_colors_parallel = {
-    'B+': 'lightgray', 'o1': 'white', 'R1': 'lightblue', 'R2': 'lightblue', 'o3': 'white', 'B-': 'lightgray',
-    'D1': 'lightgray', 'D4': 'lightgray'
-}
-node_colors_parallel_simplified = {
-    'B+': 'lightgray', 'o1': 'white', 'R12': 'lightblue', 'o3': 'white', 'B-': 'lightgray',
-    'D1': 'lightgray', 'D4': 'lightgray'
-}
-
-node_shapes_series = {
-    'B+': 'box', 'o1': 'circle', 'R1': 'box', 'o2': 'circle', 'R2': 'box', 'R3': 'box',
-    'o3': 'circle', 'B-': 'box', 'D1': 'box', 'D4': 'box'
-}
-node_shapes_series_simplified = {
-    'B+': 'box', 'o1': 'circle', 'R12': 'box', 'o3': 'circle', 'B-': 'box',
-    'o2': 'circle', 'D1': 'box', 'D4': 'box'
-}
-node_shapes_parallel = {
-    'B+': 'box', 'o1': 'circle', 'R1': 'box', 'R2': 'box', 'o3': 'circle', 'B-': 'box',
-    'D1': 'box', 'D4': 'box'
-}
-node_shapes_parallel_simplified = {
-    'B+': 'box', 'o1': 'circle', 'R12': 'box', 'o3': 'circle', 'B-': 'box',
-    'D1': 'box', 'D4': 'box'
-}
-
-# Draw graphs
-fig, axes = plt.subplots(2, 2, figsize=(12, 8))
-
-# Series Configuration
-ax = axes[0, 0]
-draw_custom_nodes(G_series, pos_series, ax, node_colors_series, node_shapes_series)
-draw_custom_edges(G_series, pos_series, ax)
-ax.set_title("Series Configuration")
-ax.set_xlim(-0.5, 7.5)
-ax.set_ylim(-1.5, 1.5)
-ax.axis('off')
-
-# Simplified Series
-ax = axes[0, 1]
-draw_custom_nodes(G_series_simplified, pos_series_simplified, ax, node_colors_series_simplified, node_shapes_series_simplified)
-draw_custom_edges(G_series_simplified, pos_series_simplified, ax)
-ax.set_title("Simplified Series")
-ax.set_xlim(-0.5, 7.5)
-ax.set_ylim(-1.5, 1.5)
-ax.axis('off')
-
-# Parallel Configuration
-ax = axes[1, 0]
-draw_custom_nodes(G_parallel, pos_parallel, ax, node_colors_parallel, node_shapes_parallel)
-draw_custom_edges(G_parallel, pos_parallel, ax)
-ax.set_title("Parallel Configuration")
-ax.set_xlim(-0.5, 4.5)
-ax.set_ylim(-1.5, 1.5)
-ax.axis('off')
-
-# Simplified Parallel
-ax = axes[1, 1]
-draw_custom_nodes(G_parallel_simplified, pos_parallel_simplified, ax, node_colors_parallel_simplified, node_shapes_parallel_simplified)
-draw_custom_edges(G_parallel_simplified, pos_parallel_simplified, ax)
-ax.set_title("Simplified Parallel")
-ax.set_xlim(-0.5, 4.5)
-ax.set_ylim(-1.5, 1.5)
-ax.axis('off')
-
-plt.tight_layout()
-plt.show()
-```
-![alt text](<circuit_simplification_animation (1).gif>)
-```python
-import networkx as nx
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import imageio
-import numpy as np
-import os
-
-# Function to draw nodes as boxes or circles with specific colors
-def draw_custom_nodes(G, pos, ax, node_colors, node_shapes):
-    for node in G.nodes():
-        x, y = pos[node]
-        if node_shapes[node] == 'box':
-            rect = patches.Rectangle((x - 0.1, y - 0.05), 0.2, 0.1, linewidth=1, edgecolor='black', facecolor=node_colors[node])
-            ax.add_patch(rect)
-            ax.text(x, y, node, fontsize=10, ha='center', va='center')
-
-# Function to draw edges with arrows, labels, and annotations for current/voltage
-def draw_custom_edges(G, pos, ax, currents):
-    for (u, v, d) in G.edges(data=True):
-        x1, y1 = pos[u]
-        x2, y2 = pos[v]
-        # Adjust the parallel path to be visually distinct
-        if (u == 'B+' and v == 'R4') or (v == 'B+' and u == 'R4'):
-            # Draw a curved path for the parallel branch
-            mid_x, mid_y = (x1 + x2) / 2, (y1 + y2) / 2 + 0.3
-            control_points = [(x1, y1), (mid_x, mid_y), (x2, y2)]
-            x_coords, y_coords = zip(*control_points)
-            t = np.linspace(0, 1, 100)
-            x = (1-t)**2 * x_coords[0] + 2*(1-t)*t * x_coords[1] + t**2 * x_coords[2]
-            y = (1-t)**2 * y_coords[0] + 2*(1-t)*t * y_coords[1] + t**2 * y_coords[2]
-            ax.plot(x, y, 'k-')
-            # Add arrow manually
-            arrow_pos = 0.8
-            ax.arrow(x[int(len(x)*arrow_pos)], y[int(len(y)*arrow_pos)], 
-                     (x[int(len(x)*arrow_pos)+1] - x[int(len(x)*arrow_pos)]), 
-                     (y[int(len(y)*arrow_pos)+1] - y[int(len(y)*arrow_pos)]), 
-                     head_width=0.02, head_length=0.04, fc='black', ec='black')
-        else:
-            ax.arrow(x1, y1, (x2-x1)*0.8, (y2-y1)*0.8, head_width=0.02, head_length=0.04, fc='black', ec='black')
-        
-        label = d.get('label', '')
-        resistance = d.get('resistance', 0)
-        current = currents.get((u, v), currents.get((v, u), 0))  # Handle undirected edges
-        voltage_drop = current * resistance
-        # Position text above the edge (adjust for parallel path)
-        if (u == 'B+' and v == 'R4') or (v == 'B+' and u == 'R4'):
-            ax.text((x1+x2)/2, (y1+y2)/2 + 0.4, f"{label}\nI={current:.2f}A\nV={voltage_drop:.2f}V", 
-                    fontsize=8, ha='center', va='center', color='blue')
-        else:
-            ax.text((x1+x2)/2, (y1+y2)/2 + 0.1, f"{label}\nI={current:.2f}A\nV={voltage_drop:.2f}V", 
-                    fontsize=8, ha='center', va='center', color='blue')
-
-# Create initial MultiGraph for Case 1
+# Graph setup after first series reduction (R2 + R3 = 5Ω)
 G = nx.MultiGraph()
-G.add_edges_from([
-    ('B+', 'R1', {'label': 'R1', 'resistance': 10}),
-    ('R1', 'R2', {'label': 'R2', 'resistance': 20}),
-    ('R2', 'R3', {'label': 'R3', 'resistance': 30}),
-    ('R3', 'R4', {'label': 'R4', 'resistance': 40}),
-    ('R4', 'R5', {'label': 'R5', 'resistance': 50}),
-    ('R5', 'B-', {'label': '', 'resistance': 0}),
-    ('B+', 'R4', {'label': '', 'resistance': 0})
-])
+G.add_nodes_from(["B+", "B-", "B", "C"])
+G.add_edge("B+", "B", resistance=5)  # R2 + R3
+G.add_edge("B+", "B", resistance=5)  # R1 (simulating parallel path)
+G.add_edge("B", "C", resistance=4)   # R4
+G.add_edge("C", "B-", resistance=6)  # R5
 
-# Define node colors and shapes
-node_colors = {'B+': 'lightgray', 'R1': 'lightgreen', 'R2': 'lightgreen', 'R3': 'lightgreen',
-               'R4': 'lightgreen', 'R5': 'lightgreen', 'B-': 'lightgray', 'R23': 'lightgreen',
-               'R2345': 'lightgreen', 'Req': 'lightgreen'}
-node_shapes = {'B+': 'box', 'R1': 'box', 'R2': 'box', 'R3': 'box', 'R4': 'box', 'R5': 'box', 
-               'B-': 'box', 'R23': 'box', 'R2345': 'box', 'Req': 'box'}
+reduce_graph_second_step(G)
+```
+![alt text](image-5.png)
+![alt text](image-6.png)
+![alt text](image-7.png)
+```python
+import networkx as nx
+import matplotlib.pyplot as plt
 
-# Define positions (linear layout)
-pos = {'B+': (0, 0), 'R1': (1, 0), 'R2': (2, 0), 'R3': (3, 0), 'R4': (4, 0), 'R5': (5, 0), 'B-': (6, 0)}
-pos_step1 = {'B+': (0, 0), 'R1': (1, 0), 'R23': (2.5, 0), 'R4': (4, 0), 'R5': (5, 0), 'B-': (6, 0)}
-pos_step2 = {'B+': (0, 0), 'R1': (1, 0), 'R2345': (3.5, 0), 'B-': (6, 0)}
-pos_final = {'B+': (0, 0), 'Req': (3, 0), 'B-': (6, 0)}
+def draw_graph(G, step_title):
+    pos = nx.spring_layout(G, seed=42)
+    plt.figure(figsize=(6, 4))
+    edge_labels = {}
+    for u, v, data in G.edges(data=True):
+        label = f"{data['resistance']}Ω"
+        if G.number_of_edges(u, v) > 1:
+            label = ', '.join(f"{d['resistance']}Ω" for d in G.get_edge_data(u, v).values())
+        edge_labels[(u, v)] = label
+    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=800)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    plt.title(step_title)
+    plt.show()
 
-# Create simplified graphs
-G_step1 = nx.MultiGraph()
-G_step1.add_edges_from([
-    ('B+', 'R1', {'label': 'R1', 'resistance': 10}),
-    ('R1', 'R23', {'label': 'R23', 'resistance': 50}),
-    ('R23', 'R4', {'label': 'R4', 'resistance': 40}),
-    ('R4', 'R5', {'label': 'R5', 'resistance': 50}),
-    ('R5', 'B-', {'label': '', 'resistance': 0}),
-    ('B+', 'R4', {'label': '', 'resistance': 0})
-])
+def combine_series(G):
+    changed = True
+    while changed:
+        changed = False
+        for node in list(G.nodes):
+            if G.degree(node) == 2 and node not in ("B+", "B-"):
+                neighbors = list(G.neighbors(node))
+                if len(neighbors) == 2:
+                    u, v = neighbors
+                    edge1 = next(iter(G.get_edge_data(u, node).values()))
+                    edge2 = next(iter(G.get_edge_data(node, v).values()))
+                    R_new = edge1['resistance'] + edge2['resistance']
+                    G.remove_node(node)
+                    G.add_edge(u, v, resistance=R_new)
+                    changed = True
+                    draw_graph(G, f"{u} - {v} (series): {R_new}Ω")
+                    break
 
-G_step2 = nx.MultiGraph()
-G_step2.add_edges_from([
-    ('B+', 'R1', {'label': 'R1', 'resistance': 10}),
-    ('R1', 'R2345', {'label': 'R2345', 'resistance': 140}),
-    ('R2345', 'B-', {'label': '', 'resistance': 0}),
-    ('B+', 'R2345', {'label': '', 'resistance': 0})
-])
+def reduce_graph_nested_step(G):
+    draw_graph(G, "Initial Graph (Case 2)")
+    combine_series(G)
+    return G
 
-G_final = nx.MultiGraph()
-G_final.add_edges_from([
-    ('B+', 'Req', {'label': 'Req', 'resistance': 9.33}),
-    ('Req', 'B-', {'label': '', 'resistance': 0})
-])
+# Initial graph setup based on Case 2 initial diagram
+G = nx.MultiGraph()
+G.add_nodes_from(["B+", "B-", "01", "02", "03"])
+G.add_edge("B+", "01", resistance=1)  # R1
+G.add_edge("01", "02", resistance=2)  # R2
+G.add_edge("02", "03", resistance=3)  # R3
+G.add_edge("03", "B-", resistance=4)  # R4
 
-graphs = [G, G_step1, G_step2, G_final]
-positions = [pos, pos_step1, pos_step2, pos_final]
-titles = ["Initial Circuit", "Step 1: R2+R3=R23 (50Ω)", "Step 2: R23+R4+R5=R2345 (140Ω)", "Final: R1||R2345=Req (9.33Ω)"]
+reduce_graph_nested_step(G)
+```
+![alt text](image-8.png)
+![alt text](image-9.png)
+![alt text](image-10.png)
+![alt text](image-11.png)
+```python
+import networkx as nx
+import matplotlib.pyplot as plt
 
-# Voltage source
-V_total = 12.0
+def draw_graph(G, step_title):
+    pos = nx.spring_layout(G, seed=42)
+    plt.figure(figsize=(6, 4))
+    edge_labels = {}
+    for u, v, data in G.edges(data=True):
+        label = f"{data['resistance']}Ω"
+        if G.number_of_edges(u, v) > 1:
+            label = ', '.join(f"{d['resistance']}Ω" for d in G.get_edge_data(u, v).values())
+        edge_labels[(u, v)] = label
+    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=800)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    plt.title(step_title)
+    plt.show()
 
-# Calculate currents for each step with error handling
-def calculate_currents(G, V_total):
-    resistances = {(u, v): d.get('resistance', 0) for u, v, d in G.edges(data=True)}
-    try:
-        if ('B+', 'R1') in resistances and ('R1', 'R2') in resistances:
-            r1 = resistances[('B+', 'R1')]
-            r2 = resistances[('R1', 'R2')]
-            r3 = resistances[('R2', 'R3')]
-            r4 = resistances[('R3', 'R4')]
-            r5 = resistances[('R4', 'R5')]
-            r23 = r2 + r3
-            r2345 = r23 + r4 + r5
-            req = (r1 * r2345) / (r1 + r2345)
-            I_total = V_total / req
-            V_parallel = V_total
-            I_r1 = V_parallel / r1
-            I_branch = V_parallel / r2345
-            return {
-                ('B+', 'R1'): I_r1, ('R1', 'R2'): I_branch, ('R2', 'R3'): I_branch,
-                ('R3', 'R4'): I_branch, ('R4', 'R5'): I_branch, ('R5', 'B-'): I_branch,
-                ('B+', 'R4'): I_branch
-            }, I_total, req
-        elif ('R1', 'R23') in resistances:
-            r1 = resistances[('B+', 'R1')]
-            r23 = resistances[('R1', 'R23')]
-            r4 = resistances[('R23', 'R4')]
-            r5 = resistances[('R4', 'R5')]
-            r2345 = r23 + r4 + r5
-            req = (r1 * r2345) / (r1 + r2345)
-            I_total = V_total / req
-            V_parallel = V_total
-            I_r1 = V_parallel / r1
-            I_branch = V_parallel / r2345
-            return {
-                ('B+', 'R1'): I_r1, ('R1', 'R23'): I_branch, ('R23', 'R4'): I_branch,
-                ('R4', 'R5'): I_branch, ('R5', 'B-'): I_branch, ('B+', 'R4'): I_branch
-            }, I_total, req
-        elif ('R1', 'R2345') in resistances:
-            r1 = resistances[('B+', 'R1')]
-            r2345 = resistances[('R1', 'R2345')]
-            req = (r1 * r2345) / (r1 + r2345)
-            I_total = V_total / req
-            V_parallel = V_total
-            I_r1 = V_parallel / r1
-            I_branch = V_parallel / r2345
-            return {
-                ('B+', 'R1'): I_r1, ('R1', 'R2345'): I_branch, ('R2345', 'B-'): I_branch,
-                ('B+', 'R2345'): I_branch
-            }, I_total, req
-        elif ('B+', 'Req') in resistances:
-            req = resistances[('B+', 'Req')]
-            I_total = V_total / req
-            return {('B+', 'Req'): I_total, ('Req', 'B-'): I_total}, I_total, req
-        else:
-            raise ValueError("Graph structure not recognized for current calculation.")
-    except Exception as e:
-        print(f"Error calculating currents: {e}")
-        return {}, 0, 0
+def combine_series(G):
+    changed = True
+    while changed:
+        changed = False
+        for node in list(G.nodes):
+            if G.degree(node) == 2 and node not in ("B+", "B-"):
+                neighbors = list(G.neighbors(node))
+                if len(neighbors) == 2:
+                    u, v = neighbors
+                    edge1 = next(iter(G.get_edge_data(u, node).values()))
+                    edge2 = next(iter(G.get_edge_data(node, v).values()))
+                    R_new = edge1['resistance'] + edge2['resistance']
+                    G.remove_node(node)
+                    G.add_edge(u, v, resistance=R_new)
+                    changed = True
+                    draw_graph(G, f"{u} - {v} (series): {R_new}Ω")
+                    break
 
-# Generate frames
-frames = []
-frames_per_step = 20  # Frames per step for smoother transitions
+def combine_parallel(G):
+    to_process = list(G.edges(keys=True))
+    seen = set()
+    for u, v, k in to_process:
+        if (u, v) in seen or (v, u) in seen:
+            continue
+        if G.number_of_edges(u, v) > 1:
+            resistances = [d['resistance'] for d in G.get_edge_data(u, v).values()]
+            R_parallel = 1 / sum(1/r for r in resistances)
+            G.remove_edges_from([(u, v, key) for key in G.get_edge_data(u, v).keys()])
+            G.add_edge(u, v, resistance=R_parallel)
+            draw_graph(G, f"{u} - {v} (parallel): {R_parallel:.2f}Ω")
+        seen.add((u, v))
 
-for i in range(len(graphs)):
-    currents, I_total, req = calculate_currents(graphs[i], V_total)
-    
-    # Hold each step for multiple frames
-    for _ in range(frames_per_step):
-        fig, ax = plt.subplots(figsize=(10, 6))
-        draw_custom_nodes(graphs[i], positions[i], ax, node_colors, node_shapes)
-        draw_custom_edges(graphs[i], positions[i], ax, currents)
-        ax.set_title(f"{titles[i]}\nTotal V = {V_total}V, I_total = {I_total:.2f}A, Req = {req:.2f}Ω")
-        ax.set_xlim(-0.5, 6.5)
-        ax.set_ylim(-0.5, 0.6)  # Adjusted to accommodate parallel path
-        ax.axis('off')
-        plt.tight_layout()
-        
-        frame_file = f"temp_frame_{len(frames)}.png"
-        plt.savefig(frame_file)
-        plt.close()
-        frames.append(imageio.imread(frame_file))
+def reduce_graph(G):
+    draw_graph(G, "Initial Graph (Case 2)")
+    while True:
+        nodes_before = len(G.nodes)
+        combine_series(G)
+        combine_parallel(G)
+        if len(G.nodes) == nodes_before:
+            break
+    return G
 
-# Create animated GIF
-imageio.mimsave('circuit_simplification_animation.gif', frames, fps=10)
+def get_equivalent_resistance(G, source, target):
+    if G.has_edge(source, target):
+        return next(iter(G.get_edge_data(source, target).values()))['resistance']
+    else:
+        return None
 
-# Clean up temporary frame files
-for i in range(len(frames)):
-    os.remove(f"temp_frame_{i}.png")
+def example_case_2():
+    G = nx.MultiGraph()
+    G.add_nodes_from(["B+", "B-", "01", "02", "03"])
+    G.add_edge("B+", "01", resistance=1)  # R1
+    G.add_edge("01", "02", resistance=2)  # R2
+    G.add_edge("02", "03", resistance=3)  # R3
+    G.add_edge("03", "B-", resistance=4)  # R4
+    G.add_edge("B+", "02", resistance=5)  # Additional path for parallel (inferred from steps)
 
-print("Animated GIF 'circuit_simplification_animation.gif' has been created.")
+    reduce_graph(G)
+    Req = get_equivalent_resistance(G, "B+", "B-")
+    print(f"Equivalent Resistance (Case 2): {Req:.2f} Ohms")
+
+example_case_2()
 ```
 
 ## 7. Conclusion
