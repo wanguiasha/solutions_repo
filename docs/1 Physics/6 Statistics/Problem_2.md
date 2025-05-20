@@ -526,6 +526,10 @@ y = np.random.uniform(-1, 1, n_points)
 # Check if inside circle
 inside = x**2 + y**2 <= 1
 
+# Estimate pi
+pi_estimate = 4 * np.sum(inside) / n_points
+print(f"Estimated value of π: {pi_estimate}")
+
 # Plot
 plt.figure(figsize=(6, 6))
 plt.scatter(x[inside], y[inside], color='blue', s=5, label='Inside Circle')
@@ -544,25 +548,35 @@ plt.axvline(x=1, color='black', linewidth=1)
 plt.axvline(x=-1, color='black', linewidth=1)
 
 plt.gca().set_aspect('equal')
-plt.title('Monte Carlo Points: Inside vs Outside the Circle')
+plt.title(f'Monte Carlo Estimation of π ≈ {pi_estimate:.5f}')
 plt.legend()
 plt.grid(True)
 plt.show()
+
 ```
 ![alt text](image-13.png)
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Generate uniform points
-x = np.random.uniform(-1, 1, 300)
-y = np.random.uniform(-1, 1, 300)
+# Generate uniform random points
+n_points = 300
+x = np.random.uniform(-1, 1, n_points)
+y = np.random.uniform(-1, 1, n_points)
+
+# Check if points are inside the unit circle
+inside = x**2 + y**2 <= 1
+
+# Estimate pi
+pi_estimate = 4 * np.sum(inside) / n_points
+print(f"Estimated value of π: {pi_estimate}")
 
 # Plot
 plt.figure(figsize=(6, 6))
-plt.scatter(x, y, color='gray', s=5, alpha=0.5)
+plt.scatter(x[inside], y[inside], color='blue', s=5, label='Inside Circle')
+plt.scatter(x[~inside], y[~inside], color='red', s=5, label='Outside Circle')
 
-# Draw unit circle and square
+# Draw unit circle
 circle = plt.Circle((0, 0), 1, edgecolor='green', facecolor='none', linewidth=2)
 plt.gca().add_patch(circle)
 
@@ -572,12 +586,15 @@ plt.axhline(y=-1, color='black', linewidth=1)
 plt.axvline(x=1, color='black', linewidth=1)
 plt.axvline(x=-1, color='black', linewidth=1)
 
+# Formatting
 plt.xlim(-1, 1)
 plt.ylim(-1, 1)
 plt.gca().set_aspect('equal')
-plt.title('Uniform Random Points and Unit Circle')
+plt.title(f'Uniform Random Points and π ≈ {pi_estimate:.5f}')
+plt.legend()
 plt.grid(True)
 plt.show()
+
 ```
 ![alt text](image-14.png)
 ```python
