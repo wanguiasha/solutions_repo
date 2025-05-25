@@ -513,7 +513,7 @@ We expect the error to decrease as $N$ increases, but at a slow rate due to the 
 | **Random Variables Needed** | 2D point ($x$, $y$)       | Distance $d$, angle $\the
 
 ### Codes And  Plots
-![alt text](image-12.png)
+![alt text](image-16.png)
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -551,10 +551,9 @@ plt.gca().set_aspect('equal')
 plt.title(f'Monte Carlo Estimation of π ≈ {pi_estimate:.5f}')
 plt.legend()
 plt.grid(True)
-plt.show()
-
+plt.show
 ```
-![alt text](image-13.png)
+![alt text](image-17.png)
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -596,18 +595,18 @@ plt.grid(True)
 plt.show()
 
 ```
-![alt text](image-14.png)
+![alt text](image-15.png)
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 
 # Parameters
-N = 100  # number of needles
-L = 1.0  # length of needle
-H = 2.0  # distance between parallel lines
-num_lines = 5  # number of horizontal lines
+N = 100              # number of needles
+L = 1.0              # length of needle
+H = 2.0              # distance between parallel lines
+num_lines = 5        # number of horizontal lines
 
-# Generate random needle centers (y only needs to stay within line region)
+# Generate random needle centers
 x_centers = np.random.uniform(0, 10, N)
 y_centers = np.random.uniform(0, num_lines * H, N)
 
@@ -622,8 +621,17 @@ y2 = y_centers + (L / 2) * np.sin(angles)
 
 # Determine if a needle crosses a line
 crosses = np.floor(y1 / H) != np.floor(y2 / H)
+num_crosses = np.sum(crosses)
 
-# Plot setup
+# Estimate π
+if num_crosses > 0:
+    pi_estimate = (2 * L * N) / (num_crosses * H)
+    print(f"Estimated value of π: {pi_estimate}")
+else:
+    pi_estimate = None
+    print("No needles crossed the lines. Cannot estimate π.")
+
+# Plot
 plt.figure(figsize=(10, 6))
 
 # Draw parallel lines
@@ -637,7 +645,11 @@ for i in range(N):
     plt.plot([x1[i], x2[i]], [y1[i], y2[i]], color=color, linewidth=1)
 
 # Labels and formatting
-plt.title('Buffon\'s Needle Simulation\nRed = Crosses Line, Blue = Does Not')
+title = 'Buffon\'s Needle Simulation\nRed = Crosses Line, Blue = Does Not'
+if pi_estimate:
+    title += f"\nEstimated π ≈ {pi_estimate:.5f}"
+
+plt.title(title)
 plt.xlim(0, 10)
 plt.ylim(0, num_lines * H)
 plt.gca().set_aspect('equal')
@@ -645,6 +657,7 @@ plt.xlabel('X')
 plt.ylabel('Y')
 plt.grid(True)
 plt.show()
+
 ```
 ## Colab 
 [colab10](https://colab.research.google.com/drive/1Pk5LFyZwBzSTsAeUJyRkwx5aOuyY-RP9)
