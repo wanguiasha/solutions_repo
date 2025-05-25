@@ -468,17 +468,19 @@ def draw_graph(G, step_title):
     plt.figure(figsize=(6, 4))
     edge_labels = {}
     for u, v, data in G.edges(data=True):
-        label = f"{data['resistance']}Ω"
+        label = f"{data['resistance']:.2f}Ω"
         if G.number_of_edges(u, v) &gt; 1:
-            label = ', '.join(f"{d['resistance']}Ω" for d in G.get_edge_data(u, v).values())
+            label = ', '.join(f"{d['resistance']:.2f}Ω" for d in G.get_edge_data(u, v).values())
         edge_labels[(u, v)] = label
-    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=800)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-    plt.title(step_title)
+    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=800, font_size=10)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
+    plt.title(step_title, fontsize=12)
+    plt.tight_layout()
     plt.show()
 
 def combine_series(G):
     changed = True
+    step_count = 0
     while changed:
         changed = False
         for node in list(G.nodes):
@@ -492,205 +494,42 @@ def combine_series(G):
                     G.remove_node(node)
                     G.add_edge(u, v, resistance=R_new)
                     changed = True
-                    draw_graph(G, f"{u} - {v} (series): {R_new}Ω")
+                    step_count += 1
+                    draw_graph(G, f"Step {step_count}: Series {u} - {v} = {R_new:.2f}Ω")
                     break
+    return step_count
 
-def reduce_graph_initial_step(G):
-    draw_graph(G, "Initial Graph (Case 1)")
-    combine_series(G)
-    return G
-
-# Initial graph setup based on Case 1 initial diagram
-G = nx.MultiGraph()
-G.add_nodes_from(["B+", "B-", "A", "B", "C"])
-G.add_edge("B+", "A", resistance=2)  # R2
-G.add_edge("A", "B", resistance=3)   # R3
-G.add_edge("B+", "B", resistance=5)  # R1
-G.add_edge("B", "C", resistance=4)   # R4
-G.add_edge("C", "B-", resistance=6)  # R5
-
-reduce_graph_initial_step(G)
-</code></pre>
-<p><img alt="alt text" src="../image-3.png"/>
-<img alt="alt text" src="../image-4.png"/></p>
-<pre><code class="language-python">import networkx as nx
-import matplotlib.pyplot as plt
-
-def draw_graph(G, step_title):
-    pos = nx.spring_layout(G, seed=42)
-    plt.figure(figsize=(6, 4))
-    edge_labels = {}
-    for u, v, data in G.edges(data=True):
-        label = f"{data['resistance']}Ω"
-        if G.number_of_edges(u, v) &gt; 1:
-            label = ', '.join(f"{d['resistance']}Ω" for d in G.get_edge_data(u, v).values())
-        edge_labels[(u, v)] = label
-    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=800)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-    plt.title(step_title)
-    plt.show()
-
-def combine_series(G):
+def combine_parallel(G, step_count):
     changed = True
     while changed:
         changed = False
-        for node in list(G.nodes):
-            if G.degree(node) == 2 and node not in ("B+", "B-"):
-                neighbors = list(G.neighbors(node))
-                if len(neighbors) == 2:
-                    u, v = neighbors
-                    edge1 = next(iter(G.get_edge_data(u, node).values()))
-                    edge2 = next(iter(G.get_edge_data(node, v).values()))
-                    R_new = edge1['resistance'] + edge2['resistance']
-                    G.remove_node(node)
-                    G.add_edge(u, v, resistance=R_new)
-                    changed = True
-                    draw_graph(G, f"{u} - {v} (series): {R_new}Ω")
-                    break
-
-def combine_parallel(G):
-    to_process = list(G.edges(keys=True))
-    seen = set()
-    for u, v, k in to_process:
-        if (u, v) in seen or (v, u) in seen:
-            continue
-        if G.number_of_edges(u, v) &gt; 1:
-            resistances = [d['resistance'] for d in G.get_edge_data(u, v).values()]
-            R_parallel = 1 / sum(1/r for r in resistances)
-            G.remove_edges_from([(u, v, key) for key in G.get_edge_data(u, v).keys()])
-            G.add_edge(u, v, resistance=R_parallel)
-            draw_graph(G, f"{u} - {v} (parallel): {R_parallel:.2f}Ω")
-        seen.add((u, v))
-
-def reduce_graph_second_step(G):
-    draw_graph(G, "After First Series Reduction (Case 1)")
-    combine_parallel(G)
-    return G
-
-# Graph setup after first series reduction (R2 + R3 = 5Ω)
-G = nx.MultiGraph()
-G.add_nodes_from(["B+", "B-", "B", "C"])
-G.add_edge("B+", "B", resistance=5)  # R2 + R3
-G.add_edge("B+", "B", resistance=5)  # R1 (simulating parallel path)
-G.add_edge("B", "C", resistance=4)   # R4
-G.add_edge("C", "B-", resistance=6)  # R5
-
-reduce_graph_second_step(G)
-</code></pre>
-<p><img alt="alt text" src="../image-5.png"/>
-<img alt="alt text" src="../image-6.png"/>
-<img alt="alt text" src="../image-7.png"/></p>
-<pre><code class="language-python">import networkx as nx
-import matplotlib.pyplot as plt
-
-def draw_graph(G, step_title):
-    pos = nx.spring_layout(G, seed=42)
-    plt.figure(figsize=(6, 4))
-    edge_labels = {}
-    for u, v, data in G.edges(data=True):
-        label = f"{data['resistance']}Ω"
-        if G.number_of_edges(u, v) &gt; 1:
-            label = ', '.join(f"{d['resistance']}Ω" for d in G.get_edge_data(u, v).values())
-        edge_labels[(u, v)] = label
-    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=800)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-    plt.title(step_title)
-    plt.show()
-
-def combine_series(G):
-    changed = True
-    while changed:
-        changed = False
-        for node in list(G.nodes):
-            if G.degree(node) == 2 and node not in ("B+", "B-"):
-                neighbors = list(G.neighbors(node))
-                if len(neighbors) == 2:
-                    u, v = neighbors
-                    edge1 = next(iter(G.get_edge_data(u, node).values()))
-                    edge2 = next(iter(G.get_edge_data(node, v).values()))
-                    R_new = edge1['resistance'] + edge2['resistance']
-                    G.remove_node(node)
-                    G.add_edge(u, v, resistance=R_new)
-                    changed = True
-                    draw_graph(G, f"{u} - {v} (series): {R_new}Ω")
-                    break
-
-def reduce_graph_nested_step(G):
-    draw_graph(G, "Initial Graph (Case 2)")
-    combine_series(G)
-    return G
-
-# Initial graph setup based on Case 2 initial diagram
-G = nx.MultiGraph()
-G.add_nodes_from(["B+", "B-", "01", "02", "03"])
-G.add_edge("B+", "01", resistance=1)  # R1
-G.add_edge("01", "02", resistance=2)  # R2
-G.add_edge("02", "03", resistance=3)  # R3
-G.add_edge("03", "B-", resistance=4)  # R4
-
-reduce_graph_nested_step(G)
-</code></pre>
-<p><img alt="alt text" src="../image-8.png"/>
-<img alt="alt text" src="../image-9.png"/>
-<img alt="alt text" src="../image-10.png"/>
-<img alt="alt text" src="../image-11.png"/></p>
-<pre><code class="language-python">import networkx as nx
-import matplotlib.pyplot as plt
-
-def draw_graph(G, step_title):
-    pos = nx.spring_layout(G, seed=42)
-    plt.figure(figsize=(6, 4))
-    edge_labels = {}
-    for u, v, data in G.edges(data=True):
-        label = f"{data['resistance']}Ω"
-        if G.number_of_edges(u, v) &gt; 1:
-            label = ', '.join(f"{d['resistance']}Ω" for d in G.get_edge_data(u, v).values())
-        edge_labels[(u, v)] = label
-    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=800)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-    plt.title(step_title)
-    plt.show()
-
-def combine_series(G):
-    changed = True
-    while changed:
-        changed = False
-        for node in list(G.nodes):
-            if G.degree(node) == 2 and node not in ("B+", "B-"):
-                neighbors = list(G.neighbors(node))
-                if len(neighbors) == 2:
-                    u, v = neighbors
-                    edge1 = next(iter(G.get_edge_data(u, node).values()))
-                    edge2 = next(iter(G.get_edge_data(node, v).values()))
-                    R_new = edge1['resistance'] + edge2['resistance']
-                    G.remove_node(node)
-                    G.add_edge(u, v, resistance=R_new)
-                    changed = True
-                    draw_graph(G, f"{u} - {v} (series): {R_new}Ω")
-                    break
-
-def combine_parallel(G):
-    to_process = list(G.edges(keys=True))
-    seen = set()
-    for u, v, k in to_process:
-        if (u, v) in seen or (v, u) in seen:
-            continue
-        if G.number_of_edges(u, v) &gt; 1:
-            resistances = [d['resistance'] for d in G.get_edge_data(u, v).values()]
-            R_parallel = 1 / sum(1/r for r in resistances)
-            G.remove_edges_from([(u, v, key) for key in G.get_edge_data(u, v).keys()])
-            G.add_edge(u, v, resistance=R_parallel)
-            draw_graph(G, f"{u} - {v} (parallel): {R_parallel:.2f}Ω")
-        seen.add((u, v))
+        seen = set()
+        for u, v, k in list(G.edges(keys=True)):
+            if (u, v) in seen or (v, u) in seen:
+                continue
+            if G.number_of_edges(u, v) &gt; 1:
+                resistances = [d['resistance'] for d in G.get_edge_data(u, v).values()]
+                R_parallel = 1 / sum(1/r for r in resistances)
+                G.remove_edges_from([(u, v, key) for key in G.get_edge_data(u, v).keys()])
+                G.add_edge(u, v, resistance=R_parallel)
+                changed = True
+                step_count += 1
+                draw_graph(G, f"Step {step_count}: Parallel {u} - {v} = {R_parallel:.2f}Ω")
+                seen.add((u, v))
+                break
+    return step_count
 
 def reduce_graph(G):
-    draw_graph(G, "Initial Graph (Case 2)")
+    draw_graph(G, "Step 0: Initial Graph")
+    step_count = 0
     while True:
         nodes_before = len(G.nodes)
-        combine_series(G)
-        combine_parallel(G)
-        if len(G.nodes) == nodes_before:
+        step_count = combine_series(G)
+        step_count += combine_series(G)  # Run series again to catch new series after parallel
+        step_count = combine_parallel(G, step_count)
+        if len(G.nodes) == nodes_before and not any(G.number_of_edges(u, v) &gt; 1 for u, v in G.edges()):
             break
+    draw_graph(G, f"Final Graph: Equivalent Resistance")
     return G
 
 def get_equivalent_resistance(G, source, target):
@@ -699,20 +538,231 @@ def get_equivalent_resistance(G, source, target):
     else:
         return None
 
-def example_case_2():
+def example_circuit():
     G = nx.MultiGraph()
-    G.add_nodes_from(["B+", "B-", "01", "02", "03"])
-    G.add_edge("B+", "01", resistance=1)  # R1
-    G.add_edge("01", "02", resistance=2)  # R2
-    G.add_edge("02", "03", resistance=3)  # R3
-    G.add_edge("03", "B-", resistance=4)  # R4
-    G.add_edge("B+", "02", resistance=5)  # Additional path for parallel (inferred from steps)
+    # Nodes: B+ (battery positive), B- (battery negative), A, B, C, D for junctions
+    G.add_nodes_from(["B+", "B-", "A", "B", "C", "D"])
+    # All resistors are 1 ohm
+    G.add_edge("B+", "A", resistance=1)  # R1
+    G.add_edge("A", "B", resistance=1)   # R2
+    G.add_edge("B+", "B", resistance=1)  # R3 (parallel path to A-B)
+    G.add_edge("B", "C", resistance=1)   # R4
+    G.add_edge("A", "C", resistance=1)   # R5 (parallel path to A-B-C)
+    G.add_edge("C", "D", resistance=1)   # R6
+    G.add_edge("D", "B-", resistance=1)  # R7
+    G.add_edge("C", "B-", resistance=1)  # R8 (parallel path to C-D-B-)
 
+    # Reduce the graph and visualize each step
     reduce_graph(G)
     Req = get_equivalent_resistance(G, "B+", "B-")
-    print(f"Equivalent Resistance (Case 2): {Req:.2f} Ohms")
+    print(f"Equivalent Resistance: {Req:.2f} Ohms" if Req is not None else "No direct path between B+ and B-")
 
-example_case_2()
+# Run the example
+example_circuit()
+</code></pre>
+<p><img alt="alt text" src="../image-3.png"/>
+<img alt="alt text" src="../image-4.png"/>
+<img alt="alt text" src="../image-5.png"/>
+<img alt="alt text" src="../image-6.png"/>
+<img alt="alt text" src="../image-7.png"/>
+<img alt="alt text" src="../image-8.png"/></p>
+<pre><code class="language-python">import networkx as nx
+import matplotlib.pyplot as plt
+
+def draw_graph(G, step_title):
+    pos = nx.spring_layout(G, seed=42)
+    plt.figure(figsize=(6, 4))
+    edge_labels = {}
+    for u, v, data in G.edges(data=True):
+        label = f"{data['resistance']:.2f}Ω"
+        if G.number_of_edges(u, v) &gt; 1:
+            label = ', '.join(f"{d['resistance']:.2f}Ω" for d in G.get_edge_data(u, v).values())
+        edge_labels[(u, v)] = label
+    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=800, font_size=10)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
+    plt.title(step_title, fontsize=12)
+    plt.tight_layout()
+    plt.show()
+
+def combine_series(G, step_count):
+    changed = True
+    while changed:
+        changed = False
+        for node in list(G.nodes):
+            if G.degree(node) == 2 and node not in ("B+", "B-"):
+                neighbors = list(G.neighbors(node))
+                if len(neighbors) == 2:
+                    u, v = neighbors
+                    edge1 = next(iter(G.get_edge_data(u, node).values()))
+                    edge2 = next(iter(G.get_edge_data(node, v).values()))
+                    R_new = edge1['resistance'] + edge2['resistance']
+                    G.remove_node(node)
+                    G.add_edge(u, v, resistance=R_new)
+                    changed = True
+                    step_count += 1
+                    draw_graph(G, f"Step {step_count}: Series {u} - {v} = {R_new:.2f}Ω")
+                    break
+    return step_count
+
+def combine_parallel(G, step_count):
+    changed = True
+    while changed:
+        changed = False
+        seen = set()
+        for u, v, k in list(G.edges(keys=True)):
+            if (u, v) in seen or (v, u) in seen:
+                continue
+            if G.number_of_edges(u, v) &gt; 1:
+                resistances = [d['resistance'] for d in G.get_edge_data(u, v).values()]
+                R_parallel = 1 / sum(1/r for r in resistances)
+                G.remove_edges_from([(u, v, key) for key in G.get_edge_data(u, v).keys()])
+                G.add_edge(u, v, resistance=R_parallel)
+                changed = True
+                step_count += 1
+                draw_graph(G, f"Step {step_count}: Parallel {u} - {v} = {R_parallel:.2f}Ω")
+                seen.add((u, v))
+                break
+    return step_count
+
+def reduce_graph(G):
+    draw_graph(G, "Step 0: Initial Graph")
+    step_count = 0
+    while True:
+        nodes_before = len(G.nodes)
+        step_count = combine_series(G, step_count)
+        step_count = combine_parallel(G, step_count)
+        step_count = combine_series(G, step_count)  # Re-check series after parallel
+        if len(G.nodes) == nodes_before and not any(G.number_of_edges(u, v) &gt; 1 for u, v in G.edges()):
+            break
+    draw_graph(G, f"Final Graph: Equivalent Resistance")
+    return G
+
+def get_equivalent_resistance(G, source, target):
+    if G.has_edge(source, target):
+        return next(iter(G.get_edge_data(source, target).values()))['resistance']
+    return None
+
+def ladder_circuit():
+    G = nx.MultiGraph()
+    # Nodes: B+ (battery positive), B- (battery negative), A, B, C
+    G.add_nodes_from(["B+", "B-", "A", "B", "C"])
+    # All resistors are 1 ohm
+    G.add_edge("B+", "A", resistance=1)  # R1
+    G.add_edge("A", "B", resistance=1)   # R2
+    G.add_edge("A", "B", resistance=1)   # R3 (parallel with R2)
+    G.add_edge("B", "C", resistance=1)   # R4
+    G.add_edge("C", "B-", resistance=1)  # R5
+    G.add_edge("C", "B-", resistance=1)  # R6 (parallel with R5)
+
+    # Reduce the graph and visualize each step
+    reduce_graph(G)
+    Req = get_equivalent_resistance(G, "B+", "B-")
+    print(f"Equivalent Resistance (Ladder Circuit): {Req:.2f} Ohms" if Req is not None else "No direct path between B+ and B-")
+
+# Run the example
+ladder_circuit()
+</code></pre>
+<p><img alt="alt text" src="../image-9.png"/>
+<img alt="alt text" src="../image-10.png"/>
+<img alt="alt text" src="../image-11.png"/>
+<img alt="alt text" src="../image-12.png"/>
+<img alt="alt text" src="../image-13.png"/>
+<img alt="alt text" src="../image-14.png"/></p>
+<pre><code class="language-python">import networkx as nx
+import matplotlib.pyplot as plt
+
+def draw_graph(G, step_title):
+    pos = nx.spring_layout(G, seed=42)
+    plt.figure(figsize=(6, 4))
+    edge_labels = {}
+    for u, v, data in G.edges(data=True):
+        label = f"{data['resistance']:.2f}Ω"
+        if G.number_of_edges(u, v) &gt; 1:
+            label = ', '.join(f"{d['resistance']:.2f}Ω" for d in G.get_edge_data(u, v).values())
+        edge_labels[(u, v)] = label
+    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=800, font_size=10)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
+    plt.title(step_title, fontsize=12)
+    plt.tight_layout()
+    plt.show()
+
+def combine_series(G, step_count):
+    changed = True
+    while changed:
+        changed = False
+        for node in list(G.nodes):
+            if G.degree(node) == 2 and node not in ("B+", "B-"):
+                neighbors = list(G.neighbors(node))
+                if len(neighbors) == 2:
+                    u, v = neighbors
+                    edge1 = next(iter(G.get_edge_data(u, node).values()))
+                    edge2 = next(iter(G.get_edge_data(node, v).values()))
+                    R_new = edge1['resistance'] + edge2['resistance']
+                    G.remove_node(node)
+                    G.add_edge(u, v, resistance=R_new)
+                    changed = True
+                    step_count += 1
+                    draw_graph(G, f"Step {step_count}: Series {u} - {v} = {R_new:.2f}Ω")
+                    break
+    return step_count
+
+def combine_parallel(G, step_count):
+    changed = True
+    while changed:
+        changed = False
+        seen = set()
+        for u, v, k in list(G.edges(keys=True)):
+            if (u, v) in seen or (v, u) in seen:
+                continue
+            if G.number_of_edges(u, v) &gt; 1:
+                resistances = [d['resistance'] for d in G.get_edge_data(u, v).values()]
+                R_parallel = 1 / sum(1/r for r in resistances)
+                G.remove_edges_from([(u, v, key) for key in G.get_edge_data(u, v).keys()])
+                G.add_edge(u, v, resistance=R_parallel)
+                changed = True
+                step_count += 1
+                draw_graph(G, f"Step {step_count}: Parallel {u} - {v} = {R_parallel:.2f}Ω")
+                seen.add((u, v))
+                break
+    return step_count
+
+def reduce_graph(G):
+    draw_graph(G, "Step 0: Initial Graph")
+    step_count = 0
+    while True:
+        nodes_before = len(G.nodes)
+        step_count = combine_series(G, step_count)
+        step_count = combine_parallel(G, step_count)
+        step_count = combine_series(G, step_count)  # Re-check series after parallel
+        if len(G.nodes) == nodes_before and not any(G.number_of_edges(u, v) &gt; 1 for u, v in G.edges()):
+            break
+    draw_graph(G, f"Final Graph: Equivalent Resistance")
+    return G
+
+def get_equivalent_resistance(G, source, target):
+    if G.has_edge(source, target):
+        return next(iter(G.get_edge_data(source, target).values()))['resistance']
+    return None
+
+def nested_circuit():
+    G = nx.MultiGraph()
+    # Nodes: B+ (battery positive), B- (battery negative), A, B, C, D
+    G.add_nodes_from(["B+", "B-", "A", "B", "C", "D"])
+    # All resistors are 1 ohm
+    G.add_edge("B+", "A", resistance=1)  # R1
+    G.add_edge("A", "B", resistance=1)   # R2
+    G.add_edge("A", "C", resistance=1)   # R3 (parallel path to A-B)
+    G.add_edge("B", "D", resistance=1)   # R4
+    G.add_edge("C", "D", resistance=1)   # R5 (parallel with B-D)
+    G.add_edge("D", "B-", resistance=1)  # R6
+
+    # Reduce the graph and visualize each step
+    reduce_graph(G)
+    Req = get_equivalent_resistance(G, "B+", "B-")
+    print(f"Equivalent Resistance (Nested Circuit): {Req:.2f} Ohms" if Req is not None else "No direct path between B+ and B-")
+
+# Run the example
+nested_circuit()
 </code></pre>
 <h2 id="7-conclusion">7. Conclusion</h2>
 <p>The graph-theoretic approach to simplifying electrical circuits provides a systematic and mathematically rigorous method for calculating equivalent resistance, as demonstrated through Case 1 and additional examples. By modeling circuits as graphs and applying iterative series and parallel reductions, we transform complex networks into a single equivalent resistance, such as <span class="arithmatex">\(R_{eq} = 21\Omega\)</span> for the series circuit in Case 1. The algorithm, with its ability to handle nested combinations through iterative simplification, proves versatile across configurations, yielding <span class="arithmatex">\(R_{eq} = 9\Omega\)</span> for a simple series circuit, <span class="arithmatex">\(R_{eq} = 2\Omega\)</span> for a parallel circuit, and <span class="arithmatex">\(R_{eq} = 7\Omega\)</span> for a nested series-parallel circuit. Despite a time complexity of <span class="arithmatex">\(O((|V| + |E|)^2)\)</span>, potential enhancements like DFS-based pattern detection and delta-star transformations could reduce this to <span class="arithmatex">\(O(|V| + |E|)\)</span> per reduction, making the method highly efficient for large-scale circuit analysis. This framework not only deepens our understanding of circuit behavior but also lays the groundwork for advanced applications in electrical engineering, such as optimizing circuit design and analyzing power distribution networks.</p>
@@ -720,7 +770,7 @@ example_case_2()
 <div class="arithmatex">\[ R_{eq} = \frac{R_1 \cdot R_2}{R_1 + R_2} \quad \text{(Parallel Combination)} \]</div>
 <div class="arithmatex">\[ R_{star} = \frac{R_{delta}^2}{\sum R_{delta}} \quad \text{(Delta-Star Transformation)} \]</div>
 <h2 id="colab">Colab</h2>
-<p><a href="https://colab.research.google.com/drive/1hlh6-DtTuBSNl1UTuvoT1yjh9tXMVTbz">Colab8</a></p>
+<p><a href="https://colab.research.google.com/drive/1_18cD8V83zfAo1NbjE31HJ33sI4G8oQl">colab8</a></p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
